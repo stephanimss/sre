@@ -1,21 +1,16 @@
-"""lib/arcadedb.py — Alamat, kredensial, dan pemanggil ArcadeDB.
+"""lib/arcadedb.py — Konfigurasi koneksi dan pemanggil ArcadeDB.
 
-Satu-satunya tempat koneksi ditentukan. Nilainya dibaca dari .env; tanpa .env
-dipakai ArcadeDB lokal (Docker di laptop):
+Nilai dibaca dari .env (bawaan: ArcadeDB lokal):
 
-    ARCADEDB_HOST=http://localhost:2480     # mis. https://arcade.riset.web.id
+    ARCADEDB_HOST=http://localhost:2480
     ARCADEDB_DB=sre_test
     ARCADEDB_USER=root
-    ARCADEDB_PASSWORD=sre-team
+    ARCADEDB_PASSWORD=<sandi>
 
-Dua endpoint:
-    ARCADEDB_URL  /api/v1/command/  boleh menulis; untuk skrip pembangun graf
-    URL_BACA      /api/v1/query/    baca saja; untuk server dan Cypher dari LLM
+ARCADEDB_URL  /api/v1/command/  boleh menulis
+URL_BACA      /api/v1/query/    baca saja (dipakai server dan tanya-graf)
 
-Hanya mengimpor `requests` (dan dotenv bila ada), supaya cepat dimuat.
-
-`jalankan()` menjaga satu jebakan: ArcadeDB memotong hasil di 20.000 baris
-tanpa galat. Bila bendera `truncated` muncul, ia berhenti.
+jalankan() berhenti bila hasil terpotong di batas 20.000 baris ArcadeDB.
 """
 import os
 from pathlib import Path
@@ -36,7 +31,7 @@ def _env(nama, bawaan):
 
 HOST = _env("ARCADEDB_HOST", "http://localhost:2480").rstrip("/")
 DB = _env("ARCADEDB_DB", "sre_test")
-ARCADEDB_AUTH = (_env("ARCADEDB_USER", "root"), _env("ARCADEDB_PASSWORD", "sre-team"))
+ARCADEDB_AUTH = (_env("ARCADEDB_USER", "root"), _env("ARCADEDB_PASSWORD", ""))
 
 ARCADEDB_URL = f"{HOST}/api/v1/command/{DB}"
 URL_BACA = f"{HOST}/api/v1/query/{DB}"

@@ -2,14 +2,12 @@
 <html lang="en"><head><meta charset="utf-8">
 <title>SRE — Research Graph</title>
 <script src="https://unpkg.com/cytoscape@3.31.0/dist/cytoscape.min.js"></script>
-<script src="https://unpkg.com/layout-base/layout-base.js"></script>
-<script src="https://unpkg.com/cose-base/cose-base.js"></script>
+<script src="https://unpkg.com/layout-base@2.0.1/layout-base.js"></script>
+<script src="https://unpkg.com/cose-base@2.2.0/cose-base.js"></script>
 <script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
 <style>
   html,body{margin:0;height:100%;font:13px sans-serif}
-  /* Sistem kendali
-     Satu gaya tombol: tinggi 28px, sudut 6px, huruf 12px. Ditaruh paling atas
-     supaya aturan khusus di bawahnya tetap menang. */
+  /* Tombol */
   :root{--aksen:#0f6e7b;--aksen-2:#0b525b;--garis:#d6dde0;--teks:#1f2937;
         --redup:#6b7280;--lembut:#f0fdfa}
   button{font:500 12px/1 sans-serif;height:28px;padding:0 10px;color:var(--teks);
@@ -19,14 +17,14 @@
   button.utama{background:var(--aksen);border-color:var(--aksen);color:#fff}
   button.utama:hover:not(:disabled){background:var(--aksen-2);border-color:var(--aksen-2);color:#fff}
   button.utama:disabled{background:#eef1f2;border-color:var(--garis);color:#9aa5ab;opacity:1}
-  /* Penanda fokus keyboard. */
+  /* Fokus keyboard */
   :focus-visible{outline:2px solid var(--aksen);outline-offset:2px;border-radius:4px}
   input[type=text],input:not([type]),select,textarea{font:12px sans-serif;color:var(--teks);
     background:#fff;border:1px solid var(--garis);border-radius:6px;height:28px;
     padding:0 8px;box-sizing:border-box}
   textarea{height:auto;padding:7px 8px}
   input[type=checkbox]{accent-color:var(--aksen)}
-  /* Kata panjang tanpa spasi (dedup_key, DOI, URL) dipatahkan agar panel tidak melebar. */
+  /* Pemotongan kata panjang */
   #jawaban,#panel,.bs-msg,.bs-daftar li,.bukti li,.blok li,#cari-hasil li,
   .abstrak,.bs-alasan,.ket-isi,.dp-daftar li{overflow-wrap:anywhere}
   #sisi{overflow-x:hidden}
@@ -34,12 +32,10 @@
                 letter-spacing:.12em;text-transform:uppercase;color:var(--redup)}
   .judul-bagian:first-child{margin-top:2px}
   .petunjuk{font-size:11px;color:var(--redup);line-height:1.45;margin:4px 0}
-  /* Cytoscape membutuhkan tinggi eksplisit. */
-  /* #kanvas membungkus #cy dan kendali yang melayang di atasnya. Kendali tidak
-     ditaruh di dalam #cy karena wadah itu milik Cytoscape. */
+  /* Kanvas */
   #kanvas{position:absolute;inset:0 300px 0 320px}
   #cy{position:absolute;inset:0}
-  /* Panel Brainstorm (kiri) dan Explore (kanan) bisa dilipat agar kanvas lega. */
+  /* Panel samping */
   body.bs-lipat #kanvas{left:34px}
   body.sisi-lipat #kanvas{right:34px}
   #sisi{position:absolute;inset:0 0 0 auto;width:320px;
@@ -64,7 +60,7 @@
     .rg-sel.aktif{background:#d1ecef;outline:2px solid var(--aksen)}
     .rg-sel .rg-n{font-size:15px;font-weight:600;color:#111827;display:block}
     .rg-sel .rg-t{font-size:9.5px;color:#6b7280;text-transform:uppercase;letter-spacing:.04em}
-  /* Penjelasan Cypher: dibuat program dari kuerinya, bukan oleh LLM. */
+  /* Penjelasan Cypher */
   #gloss{display:none;font-size:11px;line-height:1.5;color:#0f5e66;background:#f1f5f6;
          border-left:3px solid var(--aksen);border-radius:0 4px 4px 0;padding:6px 8px;
          margin:6px 0 2px;overflow-wrap:anywhere}
@@ -90,8 +86,7 @@
               letter-spacing:.12em;text-transform:uppercase;color:#6b7280}
   #legenda div{padding:2px 0;cursor:pointer;font-size:12px;line-height:1.35}
   #legenda div:hover{color:#0f6e7b}
-  /* Keadaan terpilih ditandai centang, bukan sekadar beda warna: filter yang
-     lupa dimatikan membuat graf tampak kosong. */
+  /* Legenda */
   #legenda div.dipilih{color:#0f6e7b;font-weight:600}
   #legenda div.dipilih::after{content:' \2713';color:#0f6e7b}
   #legenda div.dipilih{background:#f0fdfa;border-radius:4px;
@@ -185,7 +180,7 @@
   .leg-kiat{font-size:10.5px;color:var(--redup);margin:4px 0 -4px;line-height:1.4}
   .aksi-panel{margin-top:8px;display:flex;gap:4px;flex-wrap:wrap}
   .aksi-panel button{font-size:11px;padding:0 8px;height:24px}
-  /* Daftar bukti relasi digulir sendiri agar tidak mendorong legenda keluar layar. */
+  /* Bukti relasi */
   .bukti{max-height:280px;overflow:auto;margin-top:8px;
          border-top:1px solid #e5e7eb;padding-top:6px}
   .bukti li{font-size:11.5px;line-height:1.45;margin-bottom:7px;
@@ -194,7 +189,7 @@
   .bukti .meta{color:#9ca3af;font-size:10.5px;display:block}
   .bukti .penulis{color:#6b7280;font-size:10.5px;display:block}
   .bukti .intern{color:#0f766e;font-weight:600}
-  /* Abstrak digulir sendiri karena bisa sangat panjang. */
+  /* Abstrak */
   .abstrak{font-size:11.5px;line-height:1.6;color:#374151;max-height:220px;
            overflow:auto;background:#f8fafc;border-left:3px solid #cbd5e1;
            padding:7px 9px;border-radius:0 4px 4px 0;margin-top:6px;
@@ -211,7 +206,7 @@
                  padding:6px 8px;border-radius:0 4px 4px 0;margin-top:8px}
   .sisi-relasi{font-size:12px;margin:4px 0}
   .sisi-relasi b{display:block;font-size:12.5px}
-    /* Contoh garis dibuat dari border-top supaya bisa putus-putus. */
+    /* Contoh garis legenda */
   #legenda i.garis{
     width:20px; height:0; border-radius:0; background:none;
     border-top-width:2.5px; border-top-style:solid;
@@ -319,7 +314,7 @@
     font-family:ui-monospace,Menlo,monospace;font-size:11px}
   .bs-msg.ai ul ul,.bs-msg.ai ul ol,.bs-msg.ai ol ul,.bs-msg.ai ol ol,
   #jawaban ul ul,#jawaban ul ol,#jawaban ol ul,#jawaban ol ol{margin:4px 0 2px}
-  /* Baris yang seluruhnya tebal dijadikan judul bagian di dalam jawaban. */
+  /* Judul bagian dalam jawaban */
   .bs-judul{margin:10px 0 3px;font:600 11.5px/1.35 sans-serif;color:var(--aksen);
             letter-spacing:.01em}
   .bs-judul:first-child{margin-top:0}
@@ -531,33 +526,23 @@
 </div>
 <script>
 
-// Ambang sembunyi-label dikalikan devicePixelRatio. Cytoscape mengukur dalam
-// piksel perangkat, sehingga di layar Retina label masih digambar saat sudah
-// terlalu kecil untuk dibaca. Yang dibatasi adalah ukuran tampak (piksel CSS).
+// Ambang label dalam piksel CSS (dikalikan devicePixelRatio).
 const RATIO = window.devicePixelRatio || 1;
 const MZFS_NODE = 5 * RATIO;      // label node hilang di bawah ~5px CSS
 const MZFS_RELASI = 6 * RATIO;    // nama relasi baru muncul saat diperbesar
 
-// Tata letak renggang (fcose). Pada banding_institusi (184 node) rasio
-// jarak/diameter naik dari 0,87 ke 1,17. Untuk graf >300 node, menyaring di
-// Cypher lebih efektif karena yang membuat sesak adalah garis.
-//
-// fit:false wajib: fit bawaan fcose berjalan sesudah layoutstop dan menimpa
-// fitInti, yang memegang seluruh pengarahan kamera.
+// Tata letak fcose. fit:false karena kamera diatur fitInti.
 const TATA_RENGGANG = {
   name: 'fcose', quality: 'proof',
   nodeRepulsion: 25000, idealEdgeLength: 160, nodeSeparation: 150,
   gravity: 0.1, numIter: 2500, animate: false, fit: false,
 };
 
-// Nama tampil berbahasa Inggris, dibaca dari /api/tampilan.
-// Hanya tulisannya yang diterjemahkan. Kunci data ('Peneliti', 'KOLABORASI')
-// tetap, karena filter, selector gaya, dan Cypher bergantung padanya.
+// Nama tampil berbahasa Inggris dari /api/tampilan; kunci data tetap.
 let NAMA = { tipe: {}, keluarga: {}, relasi: {}, kelompok: {} };
 const PERAN_TAMPIL = { internal: 'Researcher (internal)', eksternal: 'Co-author (external)' };
 
-// Peneliti internal dikenali dari /api/peneliti (@rid dan local_id). Sebelum
-// daftarnya tiba, tidak ada yang ditandai eksternal.
+// Peneliti internal, dari /api/peneliti.
 function tandaiPeneliti() {
   if (!window.cy || !BS.peneliti.length) return;
   cy.batch(() => cy.nodes('[tipe = "Peneliti"]').forEach(n =>
@@ -577,7 +562,7 @@ fetch('/api/tampilan').then(r => r.json()).then(t => {
   if (window.cy) { legenda(); perbaruiRingkasan(); }
 }).catch(() => {});
 
-// Pesan dari modul Python (berbahasa Indonesia) diterjemahkan di sini.
+// Terjemahan pesan dari modul Python.
 const PETA_PESAN = [
   [/Kuota Groq per menit habis/i, () => 'LLM quota reached (free tier: 8,000 tokens per minute). Wait about 30 seconds and try again.'],
   [/Pilih 2 sampai 3 peneliti \(sekarang (\d+)\)/, m => `Select 2 to 3 researchers (currently ${m[1]}).`],
@@ -605,7 +590,7 @@ function pesanInggris(t) {
   }
   return t;
 }
-// Status penjaga chat (lib/tanya_graf.py) -> kalimat Inggris untuk kotak jawaban.
+// Status penjaga tanya-graf.
 const STATUS_TANYA = {
   kosong: 'The query is valid and ran, but no data matched. Labels and relations were checked — for text searches, also check the spelling.',
   nama_asing: 'The generated query used names that do not exist in this graph, so it was not run.',
@@ -614,7 +599,7 @@ const STATUS_TANYA = {
 };
 
 const GAYA = [
-  // Semua node: warna dari kamus gaya Python
+  // Node
   { selector: 'node', style: {
       'background-color': 'data(warna)',
       'shape': 'ellipse',            // 'dot' istilah vis, di sini 'ellipse'
@@ -624,27 +609,23 @@ const GAYA = [
       'text-margin-y': 3,
       'text-wrap': 'ellipsis',
       'text-max-width': 90,
-      // garis putih di belakang huruf agar label terbaca di atas garis
       'text-outline-width': 2,
       'text-outline-color': '#fff',
-      // di bawah ambang ini label tidak digambar (tidak terbaca dan memperlambat)
       'min-zoomed-font-size': MZFS_NODE,
       'border-width': 1.5,
       'border-color': '#fff',
-      // ukuran dipetakan dari data, bukan ditulis satu per satu
       'width':  'mapData(ukuran, 7, 254, 12, 46)',
       'height': 'mapData(ukuran, 7, 254, 12, 46)',
   }},
 
-  // Kategori: pembawa warna ASJC, digambar lebih besar
+  // Kategori
   { selector: 'node[tipe = "Kategori"]', style: {
       'font-size': 12,
       'font-weight': 'bold',
       'border-width': 3,
   }},
 
-  // Peneliti eksternal = cincin (isi putih, tepi berwarna); internal = penuh.
-  // Pembedanya bentuk, bukan warna, agar tetap berlaku di mode warna ASJC.
+  // Peneliti eksternal: cincin; internal: lingkaran penuh.
   { selector: 'node.eksternal', style: {
       'background-color': '#ffffff',
       'border-color': 'data(warna)',
@@ -665,7 +646,6 @@ const GAYA = [
       'opacity': .65,
   }},
 
-  // Label relasi bisa dinyalakan dan dimatikan.
   { selector: 'edge', style: {
       'label': 'data(label_tampil)',
       'font-size': 7,
@@ -673,21 +653,18 @@ const GAYA = [
       'text-rotation': 'autorotate',
       'text-outline-width': 2,
       'text-outline-color': '#fff',
-      // Ambang lebih tinggi dari node: nama relasi hanya berguna saat diperbesar.
       'min-zoomed-font-size': MZFS_RELASI,
   }},
 
-  // Label dimatikan lewat kelas. cy.style().selector().update() menambah
-  // aturan baru setiap dipanggil, sedangkan kelas tidak menumpuk.
+  // Label relasi dimatikan lewat kelas (update() pada stylesheet menumpuk aturan).
   { selector: 'edge.tanpa-label', style: { 'label': '' } },
 
-  // Arah panah: '?' artinya "kalau bernilai benar"
+  // Arah panah
   { selector: 'edge[?berarah]', style: {
       'target-arrow-color': 'data(warna)',
       'target-arrow-shape': 'triangle',
       'arrow-scale': .8,
   }},
-  // '!' artinya "kalau bernilai salah" (KOLABORASI, SEBIDANG)
   { selector: 'edge[!berarah]', style: {
       'line-style': 'dashed',
   }},
@@ -696,19 +673,19 @@ const GAYA = [
       'opacity': .35,
   }},
 
-  // Sorotan legenda: yang tidak cocok dipudarkan, bukan disembunyikan.
+  // Sorotan legenda
   { selector: '.pudar', style: {
       'background-color': '#E2E8F0', 'line-color': '#EEF2F6',
       'target-arrow-color': '#EEF2F6', 'opacity': .25,
       'text-opacity': .2, 'border-color': '#E2E8F0',
   }},
 
-  // Peneliti terpilih untuk Brainstorm: cincin jingga, berbeda dari ':selected'.
+  // Peneliti terpilih untuk Brainstorm
   { selector: 'node.bs-dipilih', style: {
       'border-width': 5, 'border-color': '#d97706',
   }},
 
-  // Keadaan terpilih
+  // Node terpilih
   { selector: ':selected', style: {
       'border-color': '#111827',
       'border-width': 3,
@@ -718,11 +695,9 @@ const GAYA = [
 ];
 
 let fitTertunda = false;   // ada permintaan fit yang gagal karena wadah 0x0
-// Koordinat Gephi sedang dipakai? Menata ulang membuangnya, dan hanya memuat
-// ulang halaman yang bisa mengembalikannya.
+// Apakah koordinat Gephi sedang dipakai.
 let posisiGephi = false;
 
-// Ambang tata letak, dipakai jalankan() dan tombol Tata ulang.
 const AMBANG_DRAFT = 800;    // di atas ini: mutu draf, iterasi seperempatnya
 const AMBANG_BERAT = 3000;   // di atas ini: minta persetujuan dulu
 
@@ -744,9 +719,7 @@ fetch(berkas).then(r => r.json()).then(data => {
     style: GAYA,
     layout: adaPosisi ? { name: 'preset', fit: false } : TATA_RENGGANG,
   });
-  // Wadah bisa berukuran 0x0 (tab di latar, panel tersembunyi). Saat itu
-  // cy.fit() tidak berbuat apa-apa dan kamera tertinggal di zoom 1. Permintaan
-  // fit karena itu ditunda, lalu dijalankan lagi oleh ResizeObserver.
+  // Wadah 0x0 (tab di latar): fit ditunda sampai ResizeObserver.
   window.fitInti = () => {
     const w = cy.container();
     if (!w.clientWidth || !w.clientHeight) { fitTertunda = true; return; }
@@ -780,7 +753,7 @@ fetch(berkas).then(r => r.json()).then(data => {
   pasangTooltip();
 });
 
-// Urutan legenda mengikuti hierarki organisasi, bukan abjad.
+// Urutan legenda
 const URUT_TIPE = ['Institusi','UnitKerja','Peneliti','Publikasi',
                    'Venue','Topik','Kategori'];
 
@@ -790,8 +763,6 @@ function legenda() {
   const kat = {}, tipe = {};
   cy.nodes().forEach(n => {
     const d = n.data();
-    // Node yang diwarnai menurut kategori (mis. author_network) masuk bagian
-    // Kategori dan dikeluarkan dari bagian Tipe.
     if (d.kategori && (d.tipe === 'Kategori' || d.warna_dari_kategori)) {
       kat[d.kategori] = d.warna;
     }
@@ -811,12 +782,11 @@ function legenda() {
     }
     const k = kel[d.keluarga];
     if (!k.jenis.includes(d.jenis)) k.jenis.push(d.jenis);
-    // rentang bobot diambil dari graf yang sedang tampil
     if (d.bobot < k.min) k.min = d.bobot;
     if (d.bobot > k.maks) k.maks = d.bobot;
   });
 
-  // `lipat`: isi disembunyikan di balik <details> (dipakai daftar kategori ASJC).
+  // `lipat`: isi disembunyikan di balik <details>.
   function bagian(judul, isi, urut, medan, lipat) {
     const nama = Object.keys(isi);
     if (!nama.length) return;
@@ -837,7 +807,6 @@ function legenda() {
     }
     nama.forEach(k => {
       if (medan === 'tipe' && k === 'Peneliti' && adaEksternal) {
-        // Dua baris, masing-masing bisa diklik untuk menyaring.
         [['internal', `<i style="background:${isi[k]}"></i>`],
          ['eksternal', `<i class="cincin" style="border-color:${isi[k]}"></i>`]].forEach(([peran, ikon]) => {
           const d = document.createElement('div');
@@ -850,7 +819,6 @@ function legenda() {
         return;
       }
       const d = document.createElement('div');
-      // Kunci basis data ditampilkan abu-abu agar bisa dicocokkan dengan Cypher.
       const nm = medan === 'tipe' ? tampil('tipe', k) : k;
       d.innerHTML = `<i style="background:${isi[k]}"></i>${lolos(nm)}` +
         (medan === 'tipe' && nm !== k ? `<span class="kunci-db">:${lolos(k)}</span>` : '');
@@ -927,13 +895,10 @@ function legenda() {
   }
 }
 
-// Filter banyak-pilih: setiap baris legenda adalah saklar.
-// Aturan gabungan:
+// Filter legenda (banyak pilihan):
 //   1. Node aktif bila tidak ada filter tipe/kategori, atau tipenya dipilih.
-//   2. Garis aktif bila (tidak ada filter keluarga atau keluarganya dipilih)
-//      dan kedua ujungnya aktif.
-//   3. Bila hanya filter keluarga yang aktif, node tanpa garis aktif ikut
-//      dipudarkan.
+//   2. Garis aktif bila keluarganya lolos filter dan kedua ujungnya aktif.
+//   3. Bila hanya filter keluarga aktif, node tanpa garis aktif dipudarkan.
 const FILTER = { tipe: new Set(), kategori: new Set(), keluarga: new Set(), peran: new Set() };
 
 function adaFilter() {
@@ -971,7 +936,6 @@ function terapkanFilter() {
     nodeAktif(e.source()) && nodeAktif(e.target());
 
   const gAktif = cy.edges().filter(garisAktif);
-  // Aturan 3.
   const nAktif = adaNodeFilter
     ? cy.nodes().filter(nodeAktif)
     : gAktif.connectedNodes();
@@ -990,8 +954,7 @@ function terapkanFilter() {
   }
 }
 
-// Centang legenda dibangun ulang dari FILTER, bukan di-toggle setempat, agar
-// selalu sesuai keadaan filter sebenarnya.
+// Centang legenda dibangun ulang dari FILTER.
 function tandaiLegenda() {
   document.querySelectorAll('#legenda div[data-medan]').forEach(d => {
     const aktif = (FILTER[d.dataset.medan] || new Set()).has(d.dataset.nilai);
@@ -1000,7 +963,7 @@ function tandaiLegenda() {
 }
 
 function sorotKumpulan(eles) {
-  // Pencarian/fokus dan filter legenda saling meniadakan.
+  // Pencarian dan filter legenda saling meniadakan.
   if (adaFilter()) {
     FILTER.tipe.clear(); FILTER.kategori.clear(); FILTER.keluarga.clear(); FILTER.peran.clear();
     tandaiLegenda();
@@ -1017,8 +980,7 @@ function pusatkan(n) {
              { duration: 300 });
 }
 
-// Enter berulang berpindah ke kecocokan berikutnya; kata baru memulai dari
-// awal.
+// Enter berulang berpindah ke kecocokan berikutnya.
 let cariTerakhir = '', cariIdx = 0;
 
 function jalankanCari() {
@@ -1041,8 +1003,6 @@ function jalankanCari() {
   if (teks !== cariTerakhir) { cariTerakhir = teks; cariIdx = 0; }
   else { cariIdx = (cariIdx + 1) % cocok.length; }
   const n = cocok[cariIdx];
-  // Semua kecocokan disorot, tetapi kamera hanya menuju satu; memuat semuanya
-  // membuat zoom terlalu jauh.
   sorotKumpulan(cocok);
   pusatkan(n);
   info.textContent = cocok.length === 1
@@ -1050,9 +1010,7 @@ function jalankanCari() {
     : `On this graph: ${cariIdx + 1} of ${cocok.length} — ${n.data('label')} (Enter for next)`;
 }
 
-// Pencarian di basis data: judul publikasi dan nama peneliti internal di seluruh
-// basis data, bukan hanya yang tampil. Hasil bisa dibuka, disorot, atau
-// ditambahkan ke Compare.
+// Pencarian di basis data (judul publikasi dan nama peneliti internal).
 let cariDbTerakhir = '', cariDbHasil = { peneliti: [], publikasi: [] };
 
 async function cariDb(teks) {
@@ -1099,7 +1057,6 @@ function renderCariDb(d) {
   }).join('') + `</ul>`;
 }
 
-// Tombol "+" untuk item yang sudah terpilih dinonaktifkan.
 function bsSegarkanTombolCari() {
   document.querySelectorAll('#cari-hasil [data-tambah-p]').forEach(b => {
     const p = cariDbHasil.publikasi[+b.dataset.tambahP];
@@ -1118,14 +1075,12 @@ function tampilkanHasilCari() {
   bsSegarkanTombolCari();
 }
 
-// `lupakan`: kata terakhir dihapus agar pencarian berikutnya bertanya ke server.
 function tutupHasilCari(lupakan) {
   document.getElementById('cari-hasil').className = '';
   if (lupakan) cariDbTerakhir = '';
 }
 
-// Esc menutup kotak hasil di mana pun fokusnya.
-// "/" memindahkan fokus ke kotak cari, kecuali sedang mengetik di kotak lain.
+// Esc menutup kotak hasil; "/" memindahkan fokus ke kotak cari.
 document.addEventListener('keydown', e => {
   if (e.key !== '/' || e.metaKey || e.ctrlKey) return;
   const t = e.target.tagName;
@@ -1161,8 +1116,6 @@ document.getElementById('cari-hasil').addEventListener('click', e => {
     return;
   }
   if (t.dataset.detail) {
-    // Detail pindah ke panel Explore. Kata terakhir diingat: Enter menampilkan
-    // hasilnya lagi tanpa memanggil server.
     tutupHasilCari(false);
     return tampilkanDetail(t.dataset.detail, nodeDiGraf(t.dataset.rid, t.dataset.detail));
   }
@@ -1174,7 +1127,7 @@ document.getElementById('cari-hasil').addEventListener('click', e => {
   if (t.dataset.tambahP) bsTambahPub(cariDbHasil.publikasi[+t.dataset.tambahP]);
 });
 
-// Fokus tetangga: node terpilih dan tetangganya; yang lain dipudarkan.
+// Fokus tetangga
 function fokusTetangga(n) {
   const sekitar = n.closedNeighborhood();
   sorotKumpulan(sekitar.nodes());
@@ -1183,13 +1136,10 @@ function fokusTetangga(n) {
     `Focus: ${n.data('label')} + ${n.degree()} neighbours`;
 }
 
-// Detail node diambil saat diminta dari /api/node. Abstrak tidak ikut di JSON
-// graf (seluruhnya ~6 MB).
+// Detail node dari /api/node.
 function tampilkanNode(n) { return tampilkanDetail(n.id(), n); }
 
-// Detail bisa dibuka dari klik node, hasil cari, daftar publikasi, atau
-// Brainstorm; node-nya belum tentu ada di graf. Focus/Center hanya muncul bila
-// tergambar. `cara`: 'graf' (riwayat baru), 'panel' (tombol Back), 'kembali'.
+// `cara`: 'graf' (riwayat baru), 'panel' (tombol Back), 'kembali'.
 const DETAIL = { id: null, riwayat: [], semua: null };
 
 async function tampilkanDetail(id, n, cara = 'graf') {
@@ -1201,7 +1151,6 @@ async function tampilkanDetail(id, n, cara = 'graf') {
   }
   DETAIL.id = id; DETAIL.semua = null;
   let kunciDetail = null;                  // local_id dari server, utk cek internal
-  // Panel Explore yang terlipat dibuka: detail yang diminta harus terlihat.
   if (document.body.classList.contains('sisi-lipat')) document.getElementById('sisi-lipat').click();
   const el = document.getElementById('panel');
   const lihat = () => {
@@ -1221,7 +1170,6 @@ async function tampilkanDetail(id, n, cara = 'graf') {
            `<button id="aksi-pusat">Center</button>` +
            `<button id="aksi-semua" class="sekunder" title="Remove the fade from the rest of the graph">Clear highlight</button>`;
     }
-    // Peneliti eksternal tidak ditawari: profilnya terlalu tipis.
     const internal = BS.byId[kunciDetail] || BS.byRid[id] || BS.byId[id];
     if (tipe === 'Publikasi' || (tipe === 'Peneliti' && internal)) {
       h += `<button id="aksi-banding">Add to compare</button>`;
@@ -1301,7 +1249,6 @@ async function tampilkanDetail(id, n, cara = 'graf') {
     } else if (b.tipe === 'Publikasi') {
       isi += `<div class="catatan-bukti">This publication has no abstract.</div>`;
     }
-    // b.nama = judul lengkap dari server; d.label dipotong 46 huruf untuk kanvas.
     el.innerHTML = kepala(b.nama || (d && d.label), b.tipe, node) + isi;
     pasangAksi(node, b); lihat();
   } catch (err) {
@@ -1311,8 +1258,7 @@ async function tampilkanDetail(id, n, cara = 'graf') {
   }
 }
 
-// Semua publikasi seorang peneliti (maks 361) dikirim sekaligus; disaring
-// dan diurutkan di halaman, di kotak yang digulir sendiri.
+// Daftar semua publikasi seorang peneliti.
 async function muatSemuaPublikasi(b) {
   const wadah = document.getElementById('daftar-pub');
   const tombol = document.getElementById('aksi-semua-pub');
@@ -1361,7 +1307,6 @@ function gambarDaftarPublikasi() {
   }).join('') || `<li><div class="bs-segera">No title matches.</div></li>`;
 }
 
-// Satu pendengar untuk seluruh isi panel detail (isinya diganti-ganti).
 document.getElementById('panel').addEventListener('click', e => {
   const t = e.target.closest('[data-detail],[data-tambah-dp]');
   if (!t) return;
@@ -1370,11 +1315,9 @@ document.getElementById('panel').addEventListener('click', e => {
   if (p && bsTambahPub(p)) t.disabled = true;
 });
 
-// Bukti relasi: alasan dua node tersambung.
-// KOLABORASI, SEBIDANG, dan BIDANG_KEAHLIAN dihitung dari MENULIS dan MEMBAHAS.
-// Panel ini menelusuri balik ke publikasi yang melahirkan garisnya.
+// Bukti relasi: menelusuri balik garis turunan ke publikasi asalnya.
 function lolos(t) {
-  // Tanda kutip ikut diloloskan karena hasilnya juga dipakai di dalam atribut.
+  // Tanda kutip ikut diloloskan karena hasilnya dipakai di atribut.
   return String(t == null ? '' : t)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -1383,9 +1326,7 @@ function lolos(t) {
 async function tampilkanRelasi(edge) {
   const d = edge.data();
   const el = document.getElementById('panel');
-  // Panel berada di bawah legenda, jadi digulir ke tampak setiap diisi.
-  // scrollTop diatur langsung: `block:'nearest'` kadang tidak menggeser, dan
-  // `behavior:'smooth'` tidak berjalan saat tab di latar.
+  // scrollTop diatur langsung (smooth scroll berhenti di tab latar).
   const lihat = () => {
     const sisi = document.getElementById('sisi');
     if (sisi) sisi.scrollTop = el.offsetTop - 8;
@@ -1412,11 +1353,7 @@ async function tampilkanRelasi(edge) {
         `<div class="catatan-bukti">Failed: ${lolos(b.error || r.status)}</div>`;
       return;
     }
-    // Relasi struktural (AFILIASI, MENULIS, ...) berasal langsung dari data sumber.
     if (!b.jumlah_bukti) {
-      // Dua sebab yang berbeda:
-      //   relasi asli   -> tidak ada yang perlu ditelusuri
-      //   relasi hitung -> buktinya berupa skor, bukan daftar publikasi
       const sifat = Object.entries(b.sifat || {})
         .map(([k, v]) => `${lolos(k)}: <b>${lolos(v)}</b>`).join(' · ');
       const pesan = b.dari_sumber
@@ -1458,7 +1395,7 @@ async function tampilkanRelasi(edge) {
   }
 }
 
-// Petunjuk saat panel detail kosong.
+// Petunjuk saat panel detail kosong
 const PANEL_KOSONG =
   '<div class="petunjuk">Click a node or a line to see its details here.<br>' +
   'Tip: search above for a researcher or a publication title, or right-click a ' +
@@ -1501,8 +1438,7 @@ document.getElementById('ringkasan-graf').addEventListener('click', e => {
   terapkanFilter();
 });
 
-// Selama kueri berjalan, seluruh kendali panel dikunci; aksi di tengah jalan
-// akan bekerja pada graf lama.
+// Kunci kendali selama kueri berjalan.
 function kunci(aktif) {
   document.querySelectorAll('#sisi .sisi-isi button, #sisi select, #sisi input, #sisi textarea, ' +
                             '#bs .bs-isi button, #bs input, #nav-kanvas button, #cari-kanvas button, ' +
@@ -1514,10 +1450,9 @@ function kunci(aktif) {
   l.style.opacity = aktif ? .45 : '';
 }
 
-// Dipakai jalankan() dan tanyakan() agar hasil query dan chat digambar sama.
+// Menggambar hasil kotak query dan tanya-graf.
 function gambar(d) {
     if (!d.nodes?.length) {
-      // Graf lama dikosongkan agar tidak terbaca sebagai hasil.
       cy.elements().remove();
       legenda();
       bsGrafBerganti(d);
@@ -1532,18 +1467,15 @@ function gambar(d) {
     tandaiPeneliti();
     if (warnaAsjcAktif) setWarnaAsjc(true);
     cy.edges().toggleClass('tanpa-label', !labelRelasi);
-    // Graf berganti: hasil pencarian dan fokus lama tidak berlaku.
     cariTerakhir = ''; cariIdx = 0; cariDbTerakhir = '';
     document.getElementById('cari-hasil').className = '';
-    // Filter lama bisa menyaring nilai yang tidak ada di graf baru.
     FILTER.tipe.clear(); FILTER.kategori.clear(); FILTER.keluarga.clear(); FILTER.peran.clear();
     const fi = document.getElementById('filter-info');
     if (fi) fi.className = '';
     document.getElementById('cari-info').textContent = '';
     panelKosong();
 
-    // Hasil query tidak membawa koordinat Gephi, jadi tata letaknya dihitung.
-    // fitInti dipasang ke layout-nya karena fcose berjalan bertahap.
+    // fitInti dipasang ke layout karena fcose berjalan bertahap.
     posisiGephi = false;
     const lay = cy.layout(pilihTataLetak(d.nodes.length));
     lay.one('layoutstop', () => {
@@ -1553,7 +1485,6 @@ function gambar(d) {
     lay.run();
     legenda();
 
-    // Satu panggilan status saja, agar peringatan graf besar tidak tertimpa.
     bsGrafBerganti(d);
     const dasar = `${d.nodes.length} nodes · ${d.edges.length} relations`;
     const berat = d.nodes.length > AMBANG_BERAT;
@@ -1568,7 +1499,6 @@ function gambar(d) {
 async function jalankan() {
   const cypher = document.getElementById('q').value.trim();
   if (!cypher) return;
-  // Jawaban chat lama milik graf lama.
   document.getElementById('jawaban').className = '';
   const pv = VIEW.find(x => x.nama === document.getElementById('preset').value);
   BS.sumberBerikut = (pv && isiContoh(pv).cypher.trim() === cypher)
@@ -1578,7 +1508,6 @@ async function jalankan() {
   try {
     const r = await fetch('/api/query', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      // meminta format Cytoscape
       body: JSON.stringify({ cypher, format: 'cytoscape' })
     });
     const d = await r.json();
@@ -1602,18 +1531,15 @@ async function tanyakan() {
     });
     const d = await r.json();
     if (!r.ok) { status(pesanInggris(d.error) || 'failed', true); return; }
-    // Cypher ditaruh di kotak query agar bisa diperiksa dan dijalankan ulang.
     document.getElementById('q').value = d.cypher || '';
     segarkanGloss();
-    // Jawaban LLM diloloskan dulu oleh bsFormatJawaban, baru **tebal** dan butir
-    // diubah jadi tag. Teks LLM tidak pernah masuk sebagai HTML mentah.
+    // Teks LLM diloloskan dulu sebelum diformat.
     kotak.innerHTML = bsFormatJawaban(d.kalimat || STATUS_TANYA[d.status] || d.pesan || '', []);
     const sumber = document.createElement('div');
     sumber.className = 'sumber';
     sumber.textContent =
       (d.lewat_judul ? 'No topic by that name — searched publication titles instead. ' : '') +
       'The query is in the box below.';
-    // Jumlah percobaan hanya ditampilkan di tooltip.
     if (d.riwayat && d.riwayat.length > 1) sumber.title = `Generated in ${d.riwayat.length} attempts.`;
     kotak.appendChild(sumber);
     kotak.className = 'tampil';
@@ -1623,8 +1549,7 @@ async function tanyakan() {
   } finally { kunci(false); }
 }
 
-// Keadaan label disimpan di variabel: relasi hasil kueri baru tidak membawa
-// kelas, jadi setelan dipasang ulang setiap graf berganti.
+// Keadaan label relasi, dipasang ulang setiap graf berganti.
 let labelRelasi = true;
 function setLabelRelasi(nyala) {
   labelRelasi = nyala;
@@ -1633,7 +1558,7 @@ function setLabelRelasi(nyala) {
   t.classList.toggle('aktif', nyala);
   t.title = nyala ? 'Relation labels are on — click to hide' : 'Relation labels are off — click to show';
 }
-// Satu tombol saklar label relasi di kanvas.
+// Saklar label relasi
 document.getElementById('label-relasi').onclick = () => setLabelRelasi(!labelRelasi);
 
 let warnaAsjcAktif = false;
@@ -1686,25 +1611,25 @@ function _grupkanAsjc(nyala) {
   const nodes = cy.nodes();
   if (!nodes.length) return;
   if (nyala) {
-    // simpan posisi asli
+    // Simpan posisi asli
     nodes.forEach(n => {
       if (!n.data('_pos_asli')) {
         const p = n.position();
         n.data('_pos_asli', {x: p.x, y: p.y});
       }
     });
-    // kelompokkan per asjc_dominan
+    // Kelompokkan per asjc_dominan
     const grup = {};
     nodes.forEach(n => {
       const kat = n.data('asjc_dominan') || '_lain';
       (grup[kat] = grup[kat] || []).push(n);
     });
     const katList = Object.keys(grup).sort((a,b) => grup[b].length - grup[a].length);
-    // hitung bounding box graf asli
+    // Kotak pembatas graf
     const bb = cy.elements().boundingBox();
     const cx = (bb.x1 + bb.x2) / 2, cy_ = (bb.y1 + bb.y2) / 2;
     const radius = Math.max(bb.w, bb.h) * 0.45;
-    // susun kategori dalam lingkaran
+    // Pusat kategori pada lingkaran
     const sektorPos = {};
     katList.forEach((kat, i) => {
       const sudut = (2 * Math.PI * i) / katList.length - Math.PI / 2;
@@ -1713,7 +1638,7 @@ function _grupkanAsjc(nyala) {
         y: cy_ + radius * Math.sin(sudut)
       };
     });
-    // hitung centroid tiap grup (posisi asli)
+    // Centroid tiap kelompok
     const centroid = {};
     for (const kat of katList) {
       let sx = 0, sy = 0;
@@ -1723,7 +1648,7 @@ function _grupkanAsjc(nyala) {
       }
       centroid[kat] = {x: sx / grup[kat].length, y: sy / grup[kat].length};
     }
-    // pindahkan: sektor + offset dari centroid (dikecilkan)
+    // Pindahkan node ke sektornya
     const skala = 0.35;
     nodes.forEach(n => {
       const kat = n.data('asjc_dominan') || '_lain';
@@ -1736,7 +1661,7 @@ function _grupkanAsjc(nyala) {
       }}, {duration: 600, easing: 'ease-in-out-cubic'});
     });
   } else {
-    // kembalikan posisi asli
+    // Kembalikan posisi asli
     nodes.forEach(n => {
       const p = n.data('_pos_asli');
       if (p) n.animate({position: {x: p.x, y: p.y}},
@@ -1765,8 +1690,7 @@ function setWarnaAsjc(nyala) {
   _terapkanWarnaAsjc(nyala);
 }
 document.getElementById('warna-asjc').onclick = () => setWarnaAsjc(!warnaAsjcAktif);
-// Menata ulang graf besar lama dan tidak bisa dibatalkan, jadi dikonfirmasi
-// dulu: membuang koordinat Gephi dan ukurannya.
+// Konfirmasi sebelum menata ulang graf besar.
 function tataUlang() {
   const n = cy.nodes().length;
   if (!n) { status('No graph to lay out yet.', true); return; }
@@ -1781,8 +1705,7 @@ function tataUlang() {
 
   kunci(true);
   status(`Re-laying out ${n.toLocaleString('en')} nodes…`);
-  // Ditunda sekejap agar pesan sempat tergambar. setTimeout, bukan
-  // requestAnimationFrame, karena rAF berhenti saat tab di latar.
+  // setTimeout, bukan requestAnimationFrame (rAF berhenti di tab latar).
   setTimeout(() => {
     const l = cy.layout(pilihTataLetak(n));
     l.one('layoutstop', () => {
@@ -1799,7 +1722,6 @@ document.getElementById('cari-tombol').onclick = jalankanCari;
 document.getElementById('cari').addEventListener('keydown', e => {
   if (e.key === 'Enter') { e.preventDefault(); jalankanCari(); }
 });
-// Mengosongkan kotak cari membatalkan sorotan.
 document.getElementById('cari').addEventListener('input', e => {
   if (!e.target.value.trim()) {
     sorotKumpulan(null);
@@ -1809,7 +1731,7 @@ document.getElementById('cari').addEventListener('input', e => {
   }
 });
 
-// Zoom bertahap berpusat di tengah layar, bukan di tengah graf.
+// Zoom berpusat di tengah layar.
 function ubahZoom(faktor) {
   const w = cy.container();
   cy.zoom({ level: cy.zoom() * faktor,
@@ -1822,8 +1744,7 @@ document.getElementById('zoom-pas').onclick = () => {
   document.getElementById('cari-info').textContent = '';
 };
 
-// Penjelasan Cypher: kueri diurai program menjadi rantai yang mudah dibaca
-// (tanpa LLM).
+// Penjelasan Cypher: kueri diurai menjadi rantai pola (tanpa LLM).
 const POLA_UNSUR = /\(\s*\w*\s*:\s*(\w+)\s*(\{[^}]*\})?\s*\)|(<-|-)\s*\[\s*\w*\s*:\s*([A-Z_|]+)[^\]]*\]\s*(->|-)/g;
 const POLA_SARING = /(\w+)\s*:\s*'([^']*)'/g;
 
@@ -1837,7 +1758,6 @@ function jelaskanCypher(cypher) {
       const saring = [];
       POLA_SARING.lastIndex = 0;
       let f;
-      // `skema` tidak ditulis di rantai; sudah dijelaskan di catatan bawah.
       while ((f = POLA_SARING.exec(m[2] || '')) !== null) {
         if (f[1] !== 'skema') saring.push(`${f[1]} = ${f[2]}`);
       }
@@ -1880,12 +1800,11 @@ document.getElementById('q').addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') jalankan();
 });
 
-// Pustaka view tersimpan
+// Pustaka view
 let VIEW = [];
 fetch('/api/view').then(r => r.json()).then(v => {
   VIEW = v;
   const sel = document.getElementById('preset');
-  // Dikelompokkan dengan <optgroup>; server mengirimkannya terurut per kelompok.
   let grup = null, wadah = sel;
   v.forEach(x => {
     if (x.kelompok !== grup) {
@@ -1896,12 +1815,10 @@ fetch('/api/view').then(r => r.json()).then(v => {
     }
     const o = document.createElement('option');
     o.value = x.nama;
-    // parameter tidak ditempel di judul; sudah muncul di keterangan
     o.textContent = x.judul_en || x.judul;
     wadah.appendChild(o);
   });
-  // View awal: semua_internal (~200 node, ringan). Kotak query, pilihan view,
-  // dan keterangan dibiarkan kosong agar tampilan pertama bersih.
+  // View awal: semua_internal.
   if (window.cy && !_paramData) {
     const def = v.find(x => x.nama === 'semua_internal');
     if (def) {
@@ -1917,15 +1834,12 @@ fetch('/api/view').then(r => r.json()).then(v => {
     }
   }
 });
-// Angka ditulis apa adanya, teks diberi kutip: $min_bobot harus `2`, bukan
-// `'2'`.
+// Angka tanpa kutip, teks dengan kutip.
 function tulisNilai(x) {
   return typeof x === 'number' ? String(x) : `'${String(x).replace(/'/g, "\\'")}'`;
 }
 
-// Parameter diganti dengan nilai contohnya. Tebakan yang keliru gagal
-// diam-diam ($institusi = "Universitas Brawijaya" -> 0 baris; nodenya "UB").
-// \b di akhir pola mencegah $a ikut mengganti bagian dari $unit_a.
+// Parameter diganti nilai contoh. \b mencegah $a mengganti bagian dari $unit_a.
 function isiContoh(v) {
   let c = v.cypher, terisi = [];
   (v.params || []).forEach(p => {
@@ -1949,7 +1863,7 @@ document.getElementById('muat').onclick = () => {
   tampilkanKeterangan(v);
 };
 
-// Keterangan view tampil di panel saat view dipilih.
+// Keterangan view
 function tampilkanKeterangan(v) {
   const el = document.getElementById('keterangan');
   if (!v) { el.className = ''; return; }
@@ -1958,18 +1872,16 @@ function tampilkanKeterangan(v) {
     ? `<div class="par">Parameters: ${v.params.map(p =>
          `$${p} = ${tulisNilai((v.contoh || {})[p])}`).join(', ')}</div>`
     : '';
-  // Hanya keterangan Inggris yang ditampilkan.
   el.innerHTML = `<div class="ket-judul">${lolos(v.judul_en || v.judul)}</div>${par}` +
     `<div class="ket-isi">${lolos(v.keterangan_en || v.catatan || 'No description.')}</div>`;
 }
 
-// Brainstorm (panel kiri). Cakupan ditentukan pengguna. Mode:
-//   Mapping       -- graf yang sedang tampil, diringkas lewat /api/ringkas
-//   Compare       -- 2-3 peneliti, bukti dari /api/banding
-//   Publications  -- 2-3 publikasi, bukti dari /api/banding_publikasi
+// Brainstorm (panel kiri). Mode:
+//   Mapping       -- graf yang sedang tampil (/api/ringkas)
+//   Compare       -- 2-3 peneliti (/api/banding)
+//   Publications  -- 2-3 publikasi (/api/banding_publikasi)
 //   Organizations -- 2 unit/institusi
-// Semua bukti dihitung server; panel ini hanya menampilkannya.
-// Teks dari basis data selalu lewat lolos() karena judul bisa memuat < dan &.
+// Teks dari basis data selalu lewat lolos().
 const BS = {
   peneliti: [], byId: {}, byRid: {}, byNama: {},
   pilihan: [],              // local_id terpilih, maks 3
@@ -1996,7 +1908,7 @@ fetch('/api/peneliti').then(r => r.json()).then(daftar => {
     dl.appendChild(o);
   });
   tandaiPeneliti();
-  // Bangun daftar organisasi dari data peneliti yang sudah dimuat
+  // Daftar organisasi dari data peneliti
   const unitSet = new Map(), instSet = new Map();
   daftar.forEach(p => {
     if (p.unit && !unitSet.has(p.unit)) unitSet.set(p.unit, p.institusi || '');
@@ -2102,7 +2014,7 @@ function bsRenderPilihanPub() {
   if (typeof bsSegarkanTombolCari === 'function') bsSegarkanTombolCari();
 }
 
-// Pilihan yang tidak dipakai analisis terakhir dikosongkan agar tidak membingungkan.
+// Kosongkan pilihan yang tidak dipakai analisis terakhir.
 function bsKosongkanPeneliti() {
   if (!BS.pilihan.length) return;
   BS.pilihan = [];
@@ -2127,7 +2039,7 @@ function bsTambahOrg(item) {
   if (BS.pilihanOrg.length >= BS_MAKS_ORG) {
     bsPesan(`Maximum ${BS_MAKS_ORG} organizations — remove one first.`, true); return false;
   }
-  // Kedua organisasi harus setipe (unit dengan unit, institusi dengan institusi)
+  // Kedua organisasi harus setipe.
   if (BS.pilihanOrg.length === 1 && BS.pilihanOrg[0].mode !== item.mode) {
     bsPesan('Both organizations must be the same type (both units or both institutions).', true);
     return false;
@@ -2199,7 +2111,7 @@ function bsRenderPilihan() {
   bsRenderMode();
 }
 
-// Node peneliti ber-id @rid atau local_id (view skalar); keduanya dicoba.
+// Id node peneliti: @rid atau local_id.
 function bsCincin() {
   if (!window.cy) return;
   cy.nodes('.bs-dipilih').removeClass('bs-dipilih');
@@ -2219,7 +2131,6 @@ function bsCincin() {
 async function bsDariNode(n) {
   const d = n.data();
   if (d.tipe === 'Publikasi') {
-    // id node = @rid (atau dedup_key di view skalar) -> kunci lewat /api/node
     try {
       const r = await fetch('/api/node', { method: 'POST',
         headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ id: d.id }) });
@@ -2253,15 +2164,13 @@ function bsDariKetikan() {
   }
   if (!p) { bsPesan(`No internal researcher named “${kotak.value.trim()}”.`, true); return; }
   if (bsTambah(p)) {
-    // Dikosongkan dua kali: peramban mengisi ulang kotak dengan pilihan datalist
-    // sesudah keydown Enter.
+    // Dikosongkan dua kali: datalist mengisi ulang kotak setelah Enter.
     kotak.value = '';
     setTimeout(() => { kotak.value = ''; }, 0);
   }
 }
 
-// Tooltip node: label yang terpotong 46 huruf diambil utuh dari /api/node
-// setelah kursor diam 250 ms, lalu disimpan.
+// Tooltip node: label lengkap dari /api/node (setelah 250 ms).
 const TIP_CACHE = {};
 let tipTimer = null, tipNode = null;
 function pasangTooltip() {
@@ -2300,7 +2209,6 @@ function pasangTooltip() {
 }
 
 function pasangBrainstormGraf() {
-  // Klik kanan di kanvas tidak boleh memunculkan menu peramban.
   cy.container().addEventListener('contextmenu', e => e.preventDefault());
   cy.on('cxttap', 'node', e => bsDariNode(e.target));
   cy.on('tap', 'node', e => {
@@ -2308,7 +2216,6 @@ function pasangBrainstormGraf() {
   });
 }
 
-// Dipanggil gambar() setiap graf berganti: bukti lama milik graf lama.
 function bsGrafBerganti(d) {
   const baru = BS.sumberBerikut || { jenis: 'query', label: 'Cypher query' };
   BS.sumberBerikut = null;
@@ -2385,7 +2292,6 @@ async function bsBandingPub() {
     const d = await bsKirim('/api/banding_publikasi', { kunci: daftar });
     BS.sumberBerikut = { jenis: 'compare', label: 'publication comparison graph' };
     gambar(d.graf);
-    // rid dari server, agar cincin jingga muncul untuk pilihan dari cari/daftar.
     BS.pilihanPub.forEach(p => { if (d.rid && d.rid[p.kunci]) p.rid = d.rid[p.kunci]; });
     BS.mode = 'publikasi';
     bsPesan('');
@@ -2437,7 +2343,7 @@ function bsRenderBandingOrg(b) {
     `<span class="bs-lencana ${b.tingkat}">${BS_TINGKAT[b.tingkat] || lolos(b.tingkat)}</span>` +
     `<div class="bs-alasan">${lolos(b.alasan)}</div>`;
 
-  // organisasi A & B profil
+  // Profil organisasi
   [['org_a', 'topik_khas_a'], ['org_b', 'topik_khas_b']].forEach(([ok, tk]) => {
     const org = b[ok];
     h += `<h4>${lolos(org.kode)} (${org.peneliti} researchers)</h4>`;
@@ -2457,7 +2363,7 @@ function bsRenderBandingOrg(b) {
     }
   });
 
-  // kolaborasi lintas organisasi
+  // Kolaborasi lintas organisasi
   if ((b.kolaborasi || []).length) {
     h += `<h4>Cross-organization collaborations (${b.kolaborasi.length})</h4>` +
       `<ul class="bs-daftar">` + b.kolaborasi.map(k =>
@@ -2466,7 +2372,7 @@ function bsRenderBandingOrg(b) {
         ` <span class="kecil">${k.jumlah} joint pub(s)</span></li>`).join('') + `</ul>`;
   }
 
-  // topik bersama
+  // Topik bersama
   if ((b.topik_bersama || []).length) {
     h += `<h4>Shared topics (${b.topik_bersama.length})</h4><ul class="bs-daftar">` +
       b.topik_bersama.map(t =>
@@ -2475,7 +2381,7 @@ function bsRenderBandingOrg(b) {
         `${lolos(b.org_b.kode)}: ${t.bobot_b} (${t.peneliti_b} researchers)</span></li>`).join('') + `</ul>`;
   }
 
-  // publikasi mirip
+  // Publikasi mirip
   h += `<h4>Most similar publications</h4>`;
   if (!b.vektor || !b.vektor.tersedia) {
     h += `<div class="bs-catatan">Abstract vectors are missing on the server (data/vektor_abstrak.npy).</div>`;
@@ -2492,7 +2398,7 @@ function bsRenderBandingOrg(b) {
         ` <small>${lolos(m.b.tahun || '')}</small></li>`).join('') + `</ul>`;
   }
 
-  // publikasi bersama
+  // Publikasi bersama
   if ((b.publikasi_bersama || []).length) {
     h += `<h4>Joint publications (${b.publikasi_bersama.length})</h4><ul class="bs-daftar">` +
       b.publikasi_bersama.map(p =>
@@ -2500,7 +2406,7 @@ function bsRenderBandingOrg(b) {
         ` <small>${lolos(p.tahun || '')}</small></li>`).join('') + `</ul>`;
   }
 
-  // saran pasangan
+  // Saran pasangan
   if ((b.saran || []).length) {
     h += `<h4>Suggested pairs (${b.saran.length})</h4><ul class="bs-daftar">` +
       b.saran.map(s =>
@@ -2537,7 +2443,6 @@ function bsRenderBandingPub(b) {
     const internal = p.penulis.filter(x => x.internal);
     const lain = p.jumlah_penulis - internal.length;
     const a = abs[p.kunci] || '';
-    // Abstrak di bukti dipotong 800 huruf (sama dengan yang dibaca AI).
     const bukaAbstrak = a ? `<details class="bs-abstrak"><summary>Abstract</summary><div>${lolos(a)}` +
       (a.length >= 800 ? `… <span class="bs-tautan" data-kunci="${lolos(p.kunci)}">full abstract</span>` : '') +
       `</div></details>` : '';
@@ -2595,8 +2500,7 @@ async function bsRingkas() {
   }
 }
 
-// "Direct evidence", bukan "Direct": tingkat ini juga diberikan pada pasangan
-// yang belum pernah menulis bersama tetapi berbagi topik.
+// Tingkat bukti
 const BS_TINGKAT = { direct: 'Direct evidence', bridge: 'Via a bridge', exploratory: 'Exploratory' };
 
 function bsNama(id, bukti) {
@@ -2632,7 +2536,7 @@ function bsRenderBanding(b) {
     `<span class="bs-lencana ${b.tingkat}">${BS_TINGKAT[b.tingkat] || lolos(b.tingkat)}</span>` +
     `<div class="bs-alasan">${lolos(b.alasan)}</div>`;
 
-  // tiap pasangan
+  // Tiap pasangan
   h += (b.pasangan || []).map(s => {
     let t = `<div class="bs-pasang"><div style="font-size:11.5px">` +
       `<b>${lolos(bsNama(s.a, b))}</b> × <b>${lolos(bsNama(s.b, b))}</b> ` +
@@ -2653,7 +2557,7 @@ function bsRenderBanding(b) {
     return t + `</div>`;
   }).join('');
 
-  // publikasi mirip
+  // Publikasi mirip
   h += `<h4>Most similar publications</h4>`;
   if (!b.vektor || !b.vektor.tersedia) {
     h += `<div class="bs-catatan">Abstract vectors are missing on the server ` +
@@ -2726,8 +2630,7 @@ function bsRenderRingkas(r) {
   el._saran = r.saran_perbandingan || [];
 }
 
-// Klik di panel bukti: judul -> detail; nama peneliti -> ditambahkan;
-// saran -> mengganti pilihan.
+// Klik di panel bukti
 document.getElementById('bs-bukti').addEventListener('click', e => {
   const t = e.target.closest('[data-kunci],[data-tambah],[data-saran]');
   if (!t) return;
@@ -2745,15 +2648,12 @@ document.getElementById('bs-bukti').addEventListener('click', e => {
   }
 });
 
-// Detail publikasi dari Brainstorm, lewat /api/node dengan dedup_key.
+// Detail publikasi dari Brainstorm
 function bsDetailKunci(kunci) {
   return tampilkanDetail(kunci, nodeDiGraf(kunci));
 }
 
-// Percakapan Brainstorm.
-// Sesi terikat pada bukti yang tampil: bukti atau cakupan berubah = sesi baru.
-// Riwayat hanya di memori server. Jawaban AI diloloskan dulu, baru kode
-// [P1]/[T1]/[R1] diubah jadi penanda.
+// Percakapan Brainstorm. Sesi baru setiap bukti atau cakupan berubah.
 BS.bukti = null; BS.sid = null; BS.berpikir = false; BS.giliran = 0;
 
 const BS_PEMICU = {
@@ -2810,20 +2710,16 @@ function bsGulirObrolan() {
   panel.scrollTop = panel.scrollHeight;
 }
 
-// Markdown sederhana dari LLM: **tebal**, *miring*, `kode`, butir "- ",
-// daftar bernomor "1. ", butir bertingkat, dan baris tebal sebagai judul bagian.
-// Teks diloloskan dulu; hanya pola yang dikenal yang menjadi tag.
+// Markdown sederhana dari LLM. Teks diloloskan dulu; hanya pola yang dikenal menjadi tag.
 function bsFormatJawaban(teks, rujukan) {
   const peta = {};
   (rujukan || []).forEach(r => peta[r.kode] = r);
-  // Kurung siku tidak dicetak; [P1] sudah berupa chip.
   const kode = s2 => s2.replace(/\[([^\[\]]{1,40})\]/g, (utuh, isi) => {
     if (!/\b[PRT]\d{1,2}\b/.test(isi)) return utuh;
     return isi.replace(/\b([PRT])(\d{1,2})\b/g, (k) => {
       const r = peta[k];
       if (!r) return `<span class="bs-kode asing" title="Not in the evidence">${k}</span>`;
       const judul = r.judul ? `${r.judul} (${r.tahun || ''})` : (r.nama || '');
-      // Publikasi dibuka lewat dedup_key; peneliti dan topik lewat id-nya.
       const kelas = r.jenis === 'publikasi' ? 'bs-kode pub'
                   : (r.id ? 'bs-kode tautan' : 'bs-kode');
       const data = r.kunci ? ` data-kunci="${lolos(r.kunci)}"`
@@ -2864,7 +2760,6 @@ function bsFormatJawaban(teks, rujukan) {
       return;
     }
     tutupSemua();
-    // Baris yang seluruhnya tebal = judul bagian ("Methodology", "Risks").
     keluar.push(judul ? `<h5 class="bs-judul">${inline(judul[1])}</h5>`
                       : `<p>${inline(baris.trim())}</p>`);
   });
@@ -2872,8 +2767,7 @@ function bsFormatJawaban(teks, rujukan) {
   return keluar.join('');
 }
 
-// Baris di bawah jawaban: giliran ke berapa dan berapa abstrak dibaca.
-// Rincian teknis (token, detik) ada di tooltip.
+// Baris keterangan di bawah jawaban
 function bsMeta(d) {
   const n = (BS.bukti && BS.bukti.data && BS.bukti.data.abstrak || []).length;
   const baca = d.abstrak_huruf && n ? `read ${n} abstract${n > 1 ? 's' : ''}` : 'without abstracts';
@@ -2930,7 +2824,7 @@ async function bsKirimPesan(teksPaksa) {
   }
 }
 
-// Klik kode publikasi di jawaban -> detail + abstrak di panel kanan.
+// Klik kode rujukan
 document.getElementById('bs-obrolan').addEventListener('click', e => {
   const k = e.target.closest('.bs-kode.pub,.bs-kode.tautan');
   if (!k) return;
@@ -2960,10 +2854,8 @@ document.getElementById('bs-org').addEventListener('keydown', e => {
   if (e.key === 'Enter') { e.preventDefault(); bsDariKetikanOrg(); }
 });
 document.getElementById('bs-bersih-o').onclick = () => { bsKosongkanOrg(); bsPesan(''); };
-// Reset: kembali ke keadaan awal tanpa memuat ulang halaman. Graf tidak
-// disentuh.
+// Reset panel Brainstorm
 document.getElementById('bs-reset').onclick = () => {
-  // Konfirmasi juga saat ada hasil Compare, karena hasilnya mahal dihitung.
   const adaIsi = BS.giliran > 0 || BS.bukti || BS.pilihan.length || BS.pilihanPub.length || BS.pilihanOrg.length;
   if (adaIsi && !confirm('Clear the current selection, evidence and conversation?')) return;
   bsKosongkanPeneliti(); bsKosongkanPub(); bsKosongkanOrg();
@@ -2977,7 +2869,7 @@ document.getElementById('bs-reset').onclick = () => {
 document.getElementById('bs-bersih-r').onclick = () => { bsKosongkanPeneliti(); bsPesan(''); };
 document.getElementById('bs-bersih-p').onclick = () => { bsKosongkanPub(); bsPesan(''); };
 document.getElementById('bs-ringkas').onclick = bsRingkas;
-// Kartu bantuan: cara memilih, mode, jalan pintas, dan skema graf.
+// Kartu bantuan
 function bukaBantuan(buka) {
   document.getElementById('bantuan').hidden = !buka;
 }

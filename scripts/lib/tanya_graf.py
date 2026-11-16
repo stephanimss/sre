@@ -1,40 +1,30 @@
-"""lib/tanya_graf.py — Menjalankan Cypher yang DITULIS LLM, dengan tiga penjaga.
+"""lib/tanya_graf.py — Menjalankan Cypher dari model bahasa dengan tiga penjaga.
 
-Endpoint yang dipakai /api/v1/query/ (baca saja), bukan /command/ seperti
-lib/arcadedb.py. ArcadeDB sendiri menolak CREATE, SET, dan DELETE di sana
-(QueryNotIdempotentException), jadi penjagaannya tidak bisa diakali.
+Kueri dijalankan lewat endpoint baca-saja ArcadeDB.
 
-TIGA PENJAGA
-  1. nama asing -- bahaya utama. `:Researcher`, `COLLABORATES_WITH`, atau
-     `n.name` tidak melempar galat, hanya 0 baris. Ontologinya berbahasa
-     Indonesia, sedangkan model terbiasa dengan nama Inggris. Kueri ditolak
-     sebelum menyentuh basis data, disertai nama terdekat.
-  2. terpotong -- hasil dipangkas di 20.000 baris; terdeteksi dari bendera
-     `truncated`.
-  3. kosong -- 0 baris dilaporkan sebagai status tersendiri. Setelah penjaga 1
-     lolos, kosong berarti datanya memang tidak ada.
+  1. nama asing  label, relasi, atau properti di luar skema; ditolak sebelum
+                 dijalankan, disertai nama terdekat
+  2. terpotong   hasil mencapai 20.000 baris
+  3. kosong      kueri sah tanpa hasil
 
-Yang tidak bisa dijaga: Cypher sah yang menjawab pertanyaan lain (mis.
-SEBIDANG dipakai untuk "pernah menulis bersama"). Karena itu Cypher selalu
-ditampilkan ke pengguna.
+Cypher sah yang menjawab pertanyaan lain tidak dapat dideteksi, sehingga
+kueri selalu ditampilkan ke pengguna.
 """
 import difflib
 import re
 
 import requests
 
-# Endpoint baca-saja (alamat dari .env, lihat lib/arcadedb.py).
-# Jangan diganti ke /command/.
+# Endpoint baca-saja. Jangan diganti ke /command/.
 from lib.arcadedb import ARCADEDB_AUTH as AUTH, URL_BACA  # noqa: E402
 
-BATAS_ARCADEDB = 20000      # tempat ArcadeDB memotong, terukur
+BATAS_ARCADEDB = 20000      # batas potong ArcadeDB
 
-# Nama fungsi dan namespace yang bukan properti (untuk penjaga 1).
+# Nama fungsi dan namespace yang bukan properti.
 BUKAN_PROPERTI = {"apoc", "algo", "db", "dbms", "math", "date", "datetime"}
 
 
-# Hanya untuk pesan yang jelas. Penjagaan sebenarnya ada di endpoint
-# baca-saja ArcadeDB.
+# Pola perintah tulis (hanya untuk pesan; penolakan dilakukan ArcadeDB).
 POLA_TULIS = re.compile(
     r"\b(CREATE|MERGE|DELETE|DETACH|REMOVE|DROP|TRUNCATE)\b|"
     r"\bSET\s+\w+\s*[.=]", re.I)
@@ -63,9 +53,7 @@ def skema(segarkan=False):
     relasi = {r["t"]: r["n"] for r in _kirim(
         "MATCH ()-[r]->() RETURN type(r) AS t, count(r) AS n ORDER BY n DESC")["result"]}
 
-    # Daftar properti ini jalur cepat, bukan daftar lengkap: skemanya hanya
-    # memuat properti terindeks, dan sampel meleset untuk properti jarang.
-    # Sisanya diperiksa lewat _properti_ada().
+    # Daftar cepat; properti lain diperiksa lewat _properti_ada().
     properti = {}
     for lab in label:
         p_set = set()
@@ -74,7 +62,6 @@ def skema(segarkan=False):
             if isinstance(isi, dict):
                 p_set |= {k for k in isi if not k.startswith("@")}
         properti[lab] = sorted(p_set)
-    # Properti relasi ikut didaftar (mis. `r.jumlah`).
     for jenis in relasi:
         p_set = set()
         for b in _kirim(f"MATCH ()-[r:{jenis}]->() RETURN r LIMIT 60")["result"]:
@@ -97,29 +84,22 @@ def _kirim(cypher, timeout=120):
 
 # Penjaga 1: nama asing
 
-# Nama sesudah ':' di dalam [...] adalah jenis relasi; di luar adalah label.
-# Teks dalam kutip dan isi {...} dibuang dulu, agar `{is_internal: true}`
-# tidak membuat `true` dikira label.
+# Nama sesudah ':' di dalam [...] adalah relasi; di luar adalah label.
+# Teks dalam kutip dan isi {...} dibuang dulu.
 POLA_RELASI = re.compile(r"-\s*\[[^\]]*?:\s*([A-Za-z_][A-Za-z0-9_]*)")
 POLA_NAMA = re.compile(r":\s*([A-Za-z_][A-Za-z0-9_]*)")
 POLA_KUTIP = re.compile(r"'[^']*'|\"[^\"]*\"")
 POLA_KURUNG = re.compile(r"\{[^{}]*\}")
-# Kunci di dalam {...} juga divalidasi: {name:'Devi'} sama salahnya dengan n.name.
 POLA_KUNCI_MAP = re.compile(r"([A-Za-z_]\w*)\s*:")
-# Kata kunci Cypher yang sah muncul sesudah ':' tapi bukan nama apa pun.
 LITERAL = {"true", "false", "null"}
-# `x.y`, bukan `f(...)` atau desimal. Awalan ditangkap untuk melewati namespace fungsi.
 POLA_PROPERTI = re.compile(r"\b([A-Za-z_]\w*)\.([A-Za-z_]\w*)\b(?!\s*\()")
 
 
 def periksa_nama(cypher, sk=None):
     """Kembalikan (berat, ringan).
 
-    BERAT  -- label atau jenis relasi asing. Daftarnya pasti (7 label,
-              11 relasi), jadi kueri ditolak.
-    RINGAN -- properti asing. Daftar properti tidak mungkin lengkap di basis
-              data schema-flexible, jadi kueri tetap dijalankan; catatan ini
-              hanya dipakai sebagai dugaan bila hasilnya kosong.
+    berat  -- label atau relasi asing; kueri ditolak.
+    ringan -- properti asing; kueri tetap dijalankan.
     """
     sk = sk or skema()
     label, relasi = set(sk["label"]), set(sk["relasi"])
@@ -165,11 +145,7 @@ _cache_properti = {}
 
 
 def _properti_ada(nama):
-    """Adakah properti ini di NODE atau RELASI mana pun? Ditanyakan ke DB.
-
-    Hanya untuk nama di luar daftar cepat, agar properti jarang seperti
-    `ambigu` tidak salah dituduh.
-    """
+    """Apakah properti ini ada di node atau relasi mana pun."""
     if nama in _cache_properti:
         return _cache_properti[nama]
     ada = False
@@ -192,17 +168,13 @@ def _dekat(nama, kandidat):
 
 
 # Tanya
-# Relasi disimpan satu arah. Panah terbalik tidak menimbulkan galat, hanya 0
-# baris: (Peneliti)-[:MEMILIKI]->(UnitKerja) kosong, tanpa arah 10 baris.
+# Relasi disimpan satu arah; panah terbalik menghasilkan 0 baris tanpa galat.
 def _tanpa_arah(cypher):
     cypher = re.sub(r"<-\s*\[", "-[", cypher)
     return re.sub(r"\]\s*->", "]-", cypher)
 
 
-# LLM kadang menulis kode unit atau institusi dengan huruf yang salah
-# (`{kode:'pti'}` -> 0 baris). Nilainya sedikit dan tetap, jadi dibakukan
-# program sebelum dijalankan. `toLower(u.kode) = 'pti'` tidak tersentuh karena
-# polanya menuntut `kode` langsung diikuti `:` atau `=`.
+# Kode unit dan institusi dibakukan sebelum kueri dijalankan.
 POLA_KODE_UNIT = re.compile(r"(\bkode\s*(?::|=)\s*)(['\"])([^'\"]{1,20})\2")
 POLA_NAMA_INSTITUSI = re.compile(r"(:Institusi\s*\{\s*nama\s*:\s*)(['\"])([^'\"]{1,40})\2")
 _NILAI_BAKU = None
@@ -216,7 +188,7 @@ def _nilai_baku():
             nama = [b["k"] for b in _kirim("MATCH (i:Institusi) RETURN i.nama AS k").get("result", [])]
             _NILAI_BAKU = ({k.lower(): k for k in kode if k}, {n.lower(): n for n in nama if n})
         except Exception:
-            return ({}, {})                  # basis data mati: jangan dicache
+            return ({}, {})                  # basis data mati: tidak dicache
     return _NILAI_BAKU
 
 
@@ -234,14 +206,9 @@ def betulkan_huruf(cypher):
 
 
 def tanya(cypher, timeout=120, sk=None):
-    """Jalankan Cypher dari LLM. Selalu mengembalikan dict, tidak melempar.
+    """Jalankan Cypher dari model bahasa. Selalu mengembalikan dict.
 
-    status:
-      nama_asing -- ditolak penjaga 1, TIDAK menyentuh basis data
-      ditolak_db -- ArcadeDB menolak (mis. perintah menulis, sintaks salah)
-      terpotong  -- jalan, tapi hasilnya dipangkas di 20.000 baris
-      kosong     -- jalan, sah, memang tidak ada datanya
-      ok         -- jalan, ada hasilnya
+    status: nama_asing, ditolak_db, terpotong, kosong, ok.
     """
     cypher = (cypher or "").strip().rstrip(";")
     if not cypher:

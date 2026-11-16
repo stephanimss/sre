@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
-"""uji_paket_ab.py — Uji endpoint pencarian dan Compare publikasi, tanpa LLM.
+"""uji_paket_ab.py — Uji endpoint pencarian, detail node, dan Compare publikasi.
 
-    /api/cari                 cari judul publikasi & nama peneliti di basis data
-    /api/publikasi_peneliti   semua publikasi satu peneliti ("Show all")
-    /api/node                 detail node, termasuk rid + kunci "Latest publications"
-    /api/banding_publikasi    Compare 2-3 publikasi
+Server harus sudah berjalan.
 
-Server harus sudah jalan. Pemakaian:
-    .venv/bin/python scripts/uji_paket_ab.py
-    .venv/bin/python scripts/uji_paket_ab.py --port 8001
+Pemakaian:
+    .venv/bin/python scripts/uji_paket_ab.py --port 8000
 """
 import argparse
 import sys

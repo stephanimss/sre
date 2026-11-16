@@ -1,17 +1,12 @@
 #!/usr/bin/env python3
-"""server.py — Server lokal untuk sre.html: menjalankan Cypher dan
-mengembalikan graf bergaya sama dengan ekspor, plus API chat dan Brainstorm.
+"""server.py — Server HTTP untuk sre.html.
 
-Kenapa perlu server:
-- Halaman `file://` tidak boleh mengambil berkas lokal.
-- ArcadeDB tidak mengirim header CORS, jadi server ini meneruskan
-  permintaan ke port 2480 dari asal yang sama.
-- ArcadeDB Studio hanya bisa menata gaya per tipe node, tidak per nilai
-  properti (misalnya kategori ASJC). Server ini memakai kamus gaya
-  ekspor_visual.py.
+Menyajikan halaman, menjalankan kueri ke ArcadeDB (endpoint baca-saja), dan
+menyediakan API tanya-graf, perbandingan, dan Brainstorm. Konfigurasi dibaca
+dari .env.
 
-Jalankan:
-    cd visual && ../.venv/bin/python server.py    # http://localhost:8000
+Pemakaian:
+    cd visual && ../.venv/bin/python server.py
 """
 import json
 import os
@@ -38,22 +33,16 @@ from banding_organisasi import banding_organisasi
 from ringkas_mapping import ringkas_mapping
 from brainstorm import balas as brainstorm_balas, buat_sesi as brainstorm_sesi
 
-# Batas ukuran graf yang boleh dikirim halaman untuk diringkas Brainstorm.
+# Batas ukuran graf untuk ringkasan Brainstorm.
 MAKS_NODE_RINGKAS = 20000
 MAKS_RELASI_RINGKAS = 100000
 MAKS_TOPIK_GRAF_BANDING = 8
 MAKS_HASIL_CARI = 50          # judul publikasi per pencarian
 MAKS_PENULIS_GRAF = 12        # penulis per publikasi di graf Compare publications
 
-# Pembentuk generik ada di ekspor_visual agar kotak query dan ekspor sama.
 bentuk_graf = bentuk_dari_hasil
 
-# Sebagian view mengembalikan nilai skalar (p.nama AS peneliti, ...), bukan
-# objek node. Hasil seperti itu dikenali dari nama kolomnya, lalu diserahkan
-# ke pembangun yang sama dengan ekspor.
-# Urutan penting: pola paling khas lebih dulu. author_network dan
-# kolaborasi_2 sama-sama berkolom a_id/b_id; bila urutannya terbalik,
-# author_network kehilangan warna kategorinya.
+# Pola kolom view skalar -> pembangun graf. Pola paling khas lebih dulu.
 POLA_SKALAR = [
     ({"a_id", "b_id", "a_ambigu", "b_ambigu"},     bangun_author_network),
     ({"pid", "peneliti", "pubid", "judul", "tid"}, bangun_individu),
@@ -72,20 +61,15 @@ def bentuk_dari_skalar(rows):
             return fungsi(rows)
     return None
 
-# SRE_PORT: menjalankan salinan uji (mis. 8001) di samping server utama.
-# SRE_HOST: 127.0.0.1 (bawaan, hanya laptop ini) atau 0.0.0.0 untuk hosting.
+# SRE_HOST, SRE_PORT: alamat dan port server (lihat .env.example).
 PORT = int(os.environ.get("SRE_PORT") or "8000")
 HOST_SERVER = os.environ.get("SRE_HOST") or "127.0.0.1"
-# Label node lebih panjang dari ini dipotong agar tidak saling menimpa.
+# Panjang maksimum label node.
 MAKS_LABEL = 46
 
 
 def lengkapi_kategori(nodes):
-    """Catat kategori ASJC pada node Topik untuk panel detail, bukan untuk warna.
-
-    Skornya ikut ditampilkan karena pemetaan topik -> kategori rata-rata hanya
-    berskor ~0,46 dan tidak boleh terbaca sebagai kepastian.
-    """
+    """Catat kategori ASJC dan skornya pada node Topik (untuk panel detail)."""
     topik = [n for n in nodes.values() if n["tipe"] == "Topik"]
     if not topik:
         return
@@ -114,14 +98,10 @@ def lengkapi_kategori(nodes):
 
 
 def lengkapi_asjc_dominan(nodes):
-    """Tambahkan asjc_dominan dan warna_asjc pada semua node yang bisa.
+    """Tambahkan asjc_dominan dan warna_asjc pada setiap node yang memungkinkan.
 
-    Publikasi -[:MASUK_KATEGORI]-> Kategori dan Peneliti -[:MENULIS]-> Publikasi
-    dibaca dalam dua kueri (masing-masing di bawah 20.000 baris), lalu digabung
-    di Python. Topik dan Kategori cukup membaca properti yang sudah ada.
-
-    Id node bisa @rid ("#8:35") atau kunci bisnis ("PRSDI016"); keduanya
-    diindeks. SQL dipakai karena openCypher ArcadeDB tidak mendukung `p.@rid`.
+    Id node bisa @rid atau kunci bisnis. SQL dipakai karena openCypher
+    ArcadeDB tidak mendukung `p.@rid`.
     """
     from collections import Counter
 
@@ -252,10 +232,6 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == "/api/view":
-            # `catatan` memuat alasan, angka, dan peringatan tiap view.
-            # `contoh` memberi nilai parameter yang sah; tebakan keliru gagal
-            # diam-diam (0 baris).
-            # Kolom *_en untuk tampilan Inggris; kolom asli tetap dikirim.
             daftar = [{"nama": k, "judul": v["judul"], "params": v["params"],
                        "contoh": {p: CONTOH_PARAM.get(p) for p in v["params"]},
                        "catatan": v.get("catatan", ""),
@@ -269,19 +245,13 @@ class Handler(SimpleHTTPRequestHandler):
         if self.path == "/api/peneliti":
             return self._daftar_peneliti()
         if self.path == "/api/tampilan":
-            # Nama tampil Inggris; kuncinya tetap nama di basis data.
             return self._kirim(200, NAMA_TAMPIL)
         if self.path == "/api/asjc":
             return self._peta_asjc()
         return super().do_GET()
 
     def _bukti_relasi(self, muatan):
-        """Kenapa dua node tersambung: publikasi yang melahirkan garisnya.
-
-        KOLABORASI, SEBIDANG, dan BIDANG_KEAHLIAN adalah relasi turunan, jadi
-        satu-satunya cara memeriksanya adalah menelusuri balik ke MENULIS dan
-        MEMBAHAS.
-        """
+        """Bukti sebuah garis: publikasi yang membentuk relasi turunannya."""
         jenis = muatan.get("jenis") or ""
         a, b = muatan.get("source"), muatan.get("target")
         if not a or not b:
@@ -294,10 +264,7 @@ class Handler(SimpleHTTPRequestHandler):
                 raise RuntimeError(r.text[:200])
             return r.json().get("result", [])
 
-        # Id node datang dalam dua bentuk:
-        #   RID ArcadeDB ("#8:92")       -- view `RETURN p, r, t`
-        #   kunci bisnis ("PTIUB002")    -- view yang mengembalikan skalar
-        # Keduanya harus dikenali; kalau tidak, bukti garis kosong tanpa galat.
+        # Id node bisa berupa RID ("#8:92") atau kunci bisnis ("PTIUB002").
         def sisi(nid):
             if str(nid).startswith("#"):
                 h = q(f"MATCH (n) WHERE id(n) = '{kutip(nid)}' RETURN n LIMIT 1")
@@ -327,7 +294,6 @@ class Handler(SimpleHTTPRequestHandler):
 
         try:
             sa, sb = sisi(a), sisi(b)
-            # Mulai sini pakai kunci bisnis (local_id/topik_id), bukan RID.
             a, b = sa.get("kunci") or a, sb.get("kunci") or b
             bukti, catatan = [], ""
 
@@ -356,9 +322,7 @@ class Handler(SimpleHTTPRequestHandler):
                           f"bb.jumlah AS jumlah_b ORDER BY ba.jumlah DESC")[:60]
 
             elif jenis in ("MEMBAHAS", "TERMASUK_DALAM", "MASUK_KATEGORI"):
-                # Relasi turunan (BERTopic, pemetaan ASJC). Buktinya adalah
-                # skor kecocokan, yang wajib ditampilkan karena rata-ratanya
-                # rendah (~0,46).
+                # Relasi hasil BERTopic/pemetaan ASJC: buktinya berupa skor.
                 pass
 
             elif jenis == "BIDANG_KEAHLIAN":
@@ -369,8 +333,6 @@ class Handler(SimpleHTTPRequestHandler):
                           f"pub.tahun AS tahun, pub.doi AS doi "
                           f"ORDER BY pub.tahun DESC")[:60]
 
-            # Sifat relasi selalu diambil; untuk MEMBAHAS/TERMASUK_DALAM
-            # hanya itu buktinya (skor + sumber).
             sifat = {}
             if jenis:
                 h = q(f"MATCH (x)-[r:{jenis}]->(y) "
@@ -382,7 +344,7 @@ class Handler(SimpleHTTPRequestHandler):
                 if h:
                     sifat = {k: v for k, v in h[0].items() if not k.startswith("@")}
 
-            # Hanya relasi ini yang berasal dari data sumber; sisanya dihitung.
+            # Relasi yang berasal dari data sumber.
             ASLI = {"AFILIASI", "MEMILIKI", "BERAFILIASI", "MENULIS", "TERBIT_DI"}
             return self._kirim(200, {"jenis": jenis, "dari": sa, "ke": sb,
                                      "catatan": catatan, "bukti": bukti,
@@ -393,12 +355,7 @@ class Handler(SimpleHTTPRequestHandler):
             return self._kirim(500, {"error": str(e)[:300]})
 
     def _detail_node(self, muatan):
-        """Isi lengkap satu node -- termasuk ABSTRAK untuk Publikasi.
-
-        Abstrak sengaja TIDAK ikut di JSON graf: 6.607 abstrak menambah sekitar
-        6 MB pada tiap muat halaman, padahal yang dibaca satu-dua saja. Diambil
-        sesuai permintaan, seperti bukti relasi.
-        """
+        """Detail satu node, termasuk abstrak untuk Publikasi."""
         nid = muatan.get("id")
         if not nid:
             return self._kirim(400, {"error": "id required"})
@@ -474,7 +431,6 @@ class Handler(SimpleHTTPRequestHandler):
                           f"-[r:KOLABORASI]-(p:Peneliti) "
                           f"RETURN p.nama AS n, r.jumlah AS j, p.is_internal AS i "
                           f"ORDER BY r.jumlah DESC LIMIT 8")]},
-                    # `kunci`: judul bisa diklik ke detail, "Show all" memuat semua.
                     {"judul": "Latest publications", "isi": [
                         {"nama": f"[{x['t']}] {x['j']}", "kunci": x["k"],
                          "judul_pub": x["j"], "tahun": x["t"]} for x in
@@ -507,13 +463,7 @@ class Handler(SimpleHTTPRequestHandler):
             return self._kirim(500, {"error": str(e)[:300]})
 
     def _tanya(self):
-        """Pertanyaan bahasa Indonesia -> Cypher (LLM) -> penjaga -> graf.
-
-        Cypher ikut dikirim ke halaman dan ditaruh di kotak query, supaya
-        pengguna bisa memeriksa dan menjalankannya ulang. Kesalahan yang tak
-        tertangkap penjaga -- Cypher sah yang menjawab pertanyaan lain --
-        hanya bisa ketahuan kalau query-nya terlihat.
-        """
+        """Tanya-graf: pertanyaan -> Cypher -> penjaga -> graf."""
         n = int(self.headers.get("Content-Length", 0))
         try:
             p = str(json.loads(self.rfile.read(n))["pertanyaan"]).strip()
@@ -528,7 +478,6 @@ class Handler(SimpleHTTPRequestHandler):
         except LLMBelumDisetel as e:
             return self._kirim(503, {"error": str(e)})
         except Exception as e:
-            # termasuk kuota Groq per menit habis (429) -- pesannya dari llm.py
             return self._kirim(502, {"error": str(e)})
         out = graf_cytoscape(h["baris"]) or {"nodes": [], "edges": []}
         out.update({"pertanyaan": p, "cypher": h["cypher"],
@@ -545,11 +494,7 @@ class Handler(SimpleHTTPRequestHandler):
         return json.loads(self.rfile.read(n) or b"{}")
 
     def _peta_asjc(self):
-        """Peta node-ID -> {asjc_dominan, warna_asjc} untuk SEMUA node.
-
-        Dipanggil halaman saat toggle ASJC diaktifkan pada data statis
-        (data_cy.json) yang tidak membawa properti asjc_dominan.
-        """
+        """Peta id node -> {asjc_dominan, warna_asjc} untuk semua node."""
         from collections import Counter
         sql_url = URL_BACA
         peta = {}
@@ -657,13 +602,7 @@ RETURN p.local_id AS id, elementId(p) AS rid, p.nama AS nama,
         return self._kirim(200, rows)
 
     def _banding(self):
-        """Mode Compare: bukti kolaborasi 2-3 peneliti + graf perbandingannya.
-
-        Graf sengaja RAMPING: peneliti terpilih, topik BERSAMA teratas, relasi
-        SEBIDANG/KOLABORASI di antara mereka, dan publikasi di pasangan
-        "publikasi mirip". Perantara tidak digambar -- mereka di panel bukti;
-        di kanvas mereka hanya node melayang tanpa garis.
-        """
+        """Compare peneliti: bukti dan graf perbandingan 2-3 peneliti."""
         try:
             ids = self._baca_json().get("ids")
             if not isinstance(ids, list) or not all(isinstance(i, str) for i in ids):
@@ -672,7 +611,7 @@ RETURN p.local_id AS id, elementId(p) AS rid, p.nama AS nama,
             return self._kirim(400, {"error": f"payload tidak valid: {e}"})
         try:
             h = banding(ids)
-        except ValueError as e:              # penolakan yg disengaja -- teruskan pesannya
+        except ValueError as e:
             return self._kirim(400, {"error": str(e)})
         except Exception as e:
             return self._kirim(500, {"error": str(e)[:300]})
@@ -687,16 +626,10 @@ RETURN p.local_id AS id, elementId(p) AS rid, p.nama AS nama,
                 {"ids": ids})}
         except Exception as e:
             return self._kirim(500, {"error": f"graf perbandingan: {str(e)[:250]}"})
-        # `rid`: local_id -> @rid, untuk memberi cincin pada node terpilih.
         return self._kirim(200, {"bukti": h, "graf": graf, "rid": rid})
 
     def _banding_publikasi(self):
-        """Compare publications: bukti 2-3 publikasi + graf kecilnya.
-
-        Graf: publikasi terpilih, penulisnya (maks 12 per publikasi, internal
-        didahulukan), topiknya, dan publikasi terkait beserta penulis
-        internalnya -- supaya terlihat SIAPA lagi yang meneliti hal serupa.
-        """
+        """Compare publikasi: bukti dan graf perbandingan 2-3 publikasi."""
         try:
             kunci = self._baca_json().get("kunci")
             if not isinstance(kunci, list) or not all(isinstance(k, str) for k in kunci):
@@ -772,10 +705,10 @@ WHERE p.local_id IN $ids AND t.topik_id IN $tids RETURN p, r, t""",
         return self._kirim(200, {"bukti": h, "graf": graf})
 
     def _cari(self):
-        """Cari di BASIS DATA, bukan hanya di graf yang tampil: peneliti
-        internal (nama) dan publikasi (judul). Tiap kata harus ada -- "deep
-        learning tea" menemukan "... Deep Learning-Based Tea Diseases ...".
-        Berparameter; teks pengguna tidak pernah disambung ke query."""
+        """Cari peneliti internal (nama) dan publikasi (judul) di basis data.
+
+        Setiap kata harus ada; kueri berparameter.
+        """
         try:
             teks = str(self._baca_json().get("teks") or "").strip().lower()
         except Exception as e:
@@ -894,7 +827,6 @@ WHERE p.local_id IN $ids AND k.dedup_key IN $k RETURN p, r, k""", {"ids": ids, "
         except LLMBelumDisetel as e:
             return self._kirim(503, {"error": str(e), "sid": sid})
         except RuntimeError as e:
-            # Kuota habis: sid tetap dikirim agar percobaan ulang memakai sesi yang sama.
             kode = 429 if "Kuota" in str(e) else 502
             return self._kirim(kode, {"error": str(e)[:300], "sid": sid})
         except Exception as e:
@@ -942,7 +874,6 @@ WHERE p.local_id IN $ids AND k.dedup_key IN $k RETURN p, r, k""", {"ids": ids, "
             q = muatan["cypher"]
         except Exception as e:
             return self._kirim(400, {"error": f"payload tidak valid: {e}"})
-        # 'vis' (bawaan) atau 'cytoscape': kamus gaya sama, bentuk JSON beda.
         bentuk = muatan.get("format", "vis")
 
         try:
@@ -952,7 +883,6 @@ WHERE p.local_id IN $ids AND k.dedup_key IN $k RETURN p, r, k""", {"ids": ids, "
             return self._kirim(503, {"error":
                 "ArcadeDB is not responding. Check ARCADEDB_HOST in .env."})
         if r.status_code >= 400:
-            # teruskan pesan asli ArcadeDB; di situ letak salahnya dijelaskan
             try:
                 pesan = r.json().get("detail") or r.json().get("error")
             except Exception:
@@ -965,16 +895,13 @@ WHERE p.local_id IN $ids AND k.dedup_key IN $k RETURN p, r, k""", {"ids": ids, "
         nodes, edges, ditebak = bentuk_graf(rows)
         lewat_pola = False
         if not nodes:
-            # Coba pola view tersimpan dulu: hasil skalar masih bisa digambar.
             hasil_pola = bentuk_dari_skalar(rows)
             if hasil_pola:
                 nodes, edges = hasil_pola
                 nodes = {k: v for k, v in nodes.items()}
                 lewat_pola, ditebak = True, False
         if not nodes:
-            # Dua sebab yang berbeda:
-            #  (a) nol baris: kueri benar, datanya tidak ada (cna_uji sengaja begini)
-            #  (b) ada baris tetapi skalar: baru di sini saran "RETURN p, t" berlaku
+            # Nol baris berarti datanya tidak ada; hasil skalar perlu RETURN p, t.
             if not rows:
                 return self._kirim(200, {"nodes": [], "edges": [], "peringatan":
                     "The query ran but returned NO results (0 rows). For the "
@@ -1008,20 +935,17 @@ WHERE p.local_id IN $ids AND k.dedup_key IN $k RETURN p, r, k""", {"ids": ids, "
         return self._kirim(200, out)
 
     def log_message(self, *a):
-        pass          # jangan banjiri terminal dgn log tiap permintaan
+        pass          # tanpa log per permintaan
 
 
 class Server(ThreadingHTTPServer):
-    # Tanpa ini port tertahan ~1 menit (TIME_WAIT) setelah Ctrl+C.
     allow_reuse_address = True
 
 
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     try:
-        # Bawaan hanya laptop ini. Semua kueri server lewat endpoint baca-saja,
-        # jadi SRE_HOST=0.0.0.0 tidak membuka jalan untuk menulis; yang tetap
-        # terbuka adalah kuota LLM lewat /api/tanya dan /api/brainstorm.
+        # Bawaan hanya komputer ini; gunakan SRE_HOST=0.0.0.0 untuk hosting.
         srv = Server((HOST_SERVER, PORT), Handler)
     except OSError as e:
         if e.errno == 48:      # Address already in use

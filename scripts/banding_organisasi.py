@@ -1,16 +1,10 @@
 #!/usr/bin/env python3
-"""banding_organisasi.py — Bukti kolaborasi dua organisasi (unit / institusi).
-
-Membandingkan dua unit kerja atau institusi: topik apa yang diteliti masing-
-masing, irisan mana yang sudah ada, peneliti mana yang sudah berkolaborasi
-lintas organisasi, dan pasangan mana yang paling layak dipertemukan.
-
-BACA-SAJA. Tidak memanggil LLM.
+"""banding_organisasi.py — Bukti kolaborasi dua unit kerja atau dua institusi.
 
 Pemakaian:
     .venv/bin/python scripts/banding_organisasi.py PTI PRSDI
     .venv/bin/python scripts/banding_organisasi.py PTI PRSDI --json
-    .venv/bin/python scripts/banding_organisasi.py "UB" "BRIN" --institusi
+    .venv/bin/python scripts/banding_organisasi.py UB BRIN --institusi
 """
 import argparse
 import json
@@ -164,7 +158,6 @@ ORDER BY r.jumlah DESC""", {"a": ids_a, "b": ids_b})
         semua_tid.update(p.keys())
     info = _info_topik(list(semua_tid))
 
-    # topik per organisasi: tid -> total jumlah, jumlah peneliti
     def ringkas_topik(profil):
         topik = defaultdict(lambda: {"total": 0, "peneliti": 0})
         for orang in profil.values():
@@ -216,7 +209,6 @@ RETURN k.dedup_key AS kunci, k.judul AS judul, k.tahun AS tahun, p.local_id AS p
     karya_a = muat_karya(ids_a)
     karya_b = muat_karya(ids_b)
 
-    # publikasi bersama (ada penulis dari kedua organisasi)
     bersama_kunci = set(karya_a) & set(karya_b)
     pub_bersama = sorted(
         [{"kunci": k, "judul": karya_a[k]["judul"], "tahun": karya_a[k]["tahun"]}

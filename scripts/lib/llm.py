@@ -1,14 +1,8 @@
-"""lib/llm.py — Lapisan LLM yang bisa ditukar penyedianya.
+"""lib/llm.py — Pemanggil model bahasa.
 
-Tanpa pustaka `openai`: cukup satu POST JSON berbentuk /chat/completions,
-yang didukung Groq, OpenAI, xAI, OpenRouter, dan Cerebras. Penyedia dan model
-diganti lewat .env tanpa menyentuh kode (xAI pernah mempensiunkan delapan
-model sekaligus).
-
-Yang dikirim ke penyedia: pertanyaan + prompt skema (~1.740 token). Saat
-menyusun kalimat, baris hasil kueri ikut dikirim setelah lewat
-`buang_teks_panjang()`, yang membuang `abstrak` dan memotong teks panjang.
-Kode inilah yang menegakkan aturan itu, bukan prompt.
+Memakai format /chat/completions yang didukung Groq, OpenAI, xAI, OpenRouter,
+dan Cerebras. Penyedia dan model diatur lewat .env (LLM_PENYEDIA, LLM_MODEL).
+Baris hasil kueri dibersihkan oleh buang_teks_panjang() sebelum dikirim.
 """
 import json
 import os
@@ -24,7 +18,7 @@ try:
 except ImportError:                                   # dotenv opsional
     pass
 
-# Semua penyedia di bawah memakai bentuk /chat/completions gaya OpenAI.
+# Penyedia berformat /chat/completions OpenAI.
 PENYEDIA = {
     "groq":       ("https://api.groq.com/openai/v1", "GROQ_API_KEY",      "openai/gpt-oss-120b"),
     "openai":     ("https://api.openai.com/v1",      "OPENAI_API_KEY",    "gpt-4o-mini"),
@@ -33,7 +27,6 @@ PENYEDIA = {
     "cerebras":   ("https://api.cerebras.ai/v1",     "CEREBRAS_API_KEY",  "gpt-oss-120b"),
 }
 
-# Properti yang tidak boleh ikut kembali ke LLM. Lihat prompt_graf.DILARANG_KELUAR.
 DILARANG = {"abstrak", "abstract", "abstract_source"}
 BATAS_TEKS = 200        # potong string panjang (judul dsb) sebelum dikirim
 BATAS_BARIS = 40        # jumlah baris maksimal yang diringkas
@@ -70,8 +63,7 @@ def _panggil(pesan, suhu=0.0, maks=400, timeout=60, usaha=None):
             f"{s['nama_kunci']} belum ada di .env. Lihat panduan di README.md.")
     body = {"model": s["model"], "messages": pesan,
             "temperature": suhu, "max_tokens": maks}
-    # Token berpikir gpt-oss ikut dihitung dalam max_tokens; `reasoning_effort`
-    # menyingkatnya. Hanya dikirim ke Groq (penyedia lain belum diuji).
+    # `reasoning_effort` hanya dikirim ke Groq.
     if usaha and s["penyedia"] == "groq":
         body["reasoning_effort"] = usaha
     for coba in (1, 2):
@@ -82,8 +74,7 @@ def _panggil(pesan, suhu=0.0, maks=400, timeout=60, usaha=None):
             json=body)
         if r.status_code != 429 or coba == 2:
             break
-        # Kuota Groq gratis 8.000 token/menit. Tunggu sekali sesuai saran
-        # server, paling lama 15 detik.
+        # Kuota habis (429): tunggu sekali, maksimal 15 detik.
         m = re.search(r"try again in ([\d.]+)s", r.text)
         tunggu = float(r.headers.get("retry-after") or (m.group(1) if m else 5))
         time.sleep(min(tunggu + 0.5, 15))
@@ -94,8 +85,7 @@ def _panggil(pesan, suhu=0.0, maks=400, timeout=60, usaha=None):
         raise RuntimeError(f"{s['penyedia']} {r.status_code}: {r.text[:300]}")
     pilihan = r.json()["choices"][0]
     isi = (pilihan["message"].get("content") or "").strip()
-    # Token bisa habis untuk berpikir sehingga jawabannya kosong; tangkap di
-    # sini, jangan biarkan muncul di hilir sebagai "Query kosong."
+    # Jawaban kosong karena token habis untuk penalaran.
     if not isi and pilihan.get("finish_reason") == "length":
         raise RuntimeError(f"LLM kehabisan jatah {maks} token sebelum sempat "
                            "menjawab (habis untuk berpikir). Naikkan `maks`.")
@@ -129,11 +119,7 @@ def bersihkan_cypher(teks):
 # Menyusun kalimat
 
 def buang_teks_panjang(baris):
-    """Bersihkan baris hasil SEBELUM dikirim ke LLM.
-
-    Membuang properti terlarang (abstrak) dan memotong teks panjang, agar chat
-    tetap berbasis graf, bukan data mentah.
-    """
+    """Buang properti terlarang (abstrak) dan potong teks panjang sebelum dikirim."""
     bersih = []
     for b in baris[:BATAS_BARIS]:
         if not isinstance(b, dict):
@@ -186,11 +172,10 @@ def _angka_baris(b):
 
 
 def peringkat(baris):
-    """Peringkat peneliti di hasil query -- dihitung KODE, bukan LLM.
+    """Peringkat peneliti di hasil kueri, dihitung program.
 
-    Pakai angka relasi (`jumlah`, atau `skor` utk SEBIDANG) bila ada; kalau
-    tidak, banyaknya baris tempat nama itu muncul. Nama yang muncul di SEMUA
-    baris adalah subjek pertanyaan (Devi pada "kolaborator Devi"), dikeluarkan.
+    Memakai `jumlah` atau `skor` bila ada; nama yang muncul di semua baris
+    (subjek pertanyaan) dikeluarkan.
     """
     muncul, skor, dasar = Counter(), Counter(), None
     for b in baris:
@@ -237,22 +222,13 @@ def _fmt(dasar, v):
 
 
 def ringkasan_hitungan(baris, berurut=False):
-    """Angka yang disiapkan program untuk kalimat jawaban.
-
-    `berurut`: Cypher memakai ORDER BY, jadi yang teratas tetap benar walau
-    hasil dibatasi 300 baris.
-    Semua tipe dihitung, bukan hanya Peneliti; kalau tidak, hasil berisi
-    topik terbaca "0 peneliti" dan dijawab "Tidak ada hasil."
-    """
+    """Angka yang disiapkan program untuk kalimat jawaban."""
     n, dasar, c = peringkat(baris)
-    # Batas 300 tidak disebut ke LLM; kalau disebut, ia dibaca sebagai jumlah.
     terpotong = len(baris) >= BATAS_QUERY and not berurut
     r = ["- jumlah baris: TIDAK DIKETAHUI (daftar sebagian) -- jangan menyebut jumlah total, "
          "pakai 'antara lain'" if terpotong else f"- jumlah baris: {len(baris)}"]
     tipe = hitung_tipe(baris)
     if n:
-        # Hanya 'peneliti berbeda' (tanpa subjek pertanyaan) yang disebut;
-        # dua angka membuat LLM memilih yang salah.
         tipe.pop("Peneliti", None)
     if tipe:
         r.append("- isi hasil: " + ", ".join(f"{t} {k}" for t, k in tipe.items()))
@@ -268,11 +244,10 @@ def ringkasan_hitungan(baris, berurut=False):
     if len(baris) >= BATAS_QUERY and berurut:
         r.append(f"- hasil sudah DIURUTKAN query; yang teratas benar walau dibatasi "
                  f"{BATAS_QUERY} baris -- JANGAN menyebut batas baris.")
-    # Catatan batas ditempel kode (susun_kalimat), tidak diminta ke LLM.
     return "RINGKASAN HITUNGAN (dihitung program):\n" + "\n".join(r)
 
 
-# Nama tipe untuk kalimat cadangan berbahasa Inggris. Kunci = label basis data.
+# Nama tipe untuk kalimat cadangan berbahasa Inggris.
 TIPE_EN = {"Peneliti": "researchers", "Publikasi": "publications", "Topik": "topics",
            "Kategori": "categories", "UnitKerja": "work units", "Institusi": "institutions",
            "Venue": "venues"}
@@ -296,8 +271,7 @@ def kalimat_cadangan(baris, bahasa="id"):
     return " ".join(bagian)
 
 
-# Bila ada baris hasil, kalimat yang menyatakan "tidak ada hasil" (bahasa
-# Indonesia atau Inggris) diganti kalimat dari program.
+# Kalimat yang menyangkal adanya hasil diganti kalimat dari program.
 POLA_MENYANGKAL = re.compile(
     r"\btidak ada (hasil|data)\b|\btidak ditemukan\b"
     r"|\bno (results?|data|matches|matching)\b|\bnot found\b|\bnothing (was )?found\b", re.I)
@@ -309,8 +283,7 @@ def jaga_kalimat(kalimat, baris, bahasa="id"):
     return kalimat
 
 
-# Bahasa jawaban ditentukan kode dari kata-kata pertanyaan, lalu disebut
-# eksplisit ke LLM.
+# Bahasa jawaban ditentukan dari kata-kata pertanyaan.
 POLA_INDONESIA = re.compile(
     r"\b(yang|siapa|apa|apakah|berapa|mana|di|ke|dari|dengan|untuk|tentang|"
     r"peneliti|topik|publikasi|paling|pernah|belum|sudah|saja|pakar|ahli|cocok|"
@@ -341,7 +314,6 @@ WAJIB:
   RINGKASAN (mis. 12 peneliti), lalu beberapa contohnya.
 - Singkat saja; grafnya sudah ditampilkan di sebelah."""
 
-# Peringkat sudah dihitung program; data cukup sebagai contoh agar hemat kuota.
 BATAS_KALIMAT_BARIS = 15
 BATAS_KALIMAT_HURUF = 3000
 
@@ -355,7 +327,6 @@ def susun_kalimat(pertanyaan, baris, catatan="", cypher=""):
     n, dasar, c = peringkat(baris)
     kirim = baris
     if dasar:
-        # Data diurutkan sesuai peringkat agar LLM melihat yang teratas.
         kirim = sorted(baris, reverse=True, key=lambda b: max(
             (c.get(x, 0) for x in _nama_peneliti(b)), default=0))
     data = json.dumps(buang_teks_panjang(kirim)[:BATAS_KALIMAT_BARIS],
@@ -370,7 +341,6 @@ def susun_kalimat(pertanyaan, baris, catatan="", cypher=""):
                         {"role": "user", "content": isi}], suhu=0.2, maks=600, usaha="low")
     kalimat = jaga_kalimat(kalimat, baris, bahasa)
     if len(baris) >= BATAS_QUERY and not berurut:
-        # Catatan batas buatan LLM (dalam kurung, menyebut 300) dibuang.
         kalimat = POLA_CATATAN_BATAS.sub("", kalimat).rstrip()
         kalimat += (f" (Only the first {BATAS_QUERY} results were retrieved; the full list may be longer.)"
                     if bahasa == "en" else

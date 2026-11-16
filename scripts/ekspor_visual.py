@@ -1,25 +1,16 @@
 #!/usr/bin/env python3
-"""ekspor_visual.py — Ekspor subgraf ArcadeDB ke JSON siap gambar.
+"""ekspor_visual.py — Pustaka view dan aturan gaya tampilan graf.
 
-Dua peran:
-  1. PUSTAKA VIEW. Setiap tampilan disimpan sebagai entri bernama di VIEW
-     (judul, parameter, Cypher). Inilah "Cypher preset" yang diminta
-     pembimbing. Disimpan di repo, bukan di basis data, karena tim membaca
-     dan menyalinnya.
-  2. EKSPOR. Menjalankan view terpilih lalu menulis JSON.
+VIEW memuat 26 kueri tersimpan (judul, parameter, Cypher). Kamus gaya
+menentukan warna, ukuran, dan bentuk per tipe node dan keluarga relasi.
+Skrip ini juga dapat mengekspor hasil view ke JSON (format vis atau
+cytoscape).
 
-Format keluaran: 'vis' (bawaan, vis-network) atau 'cytoscape'
-(sre.html). Kueri dan transformasinya sama; hanya penulisan JSON yang beda.
-
-    vis        {"nodes":[{"id","label","value","color",...}],
-                "edges":[{"from","to","value","label","arrows"}]}
-    cytoscape  {"nodes":[{"data":{...}}], "edges":[{"data":{"source","target"}}]}
-
-Jalankan:
-    python3 scripts/ekspor_visual.py --daftar
-    python3 scripts/ekspor_visual.py --view unit_kerja --kode SI
-    python3 scripts/ekspor_visual.py --view individu --local-id PRSDI007
-    python3 scripts/ekspor_visual.py --view semua_internal --format cytoscape
+Pemakaian:
+    .venv/bin/python scripts/ekspor_visual.py --daftar
+    .venv/bin/python scripts/ekspor_visual.py --periksa-view
+    .venv/bin/python scripts/ekspor_visual.py --periksa-contoh
+    .venv/bin/python scripts/ekspor_visual.py --view unit_kerja --kode SI --format cytoscape --keluaran keluaran.json
 """
 import argparse
 import json
@@ -34,8 +25,7 @@ from lib.arcadedb import ARCADEDB_AUTH, ARCADEDB_URL
 VISUAL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "visual")
 KELUARAN_BAKU = os.path.join(VISUAL, "data_graf.json")
 
-# 27 kategori ASJC resmi, urut kode. Urutan ini menentukan warna: jangan
-# diacak, atau warna berpindah kategori.
+# 27 kategori ASJC, urut kode. Urutan menentukan warna.
 KATEGORI_ASJC = [
     "Multidisciplinary", "Agricultural and Biological Sciences",
     "Arts and Humanities", "Biochemistry, Genetics and Molecular Biology",
@@ -52,8 +42,7 @@ KATEGORI_ASJC = [
 WARNA_LAIN = "#9CA3AF"            # nilai yang tidak dikenali kamus gaya
 WARNA_PENELITI_BAKU = "#0F6E7B"   # peneliti tanpa kategori dominan
 
-# Hanya untuk menampilkan supergroup tiap kategori di legenda.
-# Bukan penentu bentuk node: semua node digambar lingkaran.
+# Supergroup tiap kategori (untuk legenda).
 BENTUK = {
     "Life Sciences":     "dot",
     "Physical Sciences": "square",
@@ -61,17 +50,11 @@ BENTUK = {
     "Health Sciences":   "diamond",
 }
 
-# Relasi simetris ("A berkolaborasi dengan B" = sebaliknya): digambar
-# putus-putus tanpa panah.
+# Relasi simetris: digambar putus-putus tanpa panah.
 TAK_BERARAH = {"KOLABORASI", "SEBIDANG"}
 
 def _palet(n):
-    """n warna yang saling berjauhan.
-
-    Rona disebar dengan sudut emas (137,508°), sehingga kategori bernomor
-    berdekatan tidak mendapat rona yang mirip. Kecerahan diselang-seling tiga
-    tingkat, karena rona saja tidak cukup untuk 27 warna.
-    """
+    """n warna yang saling berjauhan (rona dengan sudut emas, tiga tingkat kecerahan)."""
     keluar = []
     for i in range(n):
         rona = (i * 137.508 % 360) / 360
@@ -83,39 +66,28 @@ def _palet(n):
 
 WARNA = dict(zip(KATEGORI_ASJC, _palet(len(KATEGORI_ASJC))))
 
-# Koreksi manual: Arts and Humanities dan Social Sciences hanya berjarak
-# ΔE 9,8 dan keduanya terpakai. Cokelat-oranye ini jauh dari keduanya dan
-# sudah diperiksa tidak menimbulkan bentrokan baru.
+# Koreksi manual agar tidak mirip Social Sciences.
 WARNA["Arts and Humanities"] = "#B45309"
 
-# Kamus gaya: satu-satunya tempat warna, ukuran, dan bentuk ditentukan.
-# Berupa aturan "tipe X -> gaya Y" karena node baru lahir saat kueri
-# dijalankan; aturan ini berlaku untuk kueri apa pun.
-#
-# 1. Semua node lingkaran ('dot'). Bentuk 'ellipse'/'box' melebar mengikuti
-#    label, sehingga judul publikasi jadi kapsul raksasa.
-# 2. Hanya Kategori yang membawa warna ASJC. Topik sengaja seragam karena
-#    skor pemetaan topik -> kategori rata-rata hanya 0,46. Kategorinya tetap
-#    tampil di panel detail.
+# Kamus gaya: warna, ukuran, dan bentuk per tipe.
 
 WARNA_NETRAL = {
-    "Institusi":  "#111827",   # paling gelap = paling tinggi di hierarki
+    "Institusi":  "#111827",
     "UnitKerja":  "#4B5563",
-    "Peneliti":   "#0F6E7B",   # satu-satunya warna beraksen: tokoh utama
+    "Peneliti":   "#0F6E7B",
     "Topik":      "#94A3B8",
-    # Empat tingkat abu: kecerahan 17%, 33%, 45%, 84%.
     "Venue":      "#6B7280",
     "Publikasi":  "#D1D5DB",
 }
 
-# Ukuran tetap per tipe. None = diskalakan dari `value` (jumlah publikasi).
+# Ukuran tetap per tipe. None = diskalakan dari `value`.
 UKURAN_NODE = {
     "Institusi": 30, "UnitKerja": 23, "Peneliti": 16,
     "Venue": 10, "Publikasi": 7, "Kategori": 26,
     "Topik": None,          # None = diskalakan dari `value` (jumlah_dok)
 }
 
-# Properti yang dipakai jadi label, urut prioritas.
+# Properti label, urut prioritas.
 LABEL_DARI = {
     "Institusi": ("nama", "kode"), "UnitKerja": ("kode", "nama"),
     "Peneliti":  ("nama", "local_id"), "Publikasi": ("judul",),
@@ -123,7 +95,7 @@ LABEL_DARI = {
     "Topik":     ("nama", "topik_id"),
 }
 
-# 11 tipe relasi dikelompokkan menjadi 4 keluarga warna.
+# Keluarga relasi
 KELUARGA_RELASI = {
     "struktur":     ("#94A3B8", {"AFILIASI", "MEMILIKI", "BERAFILIASI"}),
     "kepengarangan":("#CBD5E1", {"MENULIS", "TERBIT_DI"}),
@@ -131,11 +103,9 @@ KELUARGA_RELASI = {
                                  "TERMASUK_DALAM", "BIDANG_KEAHLIAN"}),
     "kemiripan":    ("#D97706", {"KOLABORASI", "SEBIDANG"}),
 }
-# Indeks balik jenis -> (keluarga, warna), dibuat sekali.
 GAYA_RELASI = {j: (nama, warna)
                for nama, (warna, jenis) in KELUARGA_RELASI.items()
                for j in jenis}
-# Bobot hanya bermakna pada dua keluarga ini; yang lain selalu 1.
 BERBOBOT = {"semantik", "kemiripan"}
 
 
@@ -145,7 +115,6 @@ def gaya_node(tipe, kategori=None):
     """Gaya vis-network untuk satu tipe node. Dipakai ekspor DAN server."""
     g = {"shape": "dot", "borderWidth": 1.5}
     if tipe == "Kategori":
-        # satu-satunya pembawa warna ASJC
         g["color"] = WARNA.get(kategori, WARNA_LAIN)
         g["size"] = UKURAN_NODE["Kategori"]
     else:
@@ -159,8 +128,6 @@ def gaya_node(tipe, kategori=None):
 def gaya_relasi(jenis):
     """Gaya vis-network untuk satu tipe relasi."""
     keluarga, warna = GAYA_RELASI.get(jenis, ("struktur", WARNA_LAIN))
-    # `keluarga`/`warna`/`berarah` diabaikan vis-network, tetapi dibaca
-    # legenda garis, jadi legenda dan garis memakai sumber yang sama.
     g = {"color": {"color": warna, "highlight": "#1F2937"},
          "keluarga": keluarga, "warna": warna,
          "berarah": jenis not in TAK_BERARAH}
@@ -173,14 +140,7 @@ def gaya_relasi(jenis):
     return g
 
 def tulis_palet(path):
-    """Halaman contoh warna. Periksa ini SEBELUM menggambar graf -- jauh
-    lebih mudah menilai keterbacaan pada blok besar daripada pada node
-    berdiameter 12-45 piksel.
-
-    Kategori yang benar-benar terpakai di korpus ditandai, supaya perhatian
-    tertuju ke situ: warna yang bentrok tapi kategorinya tidak muncul di data
-    tidak perlu diperbaiki.
-    """
+    """Halaman contoh warna kategori; kategori yang terpakai ditandai."""
     try:
         terpakai = {x["n"]: x["t"] for x in jalankan(
             "MATCH (t:Topik)-[:TERMASUK_DALAM]->"
@@ -188,7 +148,6 @@ def tulis_palet(path):
     except Exception:
         terpakai = {}
 
-    # supergroup ikut ditampilkan sebagai pembeda kedua bagi warna yang mirip
     peta_bentuk = {}
     try:
         for x in jalankan("MATCH (k:Kategori {skema:'ASJC'}) RETURN k.nama AS n, "
@@ -241,18 +200,10 @@ def jalankan(command, params=None, timeout=300):
     return hasil["result"]
 
 
-# Pembantu pembentuk node/edge
+# Pembentuk node dan edge
 def node_topik(n, tid, nama, dok, kategori, supergroup=None):
-    """Node Topik untuk view gaya lama (yang mengembalikan skalar).
-
-    Sejak kamus gaya dipakai, warna & bentuk TIDAK lagi ditentukan di sini --
-    semuanya dari gaya_node(), supaya ekspor statis dan kotak query tidak
-    pernah berbeda tampilan. `kategori` tetap disimpan sbg properti untuk
-    legenda dan penyorotan, tapi bukan lagi penentu warna: pemetaan
-    topik->kategori rata-rata cuma berkeyakinan 0,49.
-    """
-    # Label dipendekkan ke 2 kata kunci; 4 kata saling menimpa di kanvas.
-    # Nama lengkap tetap ada di `title` (tooltip).
+    """Node Topik untuk view yang mengembalikan nilai skalar."""
+    # Label topik dipendekkan ke 2 kata kunci.
     pendek = ", ".join([x.strip() for x in (nama or tid).split(",")][:2])
     n[tid] = {
         "id": tid, "label": pendek, "tipe": "Topik",
@@ -271,8 +222,7 @@ def node_peneliti(n, pid, nama, keterangan="", ambigu=False):
     }
     n[pid].update(gaya_node("Peneliti"))
     if ambigu:
-        # Node yang terbukti berisi lebih dari satu orang: tepi merah tebal,
-        # angkanya bukan milik satu individu.
+        # Node berisi lebih dari satu orang: tepi merah.
         warna = n[pid]["color"]
         n[pid].update({
             "ambigu": True, "borderWidth": 4,
@@ -293,11 +243,7 @@ def node_kategori(n, nama, supergroup=None, jumlah=None):
 
 
 def edge(dari, ke, label, bobot=None, judul=None):
-    """Nama relasi hanya ditulis ke `title`, tidak ke `label`.
-
-    Label di setiap garis membuat gambar jadi gumpalan teks, dan sekali dikirim
-    label itu tidak bisa dimatikan lagi di vis-network.
-    """
+    """Edge vis-network; nama relasi ditulis ke `title`, bukan `label`."""
     e = {"from": dari, "to": ke, "jenis": label,
          "value": bobot if bobot else 1,
          "title": judul or (f"{label} · bobot {bobot}" if bobot else label)}
@@ -305,13 +251,12 @@ def edge(dari, ke, label, bobot=None, judul=None):
     return e
 
 
-# Pembentuk generik untuk kueri yang mengembalikan node dan relasi
-# (RETURN p, r, t). Dipakai server.py dan ekspor.
+# Pembentuk generik untuk kueri RETURN p, r, t.
 MAKS_LABEL = 46
 
-# Nama properti bobot berbeda per relasi. Tanpa bobot = garis tipis seragam.
+# Properti bobot per relasi:
 #   KOLABORASI/BIDANG_KEAHLIAN/BERAFILIASI -> jumlah
-#   SEBIDANG                               -> jumlah_topik_sama (+ skor)
+#   SEBIDANG                               -> jumlah_topik_sama
 #   MEMBAHAS/TERMASUK_DALAM                -> skor (0..1, dikali 10)
 BOBOT_CACAH = ("jumlah", "jumlah_topik_sama")
 
@@ -335,14 +280,8 @@ def label_node(o, tipe):
 def bentuk_dari_hasil(rows):
     """Ubah baris hasil Cypher menjadi node dan edge.
 
-    Dua jalur:
-    1. Kueri mengembalikan relasinya (`RETURN p, r, t`): garis diambil apa
-       adanya, lengkap dengan tipe dan bobot. Selalu lebih baik.
-    2. Kueri hanya mengembalikan node (`RETURN p, t`): garis ditebak dari urutan
-       kolom. Benar untuk dua kolom, bisa keliru untuk kolom yang lebih banyak.
-
-    Bila hanya satu kolom dikembalikan (`RETURN r`), ArcadeDB meratakan isinya
-    ke tingkat baris.
+    Bila kueri mengembalikan relasi (`RETURN p, r, t`), garis diambil apa
+    adanya. Bila tidak (`RETURN p, t`), garis disimpulkan dari urutan kolom.
     """
     nodes, edges, dipakai = {}, [], set()
     ditebak = False
@@ -357,7 +296,6 @@ def bentuk_dari_hasil(rows):
              "title": f"{tipe}\n{label}"}
         n.update(gaya_node(tipe, o.get("nama") if tipe == "Kategori" else None))
         if o.get("ambigu"):
-            # Node berisi lebih dari satu orang: tepi merah tebal.
             n["borderWidth"] = 4
             n["color"] = {"background": n["color"], "border": "#B91C1C",
                           "highlight": {"background": n["color"],
@@ -388,7 +326,6 @@ def bentuk_dari_hasil(rows):
         edges.append(e)
 
     for baris in rows:
-        # baris itu sendiri bisa berupa node/relasi (kasus RETURN satu kolom)
         kandidat = [baris] if baris.get("@cat") else []
         kandidat += [v for k, v in baris.items()
                      if not k.startswith("@") and isinstance(v, dict)
@@ -401,7 +338,6 @@ def bentuk_dari_hasil(rows):
                     ids.append(r)
             elif o.get("@cat") == "e":
                 ada_relasi = True
-        # relasi diproses setelah node, supaya ujung-ujungnya sudah ada
         for o in kandidat:
             if o.get("@cat") == "e":
                 tambah_edge(o)
@@ -415,7 +351,7 @@ def bentuk_dari_hasil(rows):
                               "value": 1, "arrows": "to", "title": "",
                               "color": {"color": "#E2E8F0"}, "dashes": [2, 4]})
 
-    # Buang garis yang salah satu ujungnya tidak ikut dikembalikan kueri.
+    # Buang garis yang ujungnya tidak ikut dikembalikan.
     edges = [e for e in edges if e["from"] in nodes and e["to"] in nodes]
     return nodes, edges, ditebak
 
@@ -429,10 +365,7 @@ def bangun_dari_node(rows):
 
 
 def bangun_author_network(rows):
-    """Jaringan ko-penulisan bergaya VOSviewer: peneliti diwarnai menurut bidangnya.
-
-    Pengecualian sengaja terhadap aturan "hanya Kategori yang membawa warna
-    ASJC": di view ini tidak ada node Kategori, jadi warna hanya bermakna satu.
+    """Jaringan ko-penulisan: peneliti diwarnai menurut kategori dominannya.
 
     Ukuran node = jumlah publikasi. Tebal garis = jumlah karya bersama.
     """
@@ -442,7 +375,6 @@ def bangun_author_network(rows):
         return nodes, edges
 
     daftar = ",".join("'" + str(i).replace("'", "\\'") + "'" for i in sorted(ids))
-    # kategori dominan = kategori dengan bobot keahlian terbesar
     dominan = {}
     for x in jalankan(
             f"MATCH (p:Peneliti)-[bk:BIDANG_KEAHLIAN]->(:Topik)"
@@ -466,8 +398,6 @@ def bangun_author_network(rows):
              "value": jumlah_pub.get(pid, 1),
              "color": WARNA.get(kat, WARNA_PENELITI_BAKU),
              "kategori": kat, "supergroup": sg,
-             # memberi tahu legenda bahwa warna ini berasal dari kategori,
-             # walau view ini tidak memuat node Kategori
              "warna_dari_kategori": True,
              "font": {"size": 11, "color": "#111827"},
              "title": f"{nama}\n{jumlah_pub.get(pid,0)} publikasi\n"
@@ -492,7 +422,7 @@ def bangun_author_network(rows):
     return nodes, edges
 
 
-# Pustaka view. View baru ditambahkan di sini.
+# Pustaka view
 def _tanpa_ganda(nodes, edges):
     """Buang relasi kembar. Satu topik muncul di banyak baris (digarap banyak
     peneliti), jadi TERMASUK_DALAM-nya ikut terbentuk berulang kali."""
@@ -507,14 +437,7 @@ def _tanpa_ganda(nodes, edges):
 
 
 def _sambung_organisasi(nodes, edges, r):
-    """Sambungkan Institusi -> UnitKerja -> Peneliti bila barisnya membawanya.
-
-    Murah: hanya 6 node untuk seluruh graf (2 institusi, 4 unit kerja), tapi
-    memberi konteks organisasi yang selama ini hilang dari gambar. Bandingkan
-    dgn Publikasi (5.749 node) dan Venue (3.755) yang sengaja TIDAK diikutkan
-    -- keduanya akan membuat gambar ini ~48x lebih besar tanpa menambah apa pun
-    yang bisa dibaca mata.
-    """
+    """Sambungkan Institusi -> UnitKerja -> Peneliti bila barisnya membawanya."""
     unit, inst = r.get("unit"), r.get("inst")
     if not unit:
         return
@@ -532,13 +455,7 @@ def _sambung_organisasi(nodes, edges, r):
 
 
 def _sambung_kategori(nodes, edges, r):
-    """Buat node Kategori + relasi TERMASUK_DALAM bila barisnya membawanya.
-
-    WAJIB, bukan hiasan: sejak warna ASJC hanya dipegang node Kategori,
-    ekspor tanpa lapisan ini keluar cuma dua warna (teal utk peneliti, abu
-    utk topik) -- tidak ada sinyal bidang ilmu sama sekali. Sudah terjadi
-    pada ekspor pertama setelah kamus gaya dipakai.
-    """
+    """Buat node Kategori dan relasi TERMASUK_DALAM bila barisnya membawanya."""
     kat = r.get("kategori")
     if not kat:
         return
@@ -548,11 +465,7 @@ def _sambung_kategori(nodes, edges, r):
 
 
 def bangun_peneliti_topik(rows, keterangan_dari=None):
-    """Bentuk umum: Peneliti -[BIDANG_KEAHLIAN]-> Topik.
-
-    Topiknya TIDAK berwarna kategori lagi -- lihat catatan di kamus gaya.
-    Kategorinya tetap tersimpan sbg properti untuk legenda & penyorotan.
-    """
+    """Bentuk umum: Peneliti -[BIDANG_KEAHLIAN]-> Topik."""
     nodes, edges = {}, []
     for r in rows:
         node_peneliti(nodes, r["pid"], r["peneliti"],
@@ -599,8 +512,7 @@ def bangun_kolaborasi(rows):
     return nodes, edges
 
 
-# Kelompok di daftar pilihan view, menurut pertanyaan yang dijawab.
-# Urutan kelompok = urutan tampil.
+# Kelompok view; urutan = urutan tampil.
 KELOMPOK = [
     ("Peta jalan pembimbing", ["individu", "unit_kerja", "institusi",
                                "banding_institusi", "semua_internal"]),
@@ -617,9 +529,7 @@ KELOMPOK = [
                                "peneliti_lintas_disiplin"]),
 ]
 
-# Nama tampil berbahasa Inggris.
-# Hanya untuk tampilan. Kunci (label, relasi, nama view, kelompok) tetap
-# Indonesia: prompt chat, penjaga, dan Cypher bergantung padanya.
+# Nama tampil berbahasa Inggris (kunci basis data tetap Indonesia).
 NAMA_TAMPIL = {
     "tipe": {"Institusi": "Institution", "UnitKerja": "Work unit", "Peneliti": "Researcher",
              "Publikasi": "Publication", "Venue": "Venue", "Topik": "Topic",
@@ -640,9 +550,7 @@ NAMA_TAMPIL = {
                  "Lainnya": "Other"},
 }
 
-# Judul dan keterangan view dalam bahasa Inggris, termasuk angka dan
-# peringatannya. View yang belum ada di sini tampil berbahasa Indonesia
-# (--periksa-view memperingatkannya).
+# Judul dan keterangan view berbahasa Inggris.
 VIEW_EN = {
     "individu": ("One researcher: publications and topics",
                  "Personal view: one researcher -> publications -> topics."),
@@ -715,27 +623,20 @@ def urutan_view(nama):
     return (len(KELOMPOK), 0)
 
 
-# Nilai contoh per nama parameter (`kode` selalu kode unit, `local_id` selalu
-# peneliti). Tebakan yang wajar pun bisa gagal diam-diam: $institusi =
-# "Universitas Brawijaya" mengembalikan 0 baris karena nodenya bernama "UB".
-# Nilainya diambil dari basis data; periksa dengan --periksa-contoh.
+# Nilai contoh per nama parameter (periksa dengan --periksa-contoh).
 CONTOH_PARAM = {
-    # Devi Munandar (49 publikasi, 58 kolaborasi): sengaja dari rentang
-    # menengah supaya gambarnya terbaca. Peneliti paling produktif membuat
-    # view `individu` terlalu padat.
     "local_id":  "PRSDI016",
     "kode":      "PTI",              # dari 4: PRSDI, PTI, SI, TI
     "institusi": "UB",               # hanya ada dua: UB, BRIN
     "a":         "PTIUB002",         # Admaja Dwi Herlambang
-    "b":         "PTIUB011",         # + Satrio Hadi Wijoyo, kolaborasi terberat (59)
+    "b":         "PTIUB011",
     "unit_a":    "PTI",
     "unit_b":    "SI",
     "institusi_a": "UB",             # hanya ada dua institusi: UB, BRIN
     "institusi_b": "BRIN",
-    "kategori":  "Computer Science", # kategori ASJC dgn topik terbanyak (26)
+    "kategori":  "Computer Science",
     "min_bobot": 2,
     "kata":      "learning",         # cocok ke 10 topik
-    # 2023-2026 seimbang dengan 2019-2022 untuk membandingkan naik/turun.
     "sejak_tahun": 2023,
 }
 
@@ -825,9 +726,6 @@ RETURN a.local_id AS a_id, a.nama AS a, a.institusi AS a_inst,
     },
 
     # View yang mengembalikan node dan relasi (RETURN p, r, t).
-    # Lima view di atas mengembalikan nilai skalar dan punya pembangun
-    # sendiri. View di bawah ini memakai bangun_dari_node(), sehingga tipe dan
-    # bobot garis dibaca langsung dari relasinya.
 
     "ontologi": {
         "judul": "Ontologi bertingkat: Publikasi -> Topik -> Kategori",
@@ -1010,7 +908,7 @@ RETURN a.local_id AS a_id, a.nama AS a, a.ambigu AS a_ambigu,
         "bangun": bangun_author_network,
     },
 
-    # Analisis jaringan akademik.
+    # Analisis jaringan akademik
 
     "cna_uji": {
         "judul": "UJI Citation Network — membuktikan datanya tidak ada",
@@ -1122,8 +1020,7 @@ RETURN t, a, k27, b, k4 LIMIT 200
         "bangun": bangun_dari_node,
     },
 
-    # Dimensi waktu dan mutu.
-    # `tahun` terisi pada 98,9% publikasi (6.537 dari 6.607).
+    # Dimensi waktu dan mutu
     "kolaborasi_terkini": {
         "judul": "Kolaborasi lewat publikasi terbaru",
         "params": ["sejak_tahun"],
@@ -1187,9 +1084,7 @@ RETURN p, m, pub, tb, v, mb, t, td, k LIMIT 400
         "bangun": bangun_dari_node,
     },
 
-    # Match profiling.
-    # kolaborasi_potensial bekerja per unit dan kolaborasi_2 per pasangan.
-    # mirip_dengan menjawab "siapa yang mirip dengan orang ini".
+    # Match profiling
     "mirip_dengan": {
         "judul": "Peneliti yang mirip dengan satu orang",
         "params": ["local_id"],
@@ -1248,16 +1143,10 @@ def ke_vis(nodes, edges):
 
 
 def ke_gephi(nodes, edges, dasar):
-    """Dua CSV siap impor Gephi: <dasar>_node.csv dan <dasar>_edge.csv.
-
-    Gephi hanya dipakai untuk tata letak (ForceAtlas2 dengan Prevent Overlap dan
-    Label Adjust). Yang diambil kembali hanya koordinat x,y.
-    Nama kolom Id/Label dan Source/Target/Weight wajib berhuruf besar di awal.
-    """
+    """Dua CSV untuk Gephi: <dasar>_node.csv dan <dasar>_edge.csv."""
     import csv
 
-    # Ukuran diskalakan ke rentang gambar akhir (12-45 px) supaya
-    # 'Prevent Overlap' di Gephi menyisakan ruang yang sesuai.
+    # Ukuran diskalakan ke 12-45 px.
     mentah = [n["value"] for n in nodes.values() if n.get("value")]
     lo, hi = (min(mentah), max(mentah)) if mentah else (1, 1)
 
@@ -1281,28 +1170,15 @@ def ke_gephi(nodes, edges, dasar):
         w = csv.writer(f)
         w.writerow(["Source", "Target", "Weight", "Type", "jenis"])
         for e in edges:
-            # relasi simetris harus Undirected agar metrik komunitas Gephi benar
             arah = "Undirected" if e.get("jenis") in TAK_BERARAH else "Directed"
             w.writerow([e["from"], e["to"], e.get("value", 1), arah, e.get("jenis", "")])
     return fn, fe
 
 
 def ke_cytoscape(nodes, edges):
-    """Format Cytoscape.js: data saja, gaya ditentukan stylesheet halaman.
-
-    Properti khas vis dibuang atau diganti:
-        color:{color,highlight}  -> `warna` (string datar)
-        dashes:true              -> `berarah:false`
-        shape:'dot'              -> tidak dikirim
-
-    Yang dikirim untuk selector:
-        node: tipe, kategori, supergroup, bobot, warna, ukuran
-        edge: jenis, keluarga, bobot, berarah, warna
-    """
+    """Ubah node dan edge ke format Cytoscape.js (data saja; gaya di stylesheet)."""
     keluar_node = []
     for n in nodes.values():
-        # Warna bisa berupa string atau objek {background, border, ...};
-        # bentuk objek dipakai node ambigu (tepi merah).
         w = n.get("color")
         if isinstance(w, dict):
             warna = w.get("background") or WARNA_LAIN
@@ -1314,7 +1190,6 @@ def ke_cytoscape(nodes, edges):
             "label": n.get("label", ""),
             "tipe": n.get("tipe", ""),
             "warna": warna,
-            # satu medan ukuran saja: `value` (Topik) & `size` (tetap) disatukan
             "ukuran": n.get("value") or n.get("size") or 12,
         }
         if tepi:
@@ -1326,8 +1201,7 @@ def ke_cytoscape(nodes, edges):
         if n.get("value"):
             d["bobot"] = n["value"]
         butir = {"data": d}
-        # Koordinat Gephi diletakkan sejajar `data`, bukan di dalamnya;
-        # di dalam `data` ia diabaikan tanpa peringatan.
+        # Koordinat Gephi diletakkan sejajar `data`.
         if n.get("x") is not None and n.get("y") is not None:
             butir["position"] = {"x": n["x"], "y": n["y"]}
         keluar_node.append(butir)
@@ -1344,19 +1218,13 @@ def ke_cytoscape(nodes, edges):
             "keluarga": keluarga,
             "warna": warna,
             "bobot": e.get("value", 1),
-            # relasi simetris (KOLABORASI, SEBIDANG) -> tanpa panah
             "berarah": jenis not in TAK_BERARAH,
         }})
     return {"nodes": keluar_node, "edges": keluar_edge}
 
 
 def periksa_contoh():
-    """Uji tiap nilai CONTOH_PARAM ke basis data.
-
-    Nilai contoh membusuk diam-diam: node bisa digabung atau dihapus, dan
-    contoh yang menunjuk node hilang akan mengembalikan 0 baris -- persis
-    seperti view yang rusak. Pemeriksaan ini membuat pembusukan itu berisik.
-    """
+    """Uji setiap nilai CONTOH_PARAM terhadap basis data."""
     UJI = {
         "local_id":  "MATCH (p:Peneliti {local_id:$v}) RETURN p.nama AS n",
         "a":         "MATCH (p:Peneliti {local_id:$v}) RETURN p.nama AS n",
@@ -1375,8 +1243,6 @@ def periksa_contoh():
     gagal = 0
     for nama, nilai in CONTOH_PARAM.items():
         if nama not in UJI:
-            # Angka murni tidak perlu diuji. Teks yang tidak terdaftar di UJI
-            # berarti lupa ditambahkan, jadi disebutkan.
             jenis = "angka, dilewati" if isinstance(nilai, (int, float)) \
                     else "TEKS BELUM DIUJI -- tambahkan ke UJI"
             print(f"  {nama:11} {str(nilai):22} ({jenis})")
@@ -1395,20 +1261,11 @@ def periksa_contoh():
 
 
 def periksa_view(jalan=True):
-    """Periksa seluruh VIEW: bentuknya, lalu jalankan sungguhan.
+    """Periksa seluruh VIEW: kecocokan parameter, lalu jalankan setiap kueri.
 
-    View yang salah tidak melempar galat; ia mengembalikan 0 baris. Tiga
-    penyebab yang pernah terjadi:
-      1. `params` tidak cocok dengan $penanda di Cypher.
-      2. Parameter tanpa nilai contoh.
-      3. Nilai contoh salah isi ($institusi = "Universitas Brawijaya",
-         padahal nodenya bernama "UB").
-
-    Setiap view dijalankan dan jumlah barisnya dilaporkan. View yang memang
-    seharusnya kosong (cna_uji) dikecualikan.
+    View yang 0 baris disorot, kecuali yang memang seharusnya kosong (cna_uji).
     """
-    # cna_uji membuktikan tidak ada relasi Publikasi->Publikasi:
-    # 0 baris adalah hasil yang benar.
+    # cna_uji memang mengembalikan 0 baris.
     BOLEH_KOSONG = {"cna_uji"}
 
     print(f"Periksa {len(VIEW)} view\n")
@@ -1483,8 +1340,6 @@ def main():
     ap.add_argument("--view", help="nama view")
     ap.add_argument("--format", choices=["vis", "cytoscape", "gephi"], default="vis")
     ap.add_argument("--keluaran", default=KELUARAN_BAKU)
-    # Opsi parameter dibuat dari CONTOH_PARAM, jadi parameter baru cukup
-    # ditambahkan di satu tempat.
     for nama in CONTOH_PARAM:
         ap.add_argument("--" + nama.replace("_", "-"))
     ap.add_argument("--periksa-contoh", action="store_true",
@@ -1523,7 +1378,6 @@ def main():
     for p in v["params"]:
         nilai = getattr(args, p.replace("-", "_"), None)
         if not nilai:
-            # Pakai nilai contoh alih-alih galat; nilai yang sah sulit ditebak.
             nilai = CONTOH_PARAM.get(p)
             if nilai is None:
                 raise SystemExit(f"View '{args.view}' butuh --{p.replace('_','-')} "
@@ -1540,8 +1394,6 @@ def main():
         raise SystemExit("Kosong. Periksa parameternya (mis. local_id / kode unit).")
 
     print("[2/3] Bentuk node & relasi...")
-    # Dict berkunci id: satu topik muncul di banyak baris, dan id ganda
-    # membuat vis.DataSet galat.
     nodes, edges = v["bangun"](rows)
     per_tipe = {}
     for n in nodes.values():

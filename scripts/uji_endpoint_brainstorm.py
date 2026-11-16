@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""uji_endpoint_brainstorm.py — Uji endpoint Brainstorm pada server yang sedang
-jalan. Tidak memanggil LLM, jadi tidak memakai kuota.
+"""uji_endpoint_brainstorm.py — Uji endpoint Brainstorm (tanpa memanggil model bahasa).
 
-Pemakaian:  .venv/bin/python scripts/uji_endpoint_brainstorm.py [port, bawaan 8000]
+Server harus sudah berjalan.
+
+Pemakaian:
+    .venv/bin/python scripts/uji_endpoint_brainstorm.py [port]
 """
 import json, sys, time, urllib.request, urllib.error
 sys.path.insert(0, "scripts")
@@ -73,7 +75,7 @@ for body, lab, kode in (({"nodes": []}, "graf kosong", 400), ({"nodes": "x"}, "n
     s, d, _ = post("/api/ringkas", body)
     cek(f"tolak ringkas: {lab}", s == kode, f"{s} {d.get('error')}")
 
-# /api/brainstorm: hanya kasus yang ditolak sebelum memanggil LLM
+# /api/brainstorm: kasus yang ditolak sebelum memanggil LLM
 for body, lab, kode in (({"pesan": "ideas?"}, "tanpa sid & tanpa bukti", 400),
                         ({"pesan": "ideas?", "mode": "lain", "bukti": {}}, "mode tak dikenal", 400),
                         ({"sid": "tidak-ada", "pesan": "ideas?"}, "sid tak dikenal", 410),

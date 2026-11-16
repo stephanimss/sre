@@ -1,16 +1,7 @@
-"""prompt_graf.py — Menyusun prompt sistem untuk LLM penulis Cypher.
+"""prompt_graf.py — Prompt sistem untuk penulisan Cypher oleh model bahasa.
 
-Skema dibaca dari basis data, bukan ditulis tangan, supaya prompt tidak basi
-saat graf berubah. Ukurannya ~1.740 token.
-
-Skema hanya memberi nama, bukan makna. Dua relasi paling mudah tertukar:
-
-    KOLABORASI  pernah menulis publikasi bersama
-    SEBIDANG    berbagi topik, belum tentu pernah bersama
-
-Salah pilih tetap tampak "berhasil" dan tidak tertangkap penjaga, jadi makna
-relasi dan contoh kueri ikut diberikan. Contohnya diambil dari VIEW yang sudah
-diuji (`--periksa-view`), supaya ikut mutakhir.
+Prompt berisi skema yang dibaca dari basis data, makna setiap relasi, dan
+contoh kueri yang diambil dari VIEW.
 """
 import re
 import sys
@@ -20,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from lib.tanya_graf import skema  # noqa: E402
 
-# Makna relasi yang tidak bisa dibaca dari skema.
+# Makna relasi
 ARTI_RELASI = {
     "MENULIS":         "(Peneliti)->(Publikasi) — peneliti menulis publikasi. DARI DATA SUMBER.",
     "TERBIT_DI":       "(Publikasi)->(Venue) — terbit di jurnal/konferensi. DARI DATA SUMBER.",
@@ -46,9 +37,7 @@ ARTI_RELASI = {
                        "WHERE NOT (a)-[:KOLABORASI]-(b).",
 }
 
-# View yang dipakai sebagai contoh few-shot. Tiap contoh
-# mengajarkan hal berbeda: penelusuran dasar, penyaringan negatif, pencarian
-# teks, penyaringan tahun, dan agregasi.
+# View yang dipakai sebagai contoh few-shot.
 CONTOH_VIEW = ["individu", "kolaborasi_potensial", "pakar_topik",
                "jembatan_unit", "topik_naik_daun", "mirip_dengan"]
 
@@ -86,8 +75,7 @@ ATURAN = """ATURAN
    BIDANG_KEAHLIAN, atau jumlah publikasi. Daftar tanpa urutan menaruh
    peneliti berpublikasi 1 sejajar dgn yang berpublikasi 12."""
 
-# Properti yang tidak boleh dikirim ke LLM saat menyusun kalimat. Ditegakkan
-# oleh kode (lib/llm.py: buang_teks_panjang), bukan hanya oleh aturan prompt.
+# Properti yang tidak dikirim ke LLM (ditegakkan di lib/llm.py).
 DILARANG_KELUAR = {"abstrak", "abstract", "abstract_source"}
 
 

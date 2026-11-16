@@ -1,30 +1,13 @@
 #!/usr/bin/env python3
-"""brainstorm.py — Brainstorming kolaborasi berlanjut di atas BUKTI dari graf.
+"""brainstorm.py — Percakapan Brainstorm di atas bukti yang dihitung program.
 
-Percakapan banyak giliran yang cakupannya dikunci pilihan pengguna. Bahannya
-adalah bukti yang sudah dihitung program: banding.py, banding_publikasi.py,
-banding_organisasi.py, atau ringkas_mapping.py. LLM hanya menalar di atasnya.
+Bukti berasal dari banding.py, banding_publikasi.py, banding_organisasi.py,
+atau ringkas_mapping.py. Setiap peneliti, publikasi, dan topik diberi kode
+[R1], [P1], [T1] yang wajib dikutip model bahasa.
 
-SESI DI MEMORI
-Tidak pernah ditulis ke basis data. Hilang saat server direstart, kedaluwarsa
-setelah 2 jam tidak dipakai, maksimal 50 sesi (yang terlama dibuang).
-
-KODE RUJUKAN
-Publikasi, topik, dan peneliti di bukti diberi kode [P1], [T1], [R1] yang
-membawa id-nya, jadi bisa diklik di halaman. LLM wajib mengutip kode untuk
-setiap gagasan. Kode yang tidak ada di bukti ditandai, dan jawaban tanpa
-kutipan diberi peringatan.
-
-HEMAT KUOTA (Groq gratis: 8.000 token/menit, masukan + keluaran + reasoning)
-  - bukti & abstrak disertakan ulang tiap giliran (API tidak punya ingatan),
-    tapi abstrak dipotong 800 huruf di giliran pertama, 400 sesudahnya
-  - hanya 2 giliran terakhir dikirim utuh; yang lebih lama diringkas KODE
-    (pertanyaan + awal jawaban), tanpa panggilan LLM tambahan
-  - perkiraan token dihitung sebelum dikirim; kalau melewati anggaran,
-    abstrak dipangkas lebih dulu
-
-Abstrak boleh dikirim ke LLM di mode ini, asal graf yang memilihnya (publikasi
-yang tampil di panel bukti).
+Sesi disimpan di memori server (maksimal 50 sesi, kedaluwarsa 2 jam).
+Abstrak dipotong 800 huruf pada giliran pertama dan 400 huruf sesudahnya;
+hanya dua giliran terakhir dikirim utuh.
 """
 import re
 import secrets

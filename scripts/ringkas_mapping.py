@@ -1,30 +1,14 @@
 #!/usr/bin/env python3
-"""ringkas_mapping.py — Ringkasan graf yang sedang tampil, bahan Brainstorm.
+"""ringkas_mapping.py — Ringkasan graf yang sedang tampil untuk Brainstorm.
 
-UNTUK APA
-Mode "Summarize this graph": brainstorming atas graf yang sedang tampil (dari
-view, kotak Cypher, atau Ask). Graf bisa berisi ribuan node, jadi diringkas
-menjadi fakta yang dihitung program: siapa yang paling terhubung, topik dan
-unit yang terlibat, pasangan yang layak dibandingkan, dan maksimal 5 abstrak.
+Menghitung peneliti paling terhubung, topik dan unit yang terlibat, pasangan
+yang layak dibandingkan, dan maksimal 5 abstrak. Id node berupa @rid atau
+kunci per tipe; keduanya diterjemahkan ke kunci per tipe.
 
-ID NODE TIDAK SERAGAM
-Graf di sre.html dibentuk dua cara (visual/server.py):
-  - bentuk_dari_hasil: id = @rid ArcadeDB ("#8:0") -- kotak Cypher, Ask, dan
-    sebagian besar view
-  - pola skalar (bentuk_dari_skalar): id = kunci per tipe (local_id peneliti,
-    topik_id, nama kategori, kode unit, dedup_key publikasi)
-Keduanya diterjemahkan ke kunci per tipe. @rid dicari lewat PETA seluruh
-node (~0,2 detik), bukan `WHERE id(n) IN [...]` (11,7 detik untuk 3.000
-publikasi).
-Peta disimpan per proses: sesudah basis data dibangun ulang, restart server.
-
-BACA-SAJA, dgn parameter. Tidak memanggil LLM.
-
-Pemakaian (menguji lewat jalur yang SAMA dgn halaman):
+Pemakaian:
     .venv/bin/python scripts/ringkas_mapping.py --view pakar_topik
     .venv/bin/python scripts/ringkas_mapping.py --cypher "MATCH (p:Peneliti)-[r:MENULIS]->(k) RETURN p, r, k LIMIT 50"
-    .venv/bin/python scripts/ringkas_mapping.py --view unit_kerja --json
-    .venv/bin/python scripts/ringkas_mapping.py --uji        # 9 view + 2 Cypher
+    .venv/bin/python scripts/ringkas_mapping.py --uji
 """
 import argparse
 import json
@@ -160,8 +144,7 @@ RETURN a.local_id AS a, b.local_id AS b""", {"ids": kandidat})}
                 continue
             lintas = info[a]["inst"] != info[b]["inst"]
             calon.append((lintas, s, a, b))
-        # Lintas institusi didahulukan karena paling jarang tergarap.
-        # Tiap orang paling banyak sekali, agar saran tidak dikuasai satu orang.
+        # Lintas institusi didahulukan; tiap orang paling banyak sekali.
         dipakai = set()
         terpilih = []
         for c in sorted(calon, key=lambda c: (-c[0], -c[1])):
@@ -180,7 +163,7 @@ RETURN a.local_id AS a, b.local_id AS b""", {"ids": kandidat})}
             saran.append({"ids": [a, b], "nama": [info[a]["nama"], info[b]["nama"]],
                           "alasan": ", ".join(alasan)})
 
-    # Abstrak: publikasi paling sentral di graf
+    # Abstrak
     pubs = per_tipe.get("Publikasi", {})
     pilih, sumber_abstrak = [], None
     if pubs:
@@ -198,15 +181,13 @@ MATCH (p:Peneliti)-[:MENULIS]->(k:Publikasi)-[m:MEMBAHAS]->(t:Topik)
 WHERE p.local_id IN $ids AND k.abstrak IS NOT NULL AND (size($tids) = 0 OR t.topik_id IN $tids)
 RETURN p.local_id AS id, k.dedup_key AS kunci, k.judul AS judul, k.tahun AS tahun,
        m.skor AS skor""", {"ids": urut_internal[:MAKS_TOKOH], "tids": tids})
-        # bergiliran antar tokoh, yang paling dekat ke topiknya lebih dulu
         antre = defaultdict(list)
         for r in sorted(rows, key=lambda r: -(r["skor"] or 0)):
             antre[r["id"]].append(r)
         rows = [r for grup in zip(*antre.values()) for r in grup] + \
                [r for g in antre.values() for r in g]
     elif topik:
-        # Graf tanpa peneliti & publikasi (mis. asjc_dua_tingkat): publikasi
-        # yang paling dekat ke topik-topik di graf, bergiliran antar topik.
+        # Graf tanpa peneliti dan publikasi: publikasi terdekat ke topik.
         sumber_abstrak = "topics_in_mapping"
         antre = defaultdict(list)
         for r in sorted(_q("""

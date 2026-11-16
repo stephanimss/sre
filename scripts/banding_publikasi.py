@@ -1,22 +1,13 @@
 #!/usr/bin/env python3
-"""banding_publikasi.py — Bukti perbandingan 2-3 PUBLIKASI, bahan Brainstorm.
+"""banding_publikasi.py — Bukti kedekatan 2-3 publikasi untuk Compare dan Brainstorm.
 
-Pola sama dengan banding.py: bukti dihitung program, LLM hanya menalar di
-atasnya. Tidak ada yang ditolak; tingkat buktinya yang berbeda:
-  direct       tiap pasangan berkaitan: penulis sama, topik sama, ATAU
-               kemiripan abstrak >= moderate
+Tingkat bukti:
+  direct       setiap pasangan berkaitan (penulis sama, topik sama, atau
+               kemiripan abstrak >= moderate)
   bridge       sebagian pasangan berkaitan
-  exploratory  tidak ada pasangan yang berkaitan; ide wajib dilabeli
+  exploratory  tidak ada pasangan yang berkaitan
 
-Kemiripan memakai vektor abstrak YANG DIPUSATKAN dan ambang yang sama dgn
-banding.py (moderate 0,39 = p99, strong 0,57 = p99,9 pasangan acak).
-
-PUBLIKASI TERKAIT (maks 5)
-Publikasi lain di graf yang paling mirip dgn salah satu pilihan: strong, ATAU
-moderate dgn topik yang sama -- dan punya penulis internal. Ini "related work"
-untuk brainstorming, sekaligus menunjukkan SIAPA lagi yang meneliti hal serupa.
-
-Baca-saja dan berparameter.
+Juga mengembalikan maksimal 5 publikasi terkait beserta penulis internalnya.
 
 Pemakaian:
     .venv/bin/python scripts/banding_publikasi.py doi:10.xxx doi:10.yyy
@@ -70,8 +61,7 @@ RETURN k.dedup_key AS kunci, k.judul AS judul, k.tahun AS tahun, t.topik_id AS t
         internal = [p for p in (m or {}).get("internal", []) if p.get("id")]
         if not m or not internal:
             continue                              # tanpa penulis internal: bukan rekan
-        # Di seluruh korpus, moderate saja meloloskan ~66 kecocokan acak per
-        # pencarian. Syaratnya: strong, atau moderate dengan topik yang sama.
+        # Publikasi terkait: strong, atau moderate dengan topik yang sama.
         if s < AMBANG_KUAT and m.get("topik_id") != info[dari]["topik_id"]:
             continue
         jk = _judul_kunci(m["judul"])
@@ -163,7 +153,6 @@ RETURN k.dedup_key AS kunci, p.local_id AS id, p.nama AS nama,
 
     terkait = _terkait(kunci, info, vek) if vek else []
 
-    # Peneliti internal yang terlibat: penulis pilihan + penulis publikasi terkait.
     orang = {}
     for p in publikasi:
         for x in p["penulis"]:
@@ -175,7 +164,7 @@ RETURN k.dedup_key AS kunci, p.local_id AS id, p.nama AS nama,
             orang.setdefault(x["id"], {"id": x["id"], "nama": x["nama"], "unit": None,
                                        "pilihan": [], "terkait": []})["terkait"].append(t["kunci"])
 
-    # Abstrak untuk LLM: semua pilihan (maks 3), lalu yang terkait (maks 5).
+    # Abstrak untuk LLM
     teks = {b["kunci"]: b["abstrak"] for b in _q(
         "MATCH (k:Publikasi) WHERE k.dedup_key IN $k RETURN k.dedup_key AS kunci, k.abstrak AS abstrak",
         {"k": [t["kunci"] for t in terkait]})} if terkait else {}

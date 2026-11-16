@@ -1,20 +1,14 @@
 #!/usr/bin/env python3
-"""tanya_ai.py — Pertanyaan bahasa Indonesia -> Cypher -> graf.
+"""tanya_ai.py — Tanya-graf: pertanyaan -> Cypher -> hasil.
 
-Menyatukan tiga bagian:
-    prompt_graf.py      menyusun prompt (skema dibaca dari DB + contoh view)
-    lib/llm.py          memanggil LLM (penyedia bisa ditukar lewat .env)
-    lib/tanya_graf.py   menjalankan Cypher dgn tiga penjaga
+Menggabungkan prompt_graf.py, lib/llm.py, dan lib/tanya_graf.py. Bila penjaga
+menolak nama asing, pesan penjaga dikirim kembali ke model untuk satu kali
+percobaan ulang.
 
-Tanpa kunci API:
-    .venv/bin/python scripts/tanya_ai.py --cypher "MATCH (n:Peneliti) RETURN n LIMIT 5"
+Pemakaian:
     .venv/bin/python scripts/tanya_ai.py --uji-penjaga
-Dengan kunci API di .env:
+    .venv/bin/python scripts/tanya_ai.py --cypher "MATCH (n:Peneliti) RETURN n LIMIT 5"
     .venv/bin/python scripts/tanya_ai.py --tanya "siapa pakar machine learning di PTI?"
-
-PERCOBAAN ULANG
-Bila penjaga menolak nama asing (mis. `:Researcher`), pesannya dikirim balik
-ke LLM beserta nama terdekat. Percobaan kedua hampir selalu benar.
 """
 import argparse
 import sys
@@ -30,9 +24,7 @@ from prompt_graf import bangun_prompt                 # noqa: E402
 MAKS_COBA = 3
 
 
-# Kosong tidak selalu berarti "tidak ada". "machine learning" bukan label
-# topik, padahal 35 peneliti menulis judul yang memuatnya. Bila pencarian teks
-# di Topik kosong, kode melebarkannya ke judul (sekali saja).
+# Bila pencarian teks di Topik kosong, cari di judul publikasi (sekali).
 POLA_CARI_TOPIK = re.compile(r":Topik\b.*CONTAINS", re.S | re.I)
 SARAN_JUDUL = (
     "Query tadi sah tapi KOSONG: istilah itu bukan label topik. Cari lewat "
@@ -54,9 +46,7 @@ def jawab(pertanyaan, maks_coba=MAKS_COBA, ringkas=True, cetak=print):
                         "status": hasil["status"], "pesan": hasil["pesan"]})
         cetak(f"[percobaan {percobaan}] {hasil['status']}: {hasil['pesan'][:100]}")
 
-        # Diulang hanya bila pesan galatnya memberi informasi baru: nama asing,
-        # atau galat Cypher dari ArcadeDB (variabel, sintaks). Tidak diulang:
-        # perintah menulis, timeout, basis data mati.
+        # Diulang hanya untuk nama asing atau galat Cypher dari ArcadeDB.
         galat_cypher = (hasil["status"] == "ditolak_db"
                         and hasil["pesan"].startswith("Ditolak ArcadeDB:")
                         and "Connection" not in hasil["pesan"])
@@ -66,7 +56,6 @@ def jawab(pertanyaan, maks_coba=MAKS_COBA, ringkas=True, cetak=print):
 
     lewat_judul = False
     if hasil["status"] == "kosong" and POLA_CARI_TOPIK.search(hasil["cypher"]):
-        # Pelebaran juga boleh diulang sekali bila ArcadeDB menolak Cypher-nya.
         umpan_judul = SARAN_JUDUL
         for _ in range(2):
             cypher = llm.tulis_cypher(pertanyaan, prompt, umpan_judul, usaha="low")
@@ -88,7 +77,6 @@ def jawab(pertanyaan, maks_coba=MAKS_COBA, ringkas=True, cetak=print):
     if ringkas and hasil["status"] in ("ok", "terpotong"):
         try:
             catatan = hasil["pesan"] if hasil["status"] == "terpotong" else ""
-            # Kalimat menyebut bahwa jawabannya berasal dari judul, bukan topik.
             if lewat_judul:
                 catatan += (" Tidak ada topik bernama itu; hasil ini dari "
                             "JUDUL publikasi yang memuat istilahnya.")

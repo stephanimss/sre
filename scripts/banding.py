@@ -1,32 +1,20 @@
 #!/usr/bin/env python3
-"""banding.py — Bukti kolaborasi untuk 2-3 peneliti, bahan fitur Brainstorm.
+"""banding.py — Bukti kedekatan 2-3 peneliti untuk Compare dan Brainstorm.
 
-LLM selalu bisa mengarang "peluang kolaborasi" untuk dua orang mana pun. Karena
-itu bukti dihitung program dari graf, dan LLM hanya menalar di atasnya.
-Cakupan dikunci oleh peneliti yang dipilih pengguna.
+Tingkat bukti:
+  direct       pernah menulis bersama, SEBIDANG, atau topik yang sama
+               (>= 2 publikasi di tiap sisi)
+  bridge       publikasi mirip, peneliti perantara, atau jalur rekan penulis
+  exploratory  tidak ada bukti di graf
 
-Tidak ada pasangan yang ditolak; tingkat buktinya yang berbeda:
-  direct       pernah menulis bersama, ATAU tercatat SEBIDANG, ATAU ada topik
-               yang sama-sama dikerjakan (>= 2 publikasi di tiap sisi)
-  bridge       bukan direct, tapi ada publikasi yang mirip isinya, peneliti
-               perantara (berbagi topik dgn keduanya), atau jalur perkenalan
-  exploratory  tidak ada bukti di graf; brainstorming tetap boleh, dilabeli
-
-PUBLIKASI MIRIP (maks 5)
-Dari vektor abstrak (data/vektor_abstrak.npy) yang DIPUSATKAN (dikurangi
-rata-rata korpus). Tanpa pemusatan, pasangan peneliti acak pun bernilai 0,71
-karena banyak abstrak berpola sama. Dengan pemusatan, AUC pasangan rekan
-penulis vs acak naik dari 0,69 ke 0,75. Satu pasangan mirip tetap hanya
-bukti jembatan, bukan penentu.
-
-Semua kueri lewat endpoint baca-saja dengan parameter, jadi nama dari
-pengguna tidak bisa menyusup ke kueri.
+Publikasi mirip dihitung dari vektor abstrak yang dipusatkan
+(data/vektor_abstrak.npy). Semua kueri lewat endpoint baca-saja.
 
 Pemakaian:
     .venv/bin/python scripts/banding.py PRSDI016 PRSDI043
-    .venv/bin/python scripts/banding.py --nama "Uun Hariyanti" "Rio Nurtantyana"
+    .venv/bin/python scripts/banding.py --nama "Nama A" "Nama B"
     .venv/bin/python scripts/banding.py PRSDI016 PRSDI043 --json
-    .venv/bin/python scripts/banding.py --kalibrasi      # cek ambang kemiripan
+    .venv/bin/python scripts/banding.py --kalibrasi
 """
 import argparse
 import json
@@ -54,13 +42,11 @@ MAKS_PERANTARA = 5
 MAKS_REKAN = 5
 BERKAS_VEKTOR = AKAR / "data" / "vektor_abstrak.npy"
 
-# Ambang pada vektor yang dipusatkan, dari 200.000 pasangan publikasi acak:
-# moderate = p99 (0,39), strong = p99,9 (0,57). Cek ulang: --kalibrasi.
+# Ambang kemiripan (persentil pasangan acak); cek ulang dengan --kalibrasi.
 AMBANG_KUAT = 0.57
 AMBANG_SEDANG = 0.39
 
-_VEKTOR = None            # dimuat sekali per proses; server WAJIB restart
-                          # sesudah vektor abstrak dibangun ulang
+_VEKTOR = None            # dimuat sekali per proses
 
 
 def _q(cypher, params=None, timeout=120):
@@ -156,8 +142,6 @@ def _publikasi_mirip(ids, karya, bersama_kunci, vek):
                       "b": {"id": b, "kunci": kb, **karya[b][kb]}})
 
     if len(ids) == 3:
-        # Putaran 1: tiap pasangan orang dapat satu tempat bila minimal sedang,
-        # supaya lima tempat tidak dihabiskan satu pasangan saja.
         for a, b in combinations(ids, 2):
             for c in kandidat:
                 if (c[1], c[3]) == (a, b) and c[0] >= AMBANG_SEDANG and boleh(c):
@@ -169,19 +153,14 @@ def _publikasi_mirip(ids, karya, bersama_kunci, vek):
         if boleh(c):
             ambil(c)
     hasil.sort(key=lambda x: -x["skor"])
-    # Skor rendah (mis. 0,02) bukan "mirip"; saring sebelum ditampilkan.
     layak = [h for h in hasil if h["label"] != "weak"]
     return layak if layak else hasil[:MAKS_MIRIP_LEMAH]
 
 
 def _perantara(a, b, ids, profil):
-    """Peneliti internal lain yang berbagi topik dgn KEDUANYA.
+    """Peneliti internal lain yang berbagi topik dengan kedua orang.
 
-    Skor = kemiripan profil yang LEBIH LEMAH dari dua sisi, dgn kosinus
-    himpunan |A n C| / sqrt(|A| |C|). Ukuran profil C ikut membagi: tanpa itu
-    perantara selalu orang yang menyentuh hampir semua topik. Terukur 17 Sep
-    2026 (200 pasangan acak, hitungan irisan mentah): Bayu Rahayudi teratas di
-    57 pasangan, Satrio Agung Wicaksono 41 -- keduanya 64 topik, median 19.
+    Skor = |A ∩ C| / sqrt(|A|·|C|), diambil dari sisi yang lebih lemah.
     """
     ta, tb = profil[a][2], profil[b][2]
     hasil = []
@@ -198,9 +177,8 @@ def _perantara(a, b, ids, profil):
     return hasil[:MAKS_PERANTARA]
 
 
-# Rekan eksternal bernama inisial ("Hadi A.") tidak bisa dipastikan orang yang
-# sama di dua publikasi, jadi tidak dipakai sebagai bukti perkenalan.
-POLA_INISIAL = re.compile(r"(?:^|\s)(?:[A-Z]\.)+$")    # BERAKHIR inisial; "M. Yudhi Rezaldi" lolos
+# Rekan eksternal bernama inisial tidak dipakai sebagai bukti perkenalan.
+POLA_INISIAL = re.compile(r"(?:^|\s)(?:[A-Z]\.)+$")    # nama yang berakhir inisial
 
 
 def _bisa_dipercaya(nama, internal):
@@ -260,7 +238,7 @@ RETURN p.local_id AS id, k.dedup_key AS kunci, k.judul AS judul, k.tahun AS tahu
                 {"ids": ids}):
         karya[b["id"]][b["kunci"]] = {"judul": b["judul"], "tahun": b["tahun"]}
 
-    # Profil topik semua peneliti internal (untuk topik bersama dan perantara)
+    # Profil topik semua peneliti internal
     profil, topik, info_topik = {}, defaultdict(dict), {}
     for b in _q("""
 MATCH (p:Peneliti {is_internal: true})-[r:BIDANG_KEAHLIAN]->(t:Topik)
@@ -306,7 +284,7 @@ RETURN p.local_id AS id, p.nama AS nama, u.kode AS unit, t.topik_id AS tid,
     mirip = _publikasi_mirip(ids, karya, bersama_kunci, vek) if vek else []
     tanpa_vektor = sum(1 for i in ids for k in karya[i] if vek and k not in vek[1])
 
-    # Tiap pasangan: hubungan, tingkat, jembatan
+    # Tiap pasangan
     sebidang = {(r["a"], r["b"]): r for r in _q("""
 MATCH (a:Peneliti)-[r:SEBIDANG]-(b:Peneliti)
 WHERE a.local_id IN $ids AND b.local_id IN $ids
@@ -362,7 +340,7 @@ RETURN a.local_id AS a, b.local_id AS b, r.skor AS skor, r.jumlah_topik_sama AS 
         else:
             tingkat, alasan = "exploratory", "weak evidence in the graph; ideas must be labelled exploratory"
 
-    # Abstrak untuk LLM: publikasi yang ditampilkan sebagai mirip
+    # Abstrak untuk LLM
     pilih = []
     for m in mirip:
         for sisi in ("a", "b"):
@@ -370,8 +348,6 @@ RETURN a.local_id AS a, b.local_id AS b, r.skor AS skor, r.jumlah_topik_sama AS 
                 pilih.append(m[sisi])
     sumber_abstrak = "similar_publications"
     if pilih and len(pilih) < MAKS_ABSTRAK and not any(m["label"] != "weak" for m in mirip):
-        # Bukti lemah: sisa jatah diisi publikasi terbaru tiap orang, bergiliran,
-        # supaya brainstorming exploratory tetap membaca isi riset keduanya.
         sumber_abstrak = "similar_publications+recent"
         antre = {i: sorted(({"id": i, "kunci": k, **v} for k, v in karya[i].items()),
                            key=lambda x: -(x["tahun"] or 0)) for i in ids}
@@ -383,7 +359,7 @@ RETURN a.local_id AS a, b.local_id AS b, r.skor AS skor, r.jumlah_topik_sama AS 
                     antre[i].pop(0)
                 if antre[i] and len(pilih) < MAKS_ABSTRAK:
                     pilih.append(antre[i].pop(0))
-    if not pilih:                                   # cadangan: lewat topik bersama
+    if not pilih:                                   # lewat topik bersama
         sumber_abstrak = "shared_topics"
         tids = [x["topik_id"] for x in bersama[:5]]
         if tids:
