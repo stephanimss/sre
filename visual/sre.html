@@ -1,0 +1,3025 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>SRE — Research Graph</title>
+<script src="https://unpkg.com/cytoscape@3.31.0/dist/cytoscape.min.js"></script>
+<script src="https://unpkg.com/layout-base/layout-base.js"></script>
+<script src="https://unpkg.com/cose-base/cose-base.js"></script>
+<script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
+<style>
+  html,body{margin:0;height:100%;font:13px sans-serif}
+  /* ---- sistem kendali ----
+     Satu gaya tombol: tinggi 28px, sudut 6px, huruf 12px. Ditaruh paling atas
+     supaya aturan khusus di bawahnya tetap menang. */
+  :root{--aksen:#0f6e7b;--aksen-2:#0b525b;--garis:#d6dde0;--teks:#1f2937;
+        --redup:#6b7280;--lembut:#f0fdfa}
+  button{font:500 12px/1 sans-serif;height:28px;padding:0 10px;color:var(--teks);
+         background:#fff;border:1px solid var(--garis);border-radius:6px;cursor:pointer}
+  button:hover:not(:disabled){background:var(--lembut);border-color:#99d5da;color:var(--aksen)}
+  button:disabled{opacity:.5;cursor:default}
+  button.utama{background:var(--aksen);border-color:var(--aksen);color:#fff}
+  button.utama:hover:not(:disabled){background:var(--aksen-2);border-color:var(--aksen-2);color:#fff}
+  button.utama:disabled{background:#eef1f2;border-color:var(--garis);color:#9aa5ab;opacity:1}
+  /* Penanda fokus keyboard. */
+  :focus-visible{outline:2px solid var(--aksen);outline-offset:2px;border-radius:4px}
+  input[type=text],input:not([type]),select,textarea{font:12px sans-serif;color:var(--teks);
+    background:#fff;border:1px solid var(--garis);border-radius:6px;height:28px;
+    padding:0 8px;box-sizing:border-box}
+  textarea{height:auto;padding:7px 8px}
+  input[type=checkbox]{accent-color:var(--aksen)}
+  /* Kata panjang tanpa spasi (dedup_key, DOI, URL) dipatahkan agar panel tidak melebar. */
+  #jawaban,#panel,.bs-msg,.bs-daftar li,.bukti li,.blok li,#cari-hasil li,
+  .abstrak,.bs-alasan,.ket-isi,.dp-daftar li{overflow-wrap:anywhere}
+  #sisi{overflow-x:hidden}
+  .judul-bagian{margin:14px 0 6px;font:500 10px/1 ui-monospace,Menlo,monospace;
+                letter-spacing:.12em;text-transform:uppercase;color:var(--redup)}
+  .judul-bagian:first-child{margin-top:2px}
+  .petunjuk{font-size:11px;color:var(--redup);line-height:1.45;margin:4px 0}
+  /* Wajib tinggi eksplisit; tanpa ini Cytoscape menggambar di kotak setinggi 0. */
+  /* #kanvas membungkus #cy dan kendali yang melayang di atasnya. Kendali tidak
+     ditaruh di dalam #cy karena wadah itu milik Cytoscape. */
+  #kanvas{position:absolute;inset:0 300px 0 320px}
+  #cy{position:absolute;inset:0}
+  /* Panel Brainstorm (kiri) dan Explore (kanan) bisa dilipat agar kanvas lega. */
+  body.bs-lipat #kanvas{left:34px}
+  body.sisi-lipat #kanvas{right:34px}
+  #sisi{position:absolute;inset:0 0 0 auto;width:320px;
+        border-left:1px solid #ddd;background:#fafafa;overflow:auto;box-sizing:border-box}
+  body.sisi-lipat #sisi{width:34px;overflow:hidden}
+  body.sisi-lipat #sisi .sisi-isi, body.sisi-lipat #sisi .sisi-kepala b{display:none}
+  .sisi-kepala{display:flex;justify-content:space-between;align-items:center;
+               padding:10px 12px;border-bottom:1px solid #e5e7eb;position:sticky;
+               top:0;background:#fafafa;z-index:2}
+  body.sisi-lipat .sisi-kepala{padding:10px 4px}
+  .sisi-kepala b{font-size:14px;color:#0f6e7b}
+  .sisi-isi{padding:12px 14px 18px}
+    #q{width:100%;height:76px;font:12px/1.45 ui-monospace,Menlo,monospace;
+     padding:7px;border:1px solid #d1d5db;border-radius:4px;resize:vertical}
+    #bar{display:flex;gap:6px;margin:6px 0;flex-wrap:wrap}
+    select{font:12px sans-serif;padding:4px;max-width:100%}
+    #status{font-size:12px;color:var(--redup);margin-bottom:10px;min-height:32px}
+    #ringkasan-graf{display:none;margin:-6px 0 10px}
+    #ringkasan-graf.tampil{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:4px}
+    .rg-sel{background:#f1f5f6;border-radius:4px;padding:5px 7px;text-align:center;cursor:pointer}
+    .rg-sel:hover{background:#e2e8ea}
+    .rg-sel.aktif{background:#d1ecef;outline:2px solid var(--aksen)}
+    .rg-sel .rg-n{font-size:15px;font-weight:600;color:#111827;display:block}
+    .rg-sel .rg-t{font-size:9.5px;color:#6b7280;text-transform:uppercase;letter-spacing:.04em}
+  /* Penjelasan Cypher: dibuat program dari kuerinya, bukan oleh LLM. */
+  #gloss{display:none;font-size:11px;line-height:1.5;color:#0f5e66;background:#f1f5f6;
+         border-left:3px solid var(--aksen);border-radius:0 4px 4px 0;padding:6px 8px;
+         margin:6px 0 2px;overflow-wrap:anywhere}
+  #gloss.tampil{display:block}
+  #gloss b{color:var(--aksen)}
+  #gloss .catatan{display:block;margin-top:3px;color:var(--redup)}
+  #keterangan{margin:4px 0 12px;padding:10px 12px;background:#f1f5f6;
+              border-left:3px solid #0f6e7b;border-radius:0 6px 6px 0;
+              display:none}
+  #keterangan.tampil{display:block}
+  .ket-judul{font-weight:600;font-size:13px;margin-bottom:6px;line-height:1.4}
+  .par{font:500 11px/1.4 ui-monospace,Menlo,monospace;color:#0f6e7b;
+       margin-bottom:8px}
+  .ket-isi{font-size:12px;line-height:1.55;color:#4b5563}
+  .ket-asli summary{font-size:10.5px;color:#9ca3af;cursor:pointer;margin-top:6px}
+  .leg-lipat{margin:12px 0 5px;font:500 10px/1 ui-monospace,Menlo,monospace;
+             letter-spacing:.12em;text-transform:uppercase;color:var(--redup);
+             cursor:pointer;list-style:none}
+  .leg-lipat::-webkit-details-marker{display:none}
+  .leg-lipat::after{content:' \25be';color:#9ca3af}
+  details[open] .leg-lipat::after{content:' \25b4'}
+  #legenda h4{margin:12px 0 5px;font:500 10px/1 ui-monospace,Menlo,monospace;
+              letter-spacing:.12em;text-transform:uppercase;color:#6b7280}
+  #legenda div{padding:2px 0;cursor:pointer;font-size:12px;line-height:1.35}
+  #legenda div:hover{color:#0f6e7b}
+  /* Keadaan terpilih ditandai centang, bukan sekadar beda warna: filter yang
+     lupa dimatikan membuat graf tampak kosong. */
+  #legenda div.dipilih{color:#0f6e7b;font-weight:600}
+  #legenda div.dipilih::after{content:' \2713';color:#0f6e7b}
+  #legenda div.dipilih{background:#f0fdfa;border-radius:4px;
+                       margin:0 -4px;padding-left:4px;padding-right:4px}
+  #filter-info{font-size:11px;color:#92400e;background:#fffbeb;
+               border-left:3px solid #f59e0b;padding:5px 8px;
+               border-radius:0 4px 4px 0;margin-top:8px;display:none;
+               line-height:1.45}
+  #filter-info.tampil{display:block}
+  #legenda i{width:11px;height:11px;display:inline-block;border-radius:50%;
+             margin-right:6px;vertical-align:-1px;border:1px solid rgba(0,0,0,.12)}
+    #status.err{color:#b91c1c}
+    #panel{margin-top:14px;padding-top:10px;border-top:1px solid #ddd;font-size:13px}
+  /* ---- kendali di kanvas ---- */
+  #cari-kanvas{position:absolute;top:10px;left:10px;width:min(320px,calc(100% - 70px));
+               background:rgba(255,255,255,.97);border:1px solid #e5e7eb;border-radius:8px;
+               box-shadow:0 2px 10px rgba(15,23,42,.08);padding:6px;z-index:5;box-sizing:border-box}
+  #nav{display:flex;gap:4px}
+  #cari{flex:1;min-width:0;font:12px sans-serif;padding:5px 7px;
+        border:1px solid #d1d5db;border-radius:4px}
+  #cari-info{font-size:11px;color:#6b7280;display:block;margin:5px 2px 0;line-height:1.4}
+  #cari-info:empty{display:none}
+  #cari-hasil{display:none;max-height:52vh;overflow:auto;margin-top:6px;
+              border-top:1px solid #e5e7eb;padding-top:4px}
+  #cari-hasil.tampil{display:block}
+  .ch-kepala{display:flex;justify-content:space-between;align-items:center;
+             font:500 10px/1 ui-monospace,Menlo,monospace;letter-spacing:.1em;
+             text-transform:uppercase;color:#6b7280;margin:4px 2px 2px}
+  .ch-kepala button{border:0;background:none;cursor:pointer;font-size:15px;color:#6b7280;
+                    padding:0 4px;height:auto}
+  #cari-hasil h6{margin:8px 2px 3px;font:600 11px sans-serif;color:#374151}
+  #cari-hasil ul, .dp-daftar{list-style:none;margin:0;padding:0}
+  #cari-hasil li, .dp-daftar li{display:flex;gap:6px;align-items:flex-start;font-size:11.5px;
+             line-height:1.4;padding:4px 2px;border-bottom:1px solid #f3f4f6}
+  #cari-hasil li > div, .dp-daftar li > div{flex:1;min-width:0}
+  #cari-hasil small, .dp-daftar small{color:#9ca3af;font-size:10.5px;display:block}
+  .tombol-kecil{flex:none;font-size:11px;line-height:1;padding:0 7px;height:22px;
+                border:1px solid #99d5da;background:#f0fdfa;color:#0f5e66;
+                border-radius:4px;cursor:pointer}
+  .tombol-kecil:disabled{opacity:.4;cursor:default}
+  #nav-kanvas{position:absolute;right:30px;bottom:16px;display:flex;flex-direction:column;
+              gap:4px;z-index:5}
+  #nav-kanvas button{width:36px;height:32px;font:600 14px/1 sans-serif;background:#fff;
+                     border:1px solid #d1d5db;border-radius:6px;cursor:pointer;color:#374151;
+                     box-shadow:0 1px 4px rgba(15,23,42,.08);padding:0}
+  #nav-kanvas button:hover{background:#f0fdfa;border-color:#99d5da}
+  #nav-kanvas button:disabled{opacity:.45;cursor:default}
+  #nav-kanvas #zoom-pas{font-size:11px}
+  #nav-kanvas #label-relasi.aktif{background:#e0f2f1;color:#0f5e66;border-color:#99d5da}
+  #nav-kanvas #warna-asjc{font-size:9px;letter-spacing:.02em}
+  #nav-kanvas #warna-asjc.aktif{background:#e0f2f1;color:#0f5e66;border-color:#99d5da}
+  /* ---- daftar semua publikasi peneliti ---- */
+  .dp-alat{display:flex;gap:4px;margin:6px 0 4px}
+  .dp-alat input{flex:1;min-width:0;font:11.5px sans-serif;padding:4px 6px;
+                 border:1px solid #d1d5db;border-radius:4px}
+  .dp-alat select{font-size:11px}
+  .dp-info{font-size:10.5px;color:#9ca3af;margin-bottom:3px}
+  .dp-daftar{max-height:320px;overflow:auto;border-top:1px solid #e5e7eb}
+  .kunci-db{font:10px ui-monospace,Menlo,monospace;color:#9ca3af;margin-left:5px}
+  /* ---- chip dan abstrak di panel Brainstorm ---- */
+  .bs-bersih{float:right;border:0;background:none;padding:0;height:auto;cursor:pointer;
+             color:var(--aksen);font:500 10.5px/1 sans-serif;letter-spacing:0;text-transform:none}
+  .bs-bersih:hover{text-decoration:underline}
+  .bs-chip .bs-chip-isi{cursor:pointer}
+  .bs-chip .bs-chip-isi:hover{text-decoration:underline dotted}
+  details.bs-abstrak{margin-top:3px}
+  details.bs-abstrak summary{font-size:10.5px;color:#0f6e7b;cursor:pointer}
+  details.bs-abstrak div{font-size:11px;line-height:1.55;color:#374151;background:#f8fafc;
+                         border-left:3px solid #cbd5e1;padding:5px 7px;margin-top:3px;
+                         max-height:220px;overflow:auto;border-radius:0 4px 4px 0}
+  /* ---- kartu bantuan (F3): cara memilih, mode, jalan pintas, skema ---- */
+  #bantuan{position:absolute;inset:0;z-index:9;background:rgba(15,23,42,.35);
+           display:flex;align-items:center;justify-content:center;padding:20px}
+  #bantuan[hidden]{display:none}
+  .bantuan-kartu{background:#fff;border-radius:10px;max-width:560px;width:100%;
+                 max-height:100%;overflow:auto;padding:18px 20px;
+                 box-shadow:0 10px 30px rgba(15,23,42,.25)}
+  .bantuan-kartu h3{margin:0 0 2px;font-size:15px;color:var(--aksen)}
+  .bantuan-kartu h4{margin:14px 0 4px;font:500 10px/1 ui-monospace,Menlo,monospace;
+                    letter-spacing:.12em;text-transform:uppercase;color:var(--redup)}
+  .bantuan-kartu p,.bantuan-kartu li{font-size:12px;line-height:1.55;color:#374151;margin:3px 0}
+  .bantuan-kartu ul{margin:2px 0;padding-left:18px}
+  .bantuan-kartu code{font:11px ui-monospace,Menlo,monospace;background:#f1f5f6;
+                      color:#0f5e66;padding:1px 4px;border-radius:3px}
+  .bantuan-kepala{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .skema-baris{font:11.5px/1.6 ui-monospace,Menlo,monospace;color:#374151}
+  #tip{position:absolute;z-index:6;pointer-events:none;display:none;max-width:320px;
+       background:#111827;color:#fff;font-size:11.5px;line-height:1.4;padding:5px 8px;
+       border-radius:5px;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+  #tip small{display:block;color:#9ca3af;font-size:10px}
+  .leg-kiat{font-size:10.5px;color:var(--redup);margin:4px 0 -4px;line-height:1.4}
+  .aksi-panel{margin-top:8px;display:flex;gap:4px;flex-wrap:wrap}
+  .aksi-panel button{font-size:11px;padding:0 8px;height:24px}
+  /* Daftar bukti relasi digulir sendiri agar tidak mendorong legenda keluar layar. */
+  .bukti{max-height:280px;overflow:auto;margin-top:8px;
+         border-top:1px solid #e5e7eb;padding-top:6px}
+  .bukti li{font-size:11.5px;line-height:1.45;margin-bottom:7px;
+            list-style:none;padding-left:0}
+  .bukti .judul{color:#111827}
+  .bukti .meta{color:#9ca3af;font-size:10.5px;display:block}
+  .bukti .penulis{color:#6b7280;font-size:10.5px;display:block}
+  .bukti .intern{color:#0f766e;font-weight:600}
+  /* Abstrak digulir sendiri karena bisa sangat panjang. */
+  .abstrak{font-size:11.5px;line-height:1.6;color:#374151;max-height:220px;
+           overflow:auto;background:#f8fafc;border-left:3px solid #cbd5e1;
+           padding:7px 9px;border-radius:0 4px 4px 0;margin-top:6px;
+           white-space:pre-wrap}
+  .abstrak-kepala{font:500 10px/1 ui-monospace,Menlo,monospace;
+                  letter-spacing:.1em;text-transform:uppercase;color:#6b7280;
+                  margin-top:10px;display:flex;justify-content:space-between}
+  .blok h5{margin:10px 0 3px;font:500 10px/1 ui-monospace,Menlo,monospace;
+           letter-spacing:.1em;text-transform:uppercase;color:#6b7280}
+  .blok li{font-size:11.5px;line-height:1.45;list-style:none;margin-bottom:3px}
+  .blok .angka{color:#9ca3af;font-size:10.5px;margin-left:4px}
+  .catatan-bukti{font-size:11px;line-height:1.5;color:#92400e;
+                 background:#fffbeb;border-left:3px solid #f59e0b;
+                 padding:6px 8px;border-radius:0 4px 4px 0;margin-top:8px}
+  .sisi-relasi{font-size:12px;margin:4px 0}
+  .sisi-relasi b{display:block;font-size:12.5px}
+    /* Contoh garis dibuat dari border-top supaya bisa putus-putus. */
+  #legenda i.garis{
+    width:20px; height:0; border-radius:0; background:none;
+    border-top-width:2.5px; border-top-style:solid;
+    vertical-align:4px; margin-right:6px;
+  }
+  #legenda i.putus{ border-top-style:dashed }
+  #legenda .panah{ color:#6b7280; font-size:11px; margin-left:3px }
+  #legenda .jenis-kecil{
+    display:block; margin:1px 0 5px 26px; font-size:10.5px;
+    color:#9ca3af; line-height:1.35;
+  }
+  #chat{display:flex;gap:6px;margin-bottom:6px}
+  #chat input{flex:1;padding:6px 8px;font-size:13px}
+  #jawaban{display:none;margin:4px 0 10px;padding:10px 12px;background:#f1f5f6;
+           border-radius:6px;font-size:13px;line-height:1.45}
+  #jawaban.tampil{display:block}
+  #jawaban .sumber{margin-top:6px;font-size:11px;color:#6b7280}
+
+  /* ---------------- Brainstorm (panel kiri) ---------------- */
+  #bs{position:absolute;inset:0 auto 0 0;width:320px;border-right:1px solid #ddd;
+      background:#fafafa;overflow:auto;box-sizing:border-box}
+  body.bs-lipat #bs{width:34px;overflow:hidden}
+  body.bs-lipat #bs .bs-isi, body.bs-lipat #bs .bs-kepala b{display:none}
+  .bs-kepala{display:flex;justify-content:space-between;align-items:center;
+             padding:10px 12px;border-bottom:1px solid #e5e7eb;position:sticky;
+             top:0;background:#fafafa;z-index:1}
+  body.bs-lipat .bs-kepala{padding:10px 4px}
+  .bs-kepala b{font-size:14px;color:var(--aksen)}
+  .bs-sub{font-size:10px;color:var(--redup);margin-left:7px}
+  body.bs-lipat .bs-sub{display:none}
+  .bs-kepala-kanan{display:flex;gap:6px;align-items:center}
+  #bs-reset{border:0;background:none;cursor:pointer;color:var(--aksen);font-size:11px;
+            padding:0;height:auto}
+  #bs-reset:hover{text-decoration:underline}
+  body.bs-lipat #bs-reset{display:none}
+  #legenda i.cincin{background:#fff !important;border-width:2px;border-style:solid}
+  .bs-isi{padding:10px 14px 18px}
+  #bs h4{margin:14px 0 6px;font:500 10px/1 ui-monospace,Menlo,monospace;
+         letter-spacing:.12em;text-transform:uppercase;color:#6b7280}
+  #bs h4:first-child{margin-top:2px}
+  .bs-mode{font-size:12px;line-height:1.45;padding:7px 9px;background:#f1f5f6;
+           border-left:3px solid #0f6e7b;border-radius:0 4px 4px 0}
+  .bs-mode b{color:#0f6e7b}
+  .bs-tambah{display:flex;gap:4px}
+  .bs-tambah input{flex:1;min-width:0;font:12px sans-serif;padding:5px 6px;
+                   border:1px solid #d1d5db;border-radius:4px}
+  .bs-kiat{font-size:10.5px;color:var(--redup);margin:4px 0 6px;line-height:1.4}
+  #bs-pilihan,#bs-pilihan-org{display:flex;flex-wrap:wrap;gap:4px;min-height:4px;margin-top:4px}
+  .bs-chip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;
+           background:#fff7ed;border:1.5px solid #d97706;border-radius:12px;
+           padding:2px 4px 2px 9px}
+  .bs-chip small{color:#9ca3af}
+  .bs-chip button{border:0;background:none;cursor:pointer;color:#92400e;
+                  font-size:13px;line-height:1;padding:0 3px;height:auto}
+  #bs-pesan{font-size:11px;min-height:0;margin-top:5px;line-height:1.45}
+  #bs-pesan.salah{color:#b91c1c}
+  #bs-pesan.info{color:#6b7280}
+  .bs-tombol{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+  .bs-tombol button{flex:1}
+  .bs-lencana{display:inline-block;font:600 10.5px/1 sans-serif;padding:4px 7px;
+              border-radius:10px;text-transform:uppercase;letter-spacing:.04em}
+  .bs-lencana.direct{background:#dcfce7;color:#166534}
+  .bs-lencana.bridge{background:#fef3c7;color:#92400e}
+  .bs-lencana.exploratory{background:#e5e7eb;color:#374151}
+  .bs-skor{display:inline-block;font:600 10px/1 ui-monospace,Menlo,monospace;
+           padding:3px 5px;border-radius:3px;margin-right:4px}
+  .bs-skor.strong{background:#0f766e;color:#fff}
+  .bs-skor.moderate{background:#99f6e4;color:#134e4a}
+  .bs-skor.weak{background:#e5e7eb;color:#4b5563}
+  .bs-alasan{font-size:11.5px;color:#4b5563;margin:5px 0 2px;line-height:1.45}
+  .bs-daftar{list-style:none;padding:0;margin:0}
+  .bs-daftar li{font-size:11.5px;line-height:1.45;margin-bottom:7px}
+  .bs-daftar .kecil{color:#9ca3af;font-size:10.5px}
+  .bs-tautan{color:#0f6e7b;cursor:pointer;text-decoration:underline dotted}
+  .bs-tautan:hover{color:#0b525b}
+  .bs-pasang{border-left:2px solid #e5e7eb;padding-left:7px}
+  .bs-pasang+.bs-pasang{margin-top:8px}
+  .bs-catatan{font-size:11px;line-height:1.5;color:#92400e;background:#fffbeb;
+              border-left:3px solid #f59e0b;padding:6px 8px;border-radius:0 4px 4px 0;
+              margin-top:8px}
+  .bs-ringkasan{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
+  .bs-ringkasan-sel{background:#f1f5f6;border-radius:5px;padding:7px 9px;text-align:center}
+  .bs-ringkasan-sel .angka{font-size:18px;font-weight:600;color:#111827;display:block}
+  .bs-ringkasan-sel .ket{font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:.05em}
+  .bs-segera{font-size:11px;color:var(--redup);margin-bottom:6px}
+  .bs-kirim{display:flex;gap:4px}
+  .bs-kirim input{flex:1;min-width:0;font:12px sans-serif;padding:5px 6px}
+  .bs-kaki{display:flex;justify-content:space-between;align-items:center;
+           margin-top:6px;font-size:11px;color:#6b7280}
+  /* ---- percakapan (J1) ---- */
+  #bs-sesi{font-size:11px;color:#6b7280;margin-bottom:6px;line-height:1.4}
+  #bs-obrolan{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+  .bs-msg{font-size:12px;line-height:1.55;padding:7px 9px;border-radius:6px;
+          white-space:normal;word-wrap:break-word}
+  .bs-msg.user{align-self:flex-end;background:#0f6e7b;color:#fff;max-width:88%}
+  .bs-msg.ai{background:#fff;border:1px solid #e5e7eb;border-left:3px solid #99d5da;
+             padding:9px 11px}
+  .bs-msg.ai p{margin:0 0 7px}
+  .bs-msg.ai p:last-child{margin-bottom:0}
+  .bs-msg.ai ul,.bs-msg.ai ol,#jawaban ul,#jawaban ol{margin:4px 0 8px;padding-left:18px}
+  .bs-msg.ai li,#jawaban li{margin-bottom:5px;padding-left:2px}
+  .bs-msg.ai li:last-child,#jawaban li:last-child{margin-bottom:0}
+  .bs-msg.ai ul>li::marker,#jawaban ul>li::marker{color:#99d5da}
+  .bs-msg.ai ol>li::marker,#jawaban ol>li::marker{color:var(--aksen);font-weight:600;
+    font-family:ui-monospace,Menlo,monospace;font-size:11px}
+  .bs-msg.ai ul ul,.bs-msg.ai ul ol,.bs-msg.ai ol ul,.bs-msg.ai ol ol,
+  #jawaban ul ul,#jawaban ul ol,#jawaban ol ul,#jawaban ol ol{margin:4px 0 2px}
+  /* Baris yang seluruhnya tebal dijadikan judul bagian di dalam jawaban. */
+  .bs-judul{margin:10px 0 3px;font:600 11.5px/1.35 sans-serif;color:var(--aksen);
+            letter-spacing:.01em}
+  .bs-judul:first-child{margin-top:0}
+  .bs-msg.ai code,#jawaban code{font:11px ui-monospace,Menlo,monospace;background:#f1f5f6;
+    color:#0f5e66;padding:1px 4px;border-radius:3px;overflow-wrap:anywhere}
+  #jawaban .bs-judul{font-size:12px}
+  .bs-msg.sistem{font-size:11px;color:var(--redup);background:none;padding:0 2px;
+                 border-top:1px dashed #d1d5db;padding-top:6px;border-radius:0}
+  .bs-msg.sistem.berpikir{font-style:italic;border-top:0;padding-top:0;color:var(--aksen)}
+  .bs-msg.sistem.berpikir::after{content:'';animation:titik 1.2s steps(4,end) infinite}
+  @keyframes titik{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
+  .bs-msg.galat{font-size:11.5px;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca}
+  .bs-kode{font:600 10.5px/1 ui-monospace,Menlo,monospace;background:#e0f2f1;color:#0f5e66;
+           border-radius:3px;padding:1px 3px;cursor:default}
+  .bs-kode.asing{cursor:help}
+  .bs-kode.pub,.bs-kode.tautan{cursor:pointer;text-decoration:underline dotted}
+  .bs-kode.asing{background:#fee2e2;color:#991b1b}
+  .bs-meta{font-size:10px;color:#9ca3af;margin-top:5px}
+  .bs-peringatan{font-size:10.5px;color:#92400e;background:#fffbeb;border-left:2px solid #f59e0b;
+                 padding:3px 6px;margin-top:5px}
+  #bs-pemicu{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+  #bs-pemicu button{font-size:10.5px;padding:0 9px;height:24px;border:1px solid #99d5da;
+                    background:#f0fdfa;color:#0f5e66;border-radius:12px;cursor:pointer;
+                    white-space:normal;line-height:1.3}
+  #bs-pemicu button:disabled{opacity:.45;cursor:default}
+</style></head>
+<body>
+  <div id="bs">
+    <div class="bs-kepala">
+      <b>Brainstorm</b><small class="bs-sub">compare, then discuss</small>
+      <span class="bs-kepala-kanan">
+        <button id="bs-reset" title="Clear selections, evidence and conversation (the graph stays)">Reset</button>
+        <button id="bs-lipat" title="Collapse / expand">&laquo;</button>
+      </span>
+    </div>
+    <div class="bs-isi">
+      <h4>Scope</h4>
+      <div id="bs-mode" class="bs-mode">Run a view or ask a question &mdash; or pick
+        researchers below.</div>
+
+      <h4>Researchers (2&ndash;3) <button class="bs-bersih" id="bs-bersih-r" hidden>Clear</button></h4>
+      <div class="bs-tambah">
+        <input id="bs-nama" list="bs-daftar" placeholder="Type a name&hellip;" spellcheck="false">
+        <datalist id="bs-daftar"></datalist>
+        <button id="bs-tambah">Add</button>
+      </div>
+      <div class="bs-kiat">Or right-click / Shift+click a researcher in the graph,
+        or use &ldquo;Add to compare&rdquo; in the node details.</div>
+      <div id="bs-pilihan"></div>
+      <div class="bs-tombol">
+        <button id="bs-banding" class="utama" disabled>Compare researchers</button>
+      </div>
+      <div class="petunjuk" id="bs-alasan-r"></div>
+
+      <h4>Publications (2&ndash;3) <button class="bs-bersih" id="bs-bersih-p" hidden>Clear</button></h4>
+      <div class="bs-kiat">Right-click / Shift+click a publication in the graph, use
+        &ldquo;Add to compare&rdquo; in its details, or &ldquo;+&rdquo; in search results
+        and publication lists.</div>
+      <div id="bs-pilihan-pub"></div>
+      <div class="bs-tombol">
+        <button id="bs-banding-pub" class="utama" disabled>Compare publications</button>
+      </div>
+      <div class="petunjuk" id="bs-alasan-p"></div>
+
+      <h4>Organizations (2) <button class="bs-bersih" id="bs-bersih-o" hidden>Clear</button></h4>
+      <div class="bs-tambah">
+        <input id="bs-org" list="bs-daftar-org" placeholder="Type unit or institution…" spellcheck="false">
+        <datalist id="bs-daftar-org"></datalist>
+        <button id="bs-tambah-org">Add</button>
+      </div>
+      <div id="bs-pilihan-org"></div>
+      <div class="bs-tombol">
+        <button id="bs-banding-org" class="utama" disabled>Compare organizations</button>
+      </div>
+      <div class="petunjuk" id="bs-alasan-o"></div>
+
+      <div class="bs-tombol">
+        <button id="bs-ringkas">Summarize this graph</button>
+      </div>
+      <div id="bs-pesan"></div>
+
+      <div id="bs-bukti"></div>
+
+      <h4>Conversation</h4>
+      <div id="bs-sesi">Compare or summarize first. The AI only discusses what this
+        panel shows.</div>
+      <div id="bs-obrolan"></div>
+      <div id="bs-pemicu"></div>
+      <div class="bs-kirim">
+        <input id="bs-teks" placeholder="Ask or brainstorm&hellip;" maxlength="600" spellcheck="false" disabled>
+        <button id="bs-kirim" class="utama" disabled>Send</button>
+      </div>
+      <div class="bs-kaki">
+        <button id="bs-sesi-baru" disabled title="Same evidence, fresh conversation">Restart conversation</button>
+        <label title="Send the abstracts shown in the evidence to the AI">
+          <input id="bs-abstrak" type="checkbox" checked> Include abstracts</label>
+      </div>
+    </div>
+  </div>
+  <div id="kanvas">
+    <div id="cy"></div>
+    <div id="tip"></div>
+    <div id="cari-kanvas">
+      <div id="nav">
+        <input id="cari" placeholder="Search the graph &amp; publication titles&hellip; (Enter)" spellcheck="false">
+        <button id="cari-tombol" class="utama">Search</button>
+      </div>
+      <span id="cari-info"></span>
+      <div id="cari-hasil"></div>
+    </div>
+    <div id="nav-kanvas">
+      <button id="zoom-masuk" title="Zoom in">+</button>
+      <button id="zoom-keluar" title="Zoom out">&minus;</button>
+      <button id="zoom-pas" title="Fit to screen, ignoring isolated nodes">Fit</button>
+      <button id="tata-ulang" title="Re-layout the graph">&#10227;</button>
+      <button id="label-relasi" class="aktif" title="Relation labels are on &mdash; click to hide">Aa</button>
+      <button id="warna-asjc" title="Color nodes by ASJC category instead of type">ASJC</button>
+      <button id="bantuan-tombol" title="Help: selecting, modes, shortcuts, schema">?</button>
+    </div>
+    <div id="bantuan" hidden>
+      <div class="bantuan-kartu">
+        <div class="bantuan-kepala">
+          <h3>SRE &mdash; how to use this page</h3>
+          <button id="bantuan-tutup" title="Close (Esc)">&times;</button>
+        </div>
+        <p>Every answer here is computed from the graph. The Cypher query behind a
+          result is always shown, so it can be checked and re-run.</p>
+
+        <h4>Selecting for Compare</h4>
+        <ul>
+          <li>Type a name in the left panel, then <b>Add</b></li>
+          <li><b>Add to compare</b> in the node details (right panel)</li>
+          <li><b>Right-click</b> or <b>Shift+click</b> a node in the graph</li>
+          <li><b>+</b> in search results and in a researcher's publication list</li>
+        </ul>
+
+        <h4>Three Brainstorm modes</h4>
+        <ul>
+          <li><b>Compare researchers</b> &mdash; 2&ndash;3 researchers: shared topics,
+            joint and similar publications, bridge researchers</li>
+          <li><b>Compare publications</b> &mdash; 2&ndash;3 publications: shared authors
+            and topics, abstract similarity, up to 5 related publications</li>
+          <li><b>Summarize this graph</b> &mdash; whatever the canvas currently shows</li>
+        </ul>
+        <p>Evidence levels: <b>Direct evidence</b> means a shared topic or a joint
+          publication &mdash; not necessarily a past collaboration. <b>Via a bridge</b>
+          means similar publications, a bridge researcher, or an introduction path.
+          <b>Exploratory</b> means the graph holds no evidence; ideas are labelled as such.</p>
+
+        <h4>Keyboard</h4>
+        <ul>
+          <li><code>Enter</code> &mdash; search (repeat to step through matches)</li>
+          <li><code>Esc</code> &mdash; close search results or this card</li>
+          <li><code>Ctrl/Cmd + Enter</code> &mdash; run the Cypher query</li>
+          <li><code>/</code> &mdash; jump to the search box</li>
+        </ul>
+
+        <h4>Graph schema</h4>
+        <p>Display names are English; the keys used in Cypher are Indonesian, exactly
+          as stored in the database.</p>
+        <div class="skema-baris">
+          (UnitKerja)-[:MEMILIKI]-&gt;(Peneliti)&nbsp; work unit has member<br>
+          (UnitKerja)-[:AFILIASI]-&gt;(Institusi)&nbsp; unit is part of institution<br>
+          (Peneliti)-[:BERAFILIASI]-&gt;(Institusi)&nbsp; external co-authors only<br>
+          (Peneliti)-[:MENULIS]-&gt;(Publikasi)&nbsp; wrote<br>
+          (Publikasi)-[:TERBIT_DI]-&gt;(Venue)&nbsp; published in<br>
+          (Publikasi)-[:MEMBAHAS]-&gt;(Topik)&nbsp; discusses (BERTopic)<br>
+          (Publikasi)-[:MASUK_KATEGORI]-&gt;(Kategori)&nbsp; ASJC mapping<br>
+          (Topik)-[:TERMASUK_DALAM]-&gt;(Kategori)&nbsp; topic belongs to category<br>
+          (Peneliti)-[:BIDANG_KEAHLIAN]-&gt;(Topik)&nbsp; derived expertise<br>
+          (Peneliti)-[:KOLABORASI]-(Peneliti)&nbsp; derived: co-authored<br>
+          (Peneliti)-[:SEBIDANG]-(Peneliti)&nbsp; derived: similar topic profile
+        </div>
+        <p>Two category schemes exist: <code>skema:'ASJC'</code> (27 categories) and
+          <code>ASJC-4</code> (45). A query that walks to categories must pick one,
+          otherwise every row appears twice.</p>
+      </div>
+    </div>
+  </div>
+<div id="sisi">
+  <div class="sisi-kepala">
+    <b>Explore</b>
+    <button id="sisi-lipat" title="Collapse / expand">&raquo;</button>
+  </div>
+  <div class="sisi-isi">
+    <h4 class="judul-bagian">Ask the graph</h4>
+    <div id="chat">
+      <input id="tanya" placeholder="Ask in English or Indonesian… (Enter)" spellcheck="false">
+      <button id="tanya-tombol" class="utama">Ask</button>
+    </div>
+    <div id="jawaban"></div>
+    <h4 class="judul-bagian">Cypher query</h4>
+    <textarea id="q" spellcheck="false"
+      placeholder="MATCH (p:Peneliti)-[r:BIDANG_KEAHLIAN]->(t:Topik) RETURN p, r, t LIMIT 50"></textarea>
+    <div id="gloss"></div>
+    <div id="bar">
+      <button id="jalan" class="utama">Run</button>
+      <select id="preset"><option value="">— views —</option></select>
+      <button id="muat" class="sekunder">Load</button>
+    </div>
+    <div id="status">Ctrl+Enter to run.</div>
+    <div id="ringkasan-graf"></div>
+    <div id="keterangan"></div>
+    <h4 class="judul-bagian">Details</h4>
+    <div id="panel"></div>
+    <div id="legenda"></div>
+    <div id="filter-info"></div>
+  </div>
+</div>
+<script>
+
+// Ambang sembunyi-label dikalikan devicePixelRatio. Cytoscape mengukur dalam
+// piksel perangkat, sehingga di layar Retina label masih digambar saat sudah
+// terlalu kecil untuk dibaca. Yang dibatasi adalah ukuran tampak (piksel CSS).
+const RATIO = window.devicePixelRatio || 1;
+const MZFS_NODE = 5 * RATIO;      // label node hilang di bawah ~5px CSS
+const MZFS_RELASI = 6 * RATIO;    // nama relasi baru muncul saat diperbesar
+
+// Tata letak renggang (fcose). Pada banding_institusi (184 node) rasio
+// jarak/diameter naik dari 0,87 ke 1,17. Untuk graf >300 node, menyaring di
+// Cypher lebih efektif karena yang membuat sesak adalah garis.
+//
+// fit:false wajib: fit bawaan fcose berjalan sesudah layoutstop dan menimpa
+// fitInti, yang memegang seluruh pengarahan kamera.
+const TATA_RENGGANG = {
+  name: 'fcose', quality: 'proof',
+  nodeRepulsion: 25000, idealEdgeLength: 160, nodeSeparation: 150,
+  gravity: 0.1, numIter: 2500, animate: false, fit: false,
+};
+
+// ---------------------------------------------------------------------------
+// NAMA TAMPIL (Inggris) -- dibaca dari /api/tampilan (NAMA_TAMPIL di ekspor_visual.py)
+// ---------------------------------------------------------------------------
+// Hanya tulisannya yang diterjemahkan. Kunci data ('Peneliti', 'KOLABORASI')
+// tetap, karena filter, selector gaya, dan Cypher bergantung padanya.
+let NAMA = { tipe: {}, keluarga: {}, relasi: {}, kelompok: {} };
+const PERAN_TAMPIL = { internal: 'Researcher (internal)', eksternal: 'Co-author (external)' };
+
+// Peneliti internal dikenali dari /api/peneliti (@rid dan local_id). Sebelum
+// daftarnya tiba, tidak ada yang ditandai eksternal.
+function tandaiPeneliti() {
+  if (!window.cy || !BS.peneliti.length) return;
+  cy.batch(() => cy.nodes('[tipe = "Peneliti"]').forEach(n =>
+    n.toggleClass('eksternal', !(BS.byRid[n.id()] || BS.byId[n.id()]))));
+}
+
+function tampil(jenis, kunci) {
+  return (NAMA[jenis] && NAMA[jenis][kunci]) || kunci;
+}
+function pasangLabelTampil() {
+  if (!window.cy) return;
+  cy.edges().forEach(e => e.data('label_tampil', tampil('relasi', e.data('jenis'))));
+}
+fetch('/api/tampilan').then(r => r.json()).then(t => {
+  NAMA = t;
+  pasangLabelTampil();
+  if (window.cy) { legenda(); perbaruiRingkasan(); }
+}).catch(() => {});
+
+// Pesan dari modul Python masih berbahasa Indonesia; diterjemahkan di sini
+// agar uji yang memeriksa pesan aslinya tidak perlu diubah.
+const PETA_PESAN = [
+  [/Kuota Groq per menit habis/i, () => 'LLM quota reached (free tier: 8,000 tokens per minute). Wait about 30 seconds and try again.'],
+  [/Pilih 2 sampai 3 peneliti \(sekarang (\d+)\)/, m => `Select 2 to 3 researchers (currently ${m[1]}).`],
+  [/Pilih 2 sampai 3 publikasi \(sekarang (\d+)\)/, m => `Select 2 to 3 publications (currently ${m[1]}).`],
+  [/Publikasi tidak ditemukan: (.*)/, m => `Publication not found: ${m[1]}`],
+  [/ketik minimal 2 huruf/i, () => 'Type at least 2 characters.'],
+  [/teks pencarian terlalu panjang/i, () => 'Search text too long (max 100 characters).'],
+  [/peneliti tidak ditemukan/i, () => 'Researcher not found.'],
+  [/Peneliti tidak ditemukan: (.*)/, m => `Researcher not found: ${m[1]}`],
+  [/^(.*): rekan penulis eksternal/, m => `${m[1]}: external co-author — profile data too thin to compare.`],
+  [/graf kosong/i, () => 'The graph is empty — run a view or a query first.'],
+  [/graf terlalu besar \(([^)]*)\)/, m => `Graph too large (${m[1].replace(/\bnode\b/, 'nodes').replace('relasi', 'relations')}) — narrow it down with the finder.`],
+  [/sesi tidak ditemukan/i, () => 'Session not found or expired.'],
+  [/pesan terlalu panjang/i, () => 'Message too long (max 600 characters).'],
+  [/pesan kosong/i, () => 'Empty message.'],
+  [/kehabisan jatah/i, () => 'The LLM ran out of tokens while thinking — try a shorter question.'],
+  [/belum ada di \.env/i, () => 'The LLM API key is not configured on the server.'],
+  [/payload tidak valid/i, () => 'Invalid request.'],
+];
+function pesanInggris(t) {
+  if (!t) return t;
+  for (const [pola, ubah] of PETA_PESAN) {
+    const m = String(t).match(pola);
+    if (m) return ubah(m);
+  }
+  return t;
+}
+// Status penjaga chat (lib/tanya_graf.py) -> kalimat Inggris untuk kotak jawaban.
+const STATUS_TANYA = {
+  kosong: 'The query is valid and ran, but no data matched. Labels and relations were checked — for text searches, also check the spelling.',
+  nama_asing: 'The generated query used names that do not exist in this graph, so it was not run.',
+  ditolak_db: 'The database rejected the generated query.',
+  terpotong: 'The result was cut at the database limit, so counts are lower bounds.',
+};
+
+const GAYA = [
+  // --- semua node: warna dari kamus gaya Python
+  { selector: 'node', style: {
+      'background-color': 'data(warna)',
+      'shape': 'ellipse',            // 'dot' istilah vis, di sini 'ellipse'
+      'label': 'data(label)',
+      'font-size': 9,
+      'text-valign': 'bottom',
+      'text-margin-y': 3,
+      'text-wrap': 'ellipsis',
+      'text-max-width': 90,
+      // garis putih di belakang huruf agar label terbaca di atas garis
+      'text-outline-width': 2,
+      'text-outline-color': '#fff',
+      // di bawah ambang ini label tidak digambar (tidak terbaca dan memperlambat)
+      'min-zoomed-font-size': MZFS_NODE,
+      'border-width': 1.5,
+      'border-color': '#fff',
+      // ukuran dipetakan dari data, bukan ditulis satu per satu
+      'width':  'mapData(ukuran, 7, 254, 12, 46)',
+      'height': 'mapData(ukuran, 7, 254, 12, 46)',
+  }},
+
+  // --- Kategori: satu-satunya pembawa warna ASJC, dibesarkan & ditebalkan
+  { selector: 'node[tipe = "Kategori"]', style: {
+      'font-size': 12,
+      'font-weight': 'bold',
+      'border-width': 3,
+  }},
+
+  // Peneliti eksternal = cincin (isi putih, tepi berwarna); internal = penuh.
+  // Pembedanya bentuk, bukan warna, agar tetap berlaku di mode warna ASJC.
+  { selector: 'node.eksternal', style: {
+      'background-color': '#ffffff',
+      'border-color': 'data(warna)',
+      'border-width': 2.5,
+      'color': '#6b7280',
+  }},
+
+  { selector: 'node[?ambigu]', style: {
+      'border-width': 4,
+      'border-color': 'data(warna_tepi)',
+  }},
+
+  // --- relasi
+  { selector: 'edge', style: {
+      'line-color': 'data(warna)',
+      'width': 'mapData(bobot, 1, 40, 1, 7)',
+      'curve-style': 'bezier',
+      'opacity': .65,
+  }},
+
+  // Label relasi bisa dinyalakan dan dimatikan (di vis-network tidak bisa).
+  { selector: 'edge', style: {
+      'label': 'data(label_tampil)',
+      'font-size': 7,
+      'color': '#64748B',
+      'text-rotation': 'autorotate',
+      'text-outline-width': 2,
+      'text-outline-color': '#fff',
+      // Ambang lebih tinggi dari node: nama relasi hanya berguna saat diperbesar.
+      'min-zoomed-font-size': MZFS_RELASI,
+  }},
+
+  // Label dimatikan lewat kelas. cy.style().selector().update() menambah
+  // aturan baru setiap dipanggil, sedangkan kelas tidak menumpuk.
+  { selector: 'edge.tanpa-label', style: { 'label': '' } },
+
+  // --- arah panah: '?' artinya "kalau bernilai benar"
+  { selector: 'edge[?berarah]', style: {
+      'target-arrow-color': 'data(warna)',
+      'target-arrow-shape': 'triangle',
+      'arrow-scale': .8,
+  }},
+  // '!' artinya "kalau bernilai salah" -- KOLABORASI & SEBIDANG
+  { selector: 'edge[!berarah]', style: {
+      'line-style': 'dashed',
+  }},
+
+  { selector: 'edge.asjc-edge', style: {
+      'opacity': .35,
+  }},
+
+  // Sorotan legenda: yang tidak cocok dipudarkan, bukan disembunyikan.
+  { selector: '.pudar', style: {
+      'background-color': '#E2E8F0', 'line-color': '#EEF2F6',
+      'target-arrow-color': '#EEF2F6', 'opacity': .25,
+      'text-opacity': .2, 'border-color': '#E2E8F0',
+  }},
+
+  // --- peneliti terpilih untuk Brainstorm: cincin jingga, sengaja beda dari
+  //     ':selected' agar klik biasa tidak terbaca sebagai "dipilih" 
+  { selector: 'node.bs-dipilih', style: {
+      'border-width': 5, 'border-color': '#d97706',
+  }},
+
+  // --- keadaan terpilih
+  { selector: ':selected', style: {
+      'border-color': '#111827',
+      'border-width': 3,
+      'line-color': '#111827',
+      'opacity': 1,
+  }},
+];
+
+let fitTertunda = false;   // ada permintaan fit yang gagal karena wadah 0x0
+// Koordinat Gephi sedang dipakai? Menata ulang membuangnya, dan hanya memuat
+// ulang halaman yang bisa mengembalikannya.
+let posisiGephi = false;
+
+// Ambang tata letak, dipakai jalankan() dan tombol Tata ulang.
+const AMBANG_DRAFT = 800;    // di atas ini: mutu draf, iterasi seperempatnya
+const AMBANG_BERAT = 3000;   // di atas ini: minta persetujuan dulu
+
+function pilihTataLetak(n) {
+  return n > AMBANG_DRAFT
+    ? { name: 'fcose', quality: 'draft', numIter: 250, randomize: true,
+        animate: false, fit: false }
+    : TATA_RENGGANG;
+}
+const _paramData = new URLSearchParams(location.search).get('data');
+const berkas = _paramData || 'data_cy.json';
+const _akanAutoRun = !_paramData;
+window.__t0 = performance.now();
+fetch(berkas).then(r => r.json()).then(data => {
+  const adaPosisi = data.nodes.some(n => n.position);
+  window.cy = cytoscape({
+    container: document.getElementById('cy'),
+    elements: data,
+    style: GAYA,
+    layout: adaPosisi ? { name: 'preset', fit: false } : TATA_RENGGANG,
+  });
+  // Wadah bisa berukuran 0x0 (tab di latar, panel tersembunyi). Saat itu
+  // cy.fit() tidak berbuat apa-apa dan kamera tertinggal di zoom 1. Permintaan
+  // fit karena itu ditunda, lalu dijalankan lagi oleh ResizeObserver.
+  window.fitInti = () => {
+    const w = cy.container();
+    if (!w.clientWidth || !w.clientHeight) { fitTertunda = true; return; }
+    fitTertunda = false;
+    cy.resize();
+    const inti = cy.nodes().filter(n => n.degree() > 0);
+    cy.fit(inti.length ? inti : cy.nodes(), 40);
+  };
+  posisiGephi = adaPosisi;
+  new ResizeObserver(() => { if (fitTertunda) fitInti(); })
+    .observe(cy.container());
+  cy.one('layoutstop', fitInti);
+  if (adaPosisi) fitInti();
+  requestAnimationFrame(() => { if (fitTertunda) fitInti(); });
+  panelKosong();
+  if (_akanAutoRun) {
+    cy.container().style.opacity = '0';
+    status('Loading starting view…');
+  } else {
+    status(`${cy.nodes().length.toLocaleString('en')} nodes · ` +
+           `${cy.edges().length.toLocaleString('en')} relations — starting view. ` +
+           `Run a saved view or ask a question to change it.`);
+  }
+  pasangLabelTampil();
+  tandaiPeneliti();
+  legenda();
+  perbaruiRingkasan();
+  cy.on('tap', 'node', e => tampilkanNode(e.target));
+  cy.on('tap', 'edge', e => tampilkanRelasi(e.target));
+  pasangBrainstormGraf();
+  pasangTooltip();
+});
+
+// Urutan legenda mengikuti hierarki organisasi, bukan abjad.
+const URUT_TIPE = ['Institusi','UnitKerja','Peneliti','Publikasi',
+                   'Venue','Topik','Kategori'];
+
+function legenda() {
+  let el = document.getElementById('legenda');
+  el.innerHTML = '';
+  const kat = {}, tipe = {};
+  cy.nodes().forEach(n => {
+    const d = n.data();
+    // Node yang diwarnai menurut kategori (mis. author_network) masuk bagian
+    // Kategori dan dikeluarkan dari bagian Tipe.
+    if (d.kategori && (d.tipe === 'Kategori' || d.warna_dari_kategori)) {
+      kat[d.kategori] = d.warna;
+    }
+    if (d.tipe && d.tipe !== 'Kategori' && !d.warna_dari_kategori
+        && !tipe[d.tipe]) {
+      tipe[d.tipe] = d.warna;
+    }
+  });
+
+  const kel = {};
+  cy.edges().forEach(e => {
+    const d = e.data();
+    if (!d.keluarga) return;
+    if (!kel[d.keluarga]) {
+      kel[d.keluarga] = { warna: d.warna, berarah: d.berarah,
+                          jenis: [], min: d.bobot, maks: d.bobot };
+    }
+    const k = kel[d.keluarga];
+    if (!k.jenis.includes(d.jenis)) k.jenis.push(d.jenis);
+    // rentang bobot diambil dari graf yang sedang tampil
+    if (d.bobot < k.min) k.min = d.bobot;
+    if (d.bobot > k.maks) k.maks = d.bobot;
+  });
+
+  // `lipat`: isi disembunyikan di balik <details> (dipakai daftar kategori ASJC).
+  function bagian(judul, isi, urut, medan, lipat) {
+    const nama = Object.keys(isi);
+    if (!nama.length) return;
+    nama.sort(urut);
+    const luar = el;
+    if (lipat) {
+      const d = document.createElement('details');
+      const rk = document.createElement('summary');
+      rk.className = 'leg-lipat';
+      rk.textContent = `${judul} (${nama.length})`;
+      d.appendChild(rk);
+      luar.appendChild(d);
+      el = d;                                  // baris masuk ke dalam <details>
+    } else {
+      const h = document.createElement('h4');
+      h.textContent = judul;
+      el.appendChild(h);
+    }
+    nama.forEach(k => {
+      if (medan === 'tipe' && k === 'Peneliti' && adaEksternal) {
+        // Dua baris, masing-masing bisa diklik utk menyaring.
+        [['internal', `<i style="background:${isi[k]}"></i>`],
+         ['eksternal', `<i class="cincin" style="border-color:${isi[k]}"></i>`]].forEach(([peran, ikon]) => {
+          const d = document.createElement('div');
+          d.innerHTML = `${ikon}${PERAN_TAMPIL[peran]}<span class="kunci-db">:Peneliti</span>`;
+          d.dataset.medan = 'peran'; d.dataset.nilai = peran;
+          if (FILTER.peran.has(peran)) d.classList.add('dipilih');
+          d.onclick = () => pilihFilter('peran', peran);
+          el.appendChild(d);
+        });
+        return;
+      }
+      const d = document.createElement('div');
+      // Kunci basis data ditampilkan abu-abu agar bisa dicocokkan dengan Cypher.
+      const nm = medan === 'tipe' ? tampil('tipe', k) : k;
+      d.innerHTML = `<i style="background:${isi[k]}"></i>${lolos(nm)}` +
+        (medan === 'tipe' && nm !== k ? `<span class="kunci-db">:${lolos(k)}</span>` : '');
+      d.dataset.medan = medan; d.dataset.nilai = k;
+      if (FILTER[medan] && FILTER[medan].has(k)) d.classList.add('dipilih');
+      d.onclick = () => pilihFilter(medan, k);
+      el.appendChild(d);
+    });
+    el = luar;
+  }
+
+  function bagianGaris() {
+    const nama = Object.keys(kel);
+    if (!nama.length) return;
+    const h = document.createElement('h4');
+    h.textContent = 'Relation lines';
+    el.appendChild(h);
+
+    const URUT = ['struktur','kepengarangan','semantik','kemiripan'];
+    nama.sort((a,b) => URUT.indexOf(a) - URUT.indexOf(b));
+
+    nama.forEach(k => {
+      const g = kel[k];
+      const d = document.createElement('div');
+      const putus = g.berarah ? '' : ' putus';
+      const panah = g.berarah
+        ? '<span class="panah">&rarr;</span>'
+        : '<span class="panah">no arrow</span>';
+      const bobot = g.min === g.maks ? '' : ` · weight ${g.min}–${g.maks}`;
+      d.innerHTML =
+        `<i class="garis${putus}" style="border-top-color:${g.warna}"></i>` +
+        `${tampil('keluarga', k)}${panah}` +
+        `<span class="jenis-kecil">${g.jenis.map(j => tampil('relasi', j) +
+          (tampil('relasi', j) !== j ? `<span class="kunci-db">${lolos(j)}</span>` : '')).join(' · ')}${bobot}</span>`;
+      d.dataset.medan = 'keluarga'; d.dataset.nilai = k;
+      if (FILTER.keluarga.has(k)) d.classList.add('dipilih');
+      d.onclick = () => pilihFilter('keluarga', k);
+      el.appendChild(d);
+    });
+  }
+
+  const adaEksternal = cy.nodes('.eksternal').length > 0;
+  if (Object.keys(tipe).length || Object.keys(kel).length) {
+    const kiat = document.createElement('div');
+    kiat.className = 'leg-kiat';
+    kiat.textContent = warnaAsjcAktif
+      ? 'ASJC mode: nodes colored by dominant ASJC category.'
+      : ('Grey = the key used in Cypher.' +
+         (adaEksternal ? ' Filled researcher = internal (UB/BRIN units); ring = external co-author.' : ''));
+    el.appendChild(kiat);
+  }
+  if (warnaAsjcAktif) {
+    const asjcLeg = {};
+    cy.nodes().forEach(n => {
+      const d = n.data();
+      if (d.asjc_dominan) asjcLeg[d.asjc_dominan] = d.warna;
+    });
+    bagian('ASJC categories', asjcLeg, undefined, 'kategori');
+  } else {
+    bagian('Node types', tipe,
+           (a, b) => URUT_TIPE.indexOf(a) - URUT_TIPE.indexOf(b), 'tipe');
+  }
+  bagianGaris();
+  if (!warnaAsjcAktif)
+    bagian('ASJC categories', kat, undefined, 'kategori', true);
+
+  if (Object.keys(tipe).length || Object.keys(kat).length) {
+    const r = document.createElement('div');
+    r.style.marginTop = '8px';
+    r.innerHTML = '<i style="background:transparent;border-style:dashed"></i>' +
+                    '<span style="font-style:italic">clear filters</span>';
+    r.onclick = bersihkanFilter;
+    el.appendChild(r);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// FILTER BANYAK-PILIH -- setiap baris legenda adalah saklar, pilihannya menumpuk
+// ---------------------------------------------------------------------------
+// Aturan gabungan:
+//   1. Node aktif bila tidak ada filter tipe/kategori, atau tipenya dipilih.
+//   2. Garis aktif bila (tidak ada filter keluarga atau keluarganya dipilih)
+//      dan kedua ujungnya aktif.
+//   3. Bila hanya filter keluarga yang aktif, node tanpa garis aktif ikut
+//      dipudarkan.
+const FILTER = { tipe: new Set(), kategori: new Set(), keluarga: new Set(), peran: new Set() };
+
+function adaFilter() {
+  return FILTER.tipe.size || FILTER.kategori.size || FILTER.keluarga.size || FILTER.peran.size;
+}
+
+function pilihFilter(medan, nilai) {
+  const s = FILTER[medan];
+  if (!s) return;
+  s.has(nilai) ? s.delete(nilai) : s.add(nilai);
+  terapkanFilter();
+}
+
+function bersihkanFilter() {
+  FILTER.tipe.clear(); FILTER.kategori.clear(); FILTER.keluarga.clear(); FILTER.peran.clear();
+  terapkanFilter();
+}
+
+function terapkanFilter() {
+  cy.elements().removeClass('pudar');
+  tandaiLegenda();
+  tandaiRingkasan();
+  const info = document.getElementById('filter-info');
+  if (!adaFilter()) {
+    if (info) info.className = '';
+    return;
+  }
+  const adaNodeFilter = FILTER.tipe.size || FILTER.kategori.size || FILTER.peran.size;
+  const nodeAktif = n =>
+    !adaNodeFilter ||
+    FILTER.tipe.has(n.data('tipe')) || FILTER.kategori.has(n.data('kategori')) ||
+    (n.data('tipe') === 'Peneliti' && FILTER.peran.has(n.hasClass('eksternal') ? 'eksternal' : 'internal'));
+  const garisAktif = e =>
+    (!FILTER.keluarga.size || FILTER.keluarga.has(e.data('keluarga'))) &&
+    nodeAktif(e.source()) && nodeAktif(e.target());
+
+  const gAktif = cy.edges().filter(garisAktif);
+  // Aturan 3: kalau cuma keluarga yang disaring, node ikut mengikuti garisnya.
+  const nAktif = adaNodeFilter
+    ? cy.nodes().filter(nodeAktif)
+    : gAktif.connectedNodes();
+  cy.elements().difference(nAktif.union(gAktif)).addClass('pudar');
+
+  if (info) {
+    const bagian = [];
+    if (FILTER.tipe.size)     bagian.push([...FILTER.tipe].map(t => tampil('tipe', t)).join(', '));
+    if (FILTER.kategori.size) bagian.push([...FILTER.kategori].join(', '));
+    if (FILTER.keluarga.size) bagian.push([...FILTER.keluarga].map(k => tampil('keluarga', k)).join(', '));
+    if (FILTER.peran.size) bagian.push([...FILTER.peran].map(k => PERAN_TAMPIL[k]).join(', '));
+    info.textContent = `Active filter: ${bagian.join(' · ')} — ` +
+      `${nAktif.length} nodes, ${gAktif.length} relations shown. ` +
+      `Click "clear filters" to reset.`;
+    info.className = 'tampil';
+  }
+}
+
+// Centang legenda dibangun ulang dari FILTER, bukan di-toggle setempat, agar
+// selalu sesuai keadaan filter sebenarnya.
+function tandaiLegenda() {
+  document.querySelectorAll('#legenda div[data-medan]').forEach(d => {
+    const aktif = (FILTER[d.dataset.medan] || new Set()).has(d.dataset.nilai);
+    d.classList.toggle('dipilih', aktif);
+  });
+}
+
+function sorotKumpulan(eles) {
+  // Pencarian/fokus dan filter legenda saling meniadakan: keadaan gabungannya
+  // sulit dijelaskan. Centang legenda ikut dibersihkan.
+  if (adaFilter()) {
+    FILTER.tipe.clear(); FILTER.kategori.clear(); FILTER.keluarga.clear(); FILTER.peran.clear();
+    tandaiLegenda();
+    const info = document.getElementById('filter-info');
+    if (info) info.className = '';
+  }
+  cy.elements().removeClass('pudar');
+  if (!eles || !eles.length) return;
+  cy.elements().difference(eles.union(eles.edgesWith(eles))).addClass('pudar');
+}
+
+function pusatkan(n) {
+  cy.animate({ center: { eles: n }, zoom: Math.max(cy.zoom(), 1.2) },
+             { duration: 300 });
+}
+
+// Enter berulang berpindah ke kecocokan berikutnya; kata baru memulai dari
+// awal.
+let cariTerakhir = '', cariIdx = 0;
+
+function jalankanCari() {
+  const teks = document.getElementById('cari').value.trim().toLowerCase();
+  const info = document.getElementById('cari-info');
+  if (!teks) {
+    sorotKumpulan(null); info.textContent = '';
+    document.getElementById('cari-hasil').className = '';
+    return;
+  }
+  const cocok = cy.nodes().filter(n =>
+    String(n.data('label') || '').toLowerCase().includes(teks));
+  if (teks !== cariDbTerakhir) cariDb(teks);
+  else if (cariDbHasil.publikasi) tampilkanHasilCari();       // dibuka lagi, tanpa ke server
+  if (!cocok.length) {
+    sorotKumpulan(null);
+    info.textContent = `Not on this graph — see the database results below.`;
+    return;
+  }
+  if (teks !== cariTerakhir) { cariTerakhir = teks; cariIdx = 0; }
+  else { cariIdx = (cariIdx + 1) % cocok.length; }
+  const n = cocok[cariIdx];
+  // Semua kecocokan disorot, tetapi kamera hanya menuju satu; memuat semuanya
+  // membuat zoom terlalu jauh.
+  sorotKumpulan(cocok);
+  pusatkan(n);
+  info.textContent = cocok.length === 1
+    ? `On this graph: 1 match — ${n.data('label')}`
+    : `On this graph: ${cariIdx + 1} of ${cocok.length} — ${n.data('label')} (Enter for next)`;
+}
+
+// ---------------------------------------------------------------------------
+// CARI DI BASIS DATA: judul publikasi dan nama peneliti internal di seluruh
+// basis data, bukan hanya yang tampil. Hasil bisa dibuka, disorot, atau
+// ditambahkan ke Compare.
+// ---------------------------------------------------------------------------
+let cariDbTerakhir = '', cariDbHasil = { peneliti: [], publikasi: [] };
+
+async function cariDb(teks) {
+  cariDbTerakhir = teks;
+  const el = document.getElementById('cari-hasil');
+  if (teks.length < 2) { el.className = ''; return; }
+  el.className = 'tampil';
+  el.innerHTML = `<div class="ch-kepala">In the database</div><div class="bs-segera">Searching…</div>`;
+  try {
+    const r = await fetch('/api/cari', { method: 'POST',
+      headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ teks }) });
+    const d = await r.json();
+    if (teks !== cariDbTerakhir) return;           // pencarian lain sudah dimulai
+    if (!r.ok) { el.innerHTML = `<div class="catatan-bukti">${lolos(pesanInggris(d.error))}</div>`; return; }
+    cariDbHasil = d;
+    el.innerHTML = renderCariDb(d);
+    bsSegarkanTombolCari();
+  } catch (e) {
+    el.innerHTML = `<div class="catatan-bukti">Could not reach the server: ${lolos(e.message)}</div>`;
+  }
+}
+
+function renderCariDb(d) {
+  let h = `<div class="ch-kepala"><span>In the database</span>` +
+          `<button id="cari-tutup" title="Close">&times;</button></div>`;
+  if (d.peneliti.length) {
+    h += `<h6>Researchers (${d.peneliti.length})</h6><ul>` + d.peneliti.map((p, i) =>
+      `<li><div><span class="bs-tautan" data-detail="${lolos(p.id)}" data-rid="${lolos(p.rid)}">` +
+      `${lolos(p.nama)}</span><small>${lolos(p.unit || '')}` +
+      `${nodeDiGraf(p.rid) ? ' · on this graph' : ''}</small></div>` +
+      `<button class="tombol-kecil" data-tambah-r="${i}" title="Add to compare">+</button></li>`).join('') + `</ul>`;
+  }
+  const lebih = d.total_publikasi > d.publikasi.length
+    ? ` — top ${d.publikasi.length} by citations` : '';
+  h += `<h6>Publications (${d.total_publikasi.toLocaleString('en')}${lebih})</h6>`;
+  if (!d.publikasi.length) return h + `<div class="bs-segera">No publication title contains all these words.</div>`;
+  return h + `<ul>` + d.publikasi.map((p, i) => {
+    const di = nodeDiGraf(p.rid, p.kunci);
+    return `<li><div><span class="bs-tautan" data-detail="${lolos(p.kunci)}" data-rid="${lolos(p.rid)}">` +
+      `${lolos(p.judul)}</span><small>${lolos(p.tahun || 'n.d.')} · ${p.sitasi || 0} citations` +
+      `${p.internal.length ? ' · ' + p.internal.slice(0, 2).map(lolos).join(', ') + (p.internal.length > 2 ? '…' : '') : ''}` +
+      `${di ? ' · <span class="bs-tautan" data-fokus="' + lolos(p.rid) + '">on this graph</span>' : ''}</small></div>` +
+      `<button class="tombol-kecil" data-tambah-p="${i}" title="Add to compare">+</button></li>`;
+  }).join('') + `</ul>`;
+}
+
+// Tombol "+" yang sudah terpilih dimatikan -- terlihat mana yang sudah masuk.
+function bsSegarkanTombolCari() {
+  document.querySelectorAll('#cari-hasil [data-tambah-p]').forEach(b => {
+    const p = cariDbHasil.publikasi[+b.dataset.tambahP];
+    b.disabled = !!p && BS.pilihanPub.some(x => x.kunci === p.kunci);
+  });
+  document.querySelectorAll('#cari-hasil [data-tambah-r]').forEach(b => {
+    const p = cariDbHasil.peneliti[+b.dataset.tambahR];
+    b.disabled = !!p && BS.pilihan.includes(p.id);
+  });
+}
+
+function tampilkanHasilCari() {
+  const el = document.getElementById('cari-hasil');
+  if (!el.innerHTML.trim()) return;
+  el.className = 'tampil';
+  bsSegarkanTombolCari();
+}
+
+// `lupakan`: kata terakhir dihapus agar pencarian berikutnya bertanya ke server.
+function tutupHasilCari(lupakan) {
+  document.getElementById('cari-hasil').className = '';
+  if (lupakan) cariDbTerakhir = '';
+}
+
+// Esc menutup kotak hasil di mana pun fokusnya.
+// "/" memindahkan fokus ke kotak cari, kecuali sedang mengetik di kotak lain.
+document.addEventListener('keydown', e => {
+  if (e.key !== '/' || e.metaKey || e.ctrlKey) return;
+  const t = e.target.tagName;
+  if (t === 'INPUT' || t === 'TEXTAREA' || e.target.isContentEditable) return;
+  e.preventDefault();
+  document.getElementById('cari').focus();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const bantuan = document.getElementById('bantuan');
+  if (bantuan && !bantuan.hidden) { bantuan.hidden = true; return; }
+  if (document.getElementById('cari-hasil').className) tutupHasilCari(true);
+});
+
+function nodeDiGraf(...kunci) {
+  if (!window.cy) return null;
+  for (const k of kunci) {
+    if (!k) continue;
+    const n = cy.getElementById(k);
+    if (n && n.length) return n;
+  }
+  return null;
+}
+
+document.getElementById('cari-hasil').addEventListener('click', e => {
+  const t = e.target.closest('[data-detail],[data-tambah-r],[data-tambah-p],[data-fokus],#cari-tutup');
+  if (!t) return;
+  if (t.id === 'cari-tutup') { tutupHasilCari(true); return; }
+  if (t.dataset.fokus) {
+    const n = nodeDiGraf(t.dataset.fokus);
+    if (n) { sorotKumpulan(n); pusatkan(n); cy.$(':selected').unselect(); n.select(); tampilkanNode(n); }
+    return;
+  }
+  if (t.dataset.detail) {
+    // Detail pindah ke panel Explore. Kata terakhir diingat: Enter menampilkan
+    // hasilnya lagi tanpa memanggil server.
+    tutupHasilCari(false);
+    return tampilkanDetail(t.dataset.detail, nodeDiGraf(t.dataset.rid, t.dataset.detail));
+  }
+  if (t.dataset.tambahR) {
+    const p = BS.byId[cariDbHasil.peneliti[+t.dataset.tambahR].id];
+    if (p && bsTambah(p)) bsPesan(`${p.nama} added.` + (BS.pilihan.length < 2 ? ' Add 1–2 more.' : ''));
+    return;
+  }
+  if (t.dataset.tambahP) bsTambahPub(cariDbHasil.publikasi[+t.dataset.tambahP]);
+});
+
+// Fokus tetangga: node terpilih dan tetangganya; yang lain dipudarkan.
+function fokusTetangga(n) {
+  const sekitar = n.closedNeighborhood();
+  sorotKumpulan(sekitar.nodes());
+  cy.animate({ fit: { eles: sekitar, padding: 60 } }, { duration: 300 });
+  document.getElementById('cari-info').textContent =
+    `Focus: ${n.data('label')} + ${n.degree()} neighbours`;
+}
+
+// Detail node diambil saat diminta dari /api/node. Abstrak tidak ikut di JSON
+// graf (seluruhnya ~6 MB).
+function tampilkanNode(n) { return tampilkanDetail(n.id(), n); }
+
+// Detail bisa dibuka dari klik node, hasil cari, daftar publikasi, atau
+// Brainstorm; node-nya belum tentu ada di graf. Focus/Center hanya muncul bila
+// tergambar. `cara`: 'graf' (riwayat baru), 'panel' (tombol Back), 'kembali'.
+const DETAIL = { id: null, riwayat: [], semua: null };
+
+async function tampilkanDetail(id, n, cara = 'graf') {
+  if (cara === 'panel' && DETAIL.id && DETAIL.id !== id) {
+    DETAIL.riwayat.push(DETAIL.id);
+    if (DETAIL.riwayat.length > 10) DETAIL.riwayat.shift();
+  } else if (cara === 'graf') {
+    DETAIL.riwayat = [];
+  }
+  DETAIL.id = id; DETAIL.semua = null;
+  let kunciDetail = null;                  // local_id dari server, utk cek internal
+  // Panel Explore yang terlipat dibuka: detail yang diminta harus terlihat.
+  if (document.body.classList.contains('sisi-lipat')) document.getElementById('sisi-lipat').click();
+  const el = document.getElementById('panel');
+  const lihat = () => {
+    const sisi = document.getElementById('sisi');
+    if (sisi) sisi.scrollTop = el.offsetTop - 50;
+  };
+  const d = n ? n.data() : null;
+  const kepala = (nama, tipe, node) => {
+    let h = DETAIL.riwayat.length
+      ? `<div style="margin-bottom:6px"><button id="aksi-kembali" class="sekunder">&larr; Back</button></div>` : '';
+    h += `<b>${lolos(nama)}</b><br><small>${lolos(tampil('tipe', tipe))}` +
+      (d && d.kategori ? ` · ${lolos(d.kategori)}` : '') +
+      (node ? ` · ${node.degree()} relations` : ' · not on this graph') + `</small>` +
+      `<div class="aksi-panel">`;
+    if (node) {
+      h += `<button id="aksi-fokus">Focus neighbours</button>` +
+           `<button id="aksi-pusat">Center</button>` +
+           `<button id="aksi-semua" class="sekunder" title="Remove the fade from the rest of the graph">Clear highlight</button>`;
+    }
+    // Peneliti eksternal tidak ditawari: profilnya terlalu tipis.
+    const internal = BS.byId[kunciDetail] || BS.byRid[id] || BS.byId[id];
+    if (tipe === 'Publikasi' || (tipe === 'Peneliti' && internal)) {
+      h += `<button id="aksi-banding">Add to compare</button>`;
+    }
+    return h + `</div>`;
+  };
+  const pasangAksi = (node, b) => {
+    const pasang = (i, f) => { const t = document.getElementById(i); if (t) t.onclick = f; };
+    pasang('aksi-kembali', () => {
+      const lalu = DETAIL.riwayat.pop();
+      if (lalu) tampilkanDetail(lalu, nodeDiGraf(lalu), 'kembali');
+    });
+    pasang('aksi-fokus', () => fokusTetangga(node));
+    pasang('aksi-pusat', () => pusatkan(node));
+    pasang('aksi-semua', () => {
+      sorotKumpulan(null); fitInti();
+      document.getElementById('cari-info').textContent = '';
+    });
+    pasang('aksi-banding', () => {
+      if (!b) { if (node) bsDariNode(node); return; }
+      if (b.tipe === 'Publikasi') {
+        bsTambahPub({ kunci: b.kunci, judul: b.nama, tahun: (b.sifat || {}).tahun, rid: b.rid });
+      } else {
+        const p = BS.byId[b.kunci];
+        if (!p) { bsPesan(`${b.nama}: external co-author — profile data too thin to compare.`, true); return; }
+        if (bsTambah(p)) bsPesan(`${p.nama} added.` + (BS.pilihan.length < 2 ? ' Add 1–2 more.' : ''));
+      }
+    });
+    pasang('aksi-semua-pub', () => muatSemuaPublikasi(b));
+  };
+  el.innerHTML = (d ? kepala(d.label, d.tipe, n) : '') + `<div class="catatan-bukti">Loading details…</div>`;
+  pasangAksi(n, null); lihat();
+
+  try {
+    const r = await fetch('/api/node', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ id })
+    });
+    const b = await r.json();
+    if (DETAIL.id !== id) return;                    // pengguna sudah membuka yang lain
+    if (!r.ok) {
+      el.innerHTML = (d ? kepala(d.label, d.tipe, n) : '') +
+        `<div class="catatan-bukti">Failed: ${lolos(pesanInggris(b.error) || r.status)}</div>`;
+      pasangAksi(n, null); return;
+    }
+    const node = n || nodeDiGraf(b.rid, b.kunci);
+    kunciDetail = b.kunci;
+    let isi = '';
+    if (b.cacah && b.cacah.publikasi != null) {
+      isi += `<div style="font-size:11.5px;margin-top:6px">` +
+             `<b>${b.cacah.publikasi}</b> publications</div>`;
+    }
+    (b.daftar || []).forEach(bag => {
+      if (!bag.isi.length) return;
+      const li = bag.isi.map(x => {
+        if (x.kunci) {                                // publikasi: bisa diklik
+          return `<li><span class="bs-tautan" data-detail="${lolos(x.kunci)}">${lolos(x.judul_pub)}</span>` +
+                 `<span class="angka">${lolos(x.tahun || '')}</span></li>`;
+        }
+        const angka = x.jumlah != null ? `<span class="angka">${x.jumlah}x</span>`
+                    : x.skor != null ? `<span class="angka">${typeof x.skor === 'number'
+                        ? 'relevance ' + x.skor.toFixed(2) : lolos(x.skor)}</span>` : '';
+        const nm = x.internal ? `<span class="intern">${lolos(x.nama)}</span>`
+                              : lolos(x.nama);
+        return `<li>${nm}${angka}</li>`;
+      }).join('');
+      isi += `<div class="blok"><h5>${lolos(bag.judul)}</h5><ul>${li}</ul></div>`;
+      if (bag.judul === 'Latest publications' && b.cacah && b.cacah.publikasi > bag.isi.length) {
+        isi += `<button id="aksi-semua-pub" class="sekunder" style="font-size:11px;margin-top:2px">` +
+               `Show all ${b.cacah.publikasi} publications</button><div id="daftar-pub"></div>`;
+      }
+    });
+    if (b.abstrak) {
+      isi += `<div class="abstrak-kepala"><span>Abstract</span>` +
+             `<span>${b.abstrak.length} characters</span></div>` +
+             `<div class="abstrak">${lolos(b.abstrak)}</div>`;
+    } else if (b.tipe === 'Publikasi') {
+      isi += `<div class="catatan-bukti">This publication has no abstract.</div>`;
+    }
+    // b.nama = judul LENGKAP dari server; d.label dipotong 46 huruf utk kanvas.
+    el.innerHTML = kepala(b.nama || (d && d.label), b.tipe, node) + isi;
+    pasangAksi(node, b); lihat();
+  } catch (err) {
+    el.innerHTML = (d ? kepala(d.label, d.tipe, n) : '') +
+      `<div class="catatan-bukti">Could not reach the server: ${lolos(err.message)}</div>`;
+    pasangAksi(n, null);
+  }
+}
+
+// Semua publikasi seorang peneliti (maks 361) dikirim sekaligus; disaring
+// dan diurutkan di halaman, di kotak yang digulir sendiri.
+async function muatSemuaPublikasi(b) {
+  const wadah = document.getElementById('daftar-pub');
+  const tombol = document.getElementById('aksi-semua-pub');
+  if (!wadah || !b) return;
+  tombol.disabled = true;
+  wadah.innerHTML = `<div class="bs-segera">Loading…</div>`;
+  try {
+    const r = await fetch('/api/publikasi_peneliti', { method: 'POST',
+      headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ id: b.kunci }) });
+    const d = await r.json();
+    if (DETAIL.id === null || !document.getElementById('daftar-pub')) return;
+    if (!r.ok) { wadah.innerHTML = `<div class="catatan-bukti">${lolos(pesanInggris(d.error))}</div>`; tombol.disabled = false; return; }
+    DETAIL.semua = d.publikasi;
+    tombol.remove();
+    wadah.innerHTML =
+      `<div class="blok"><h5>All publications</h5></div>` +
+      `<div class="dp-alat"><input id="dp-saring" placeholder="Filter titles…" spellcheck="false">` +
+      `<select id="dp-urut"><option value="baru">Newest</option><option value="sitasi">Most cited</option>` +
+      `<option value="az">A–Z</option></select></div><div class="dp-info"></div><ul class="dp-daftar"></ul>`;
+    document.getElementById('dp-saring').oninput = gambarDaftarPublikasi;
+    document.getElementById('dp-urut').onchange = gambarDaftarPublikasi;
+    gambarDaftarPublikasi();
+  } catch (e) {
+    wadah.innerHTML = `<div class="catatan-bukti">Could not reach the server: ${lolos(e.message)}</div>`;
+    tombol.disabled = false;
+  }
+}
+
+function gambarDaftarPublikasi() {
+  const semua = DETAIL.semua || [];
+  const kata = document.getElementById('dp-saring').value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const urut = document.getElementById('dp-urut').value;
+  const tampak = semua
+    .map((p, i) => ({ ...p, i }))
+    .filter(p => kata.every(k => String(p.judul || '').toLowerCase().includes(k)));
+  if (urut === 'sitasi') tampak.sort((a, b) => (b.sitasi || 0) - (a.sitasi || 0));
+  else if (urut === 'az') tampak.sort((a, b) => String(a.judul).localeCompare(String(b.judul)));
+  document.querySelector('#panel .dp-info').textContent =
+    `Showing ${tampak.length} of ${semua.length}` + (kata.length ? ' (filtered)' : '');
+  document.querySelector('#panel .dp-daftar').innerHTML = tampak.map(p => {
+    const sudah = BS.pilihanPub.some(x => x.kunci === p.kunci);
+    return `<li><div><span class="bs-tautan" data-detail="${lolos(p.kunci)}" data-rid="${lolos(p.rid)}">` +
+      `${lolos(p.judul)}</span><small>${lolos(p.tahun || 'n.d.')} · ${p.sitasi || 0} citations` +
+      `${nodeDiGraf(p.rid) ? ' · on this graph' : ''}</small></div>` +
+      `<button class="tombol-kecil" data-tambah-dp="${p.i}" title="Add to compare"${sudah ? ' disabled' : ''}>+</button></li>`;
+  }).join('') || `<li><div class="bs-segera">No title matches.</div></li>`;
+}
+
+// Satu pendengar untuk seluruh isi panel detail (isinya diganti-ganti).
+document.getElementById('panel').addEventListener('click', e => {
+  const t = e.target.closest('[data-detail],[data-tambah-dp]');
+  if (!t) return;
+  if (t.dataset.detail) return tampilkanDetail(t.dataset.detail, nodeDiGraf(t.dataset.rid, t.dataset.detail), 'panel');
+  const p = (DETAIL.semua || [])[+t.dataset.tambahDp];
+  if (p && bsTambahPub(p)) t.disabled = true;
+});
+
+// ---------------------------------------------------------------------------
+// BUKTI RELASI -- menjawab "kenapa dua node ini tersambung?"
+// ---------------------------------------------------------------------------
+// KOLABORASI, SEBIDANG, dan BIDANG_KEAHLIAN dihitung dari MENULIS dan MEMBAHAS.
+// Panel ini menelusuri balik ke publikasi yang melahirkan garisnya.
+function lolos(t) {
+  // Tanda kutip ikut diloloskan karena hasilnya juga dipakai di dalam atribut.
+  return String(t == null ? '' : t)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+async function tampilkanRelasi(edge) {
+  const d = edge.data();
+  const el = document.getElementById('panel');
+  // Panel berada di bawah legenda, jadi digulir ke tampak setiap diisi.
+  // scrollTop diatur langsung: `block:'nearest'` kadang tidak menggeser, dan
+  // `behavior:'smooth'` tidak berjalan saat tab di latar.
+  const lihat = () => {
+    const sisi = document.getElementById('sisi');
+    if (sisi) sisi.scrollTop = el.offsetTop - 8;
+  };
+  const nDari = cy.getElementById(d.source), nKe = cy.getElementById(d.target);
+  const kepala =
+    `<b>${lolos(tampil('relasi', d.jenis))}</b> <small>· ${lolos(tampil('keluarga', d.keluarga))}` +
+    (d.bobot != null ? ` · weight ${lolos(d.bobot)}` : '') + `</small>` +
+    `<div class="sisi-relasi"><small>From</small>` +
+    `<b>${lolos(nDari.data('label') || d.source)}</b></div>` +
+    `<div class="sisi-relasi"><small>To</small>` +
+    `<b>${lolos(nKe.data('label') || d.target)}</b></div>`;
+  el.innerHTML = kepala + `<div class="catatan-bukti">Loading evidence…</div>`;
+  lihat();
+
+  try {
+    const r = await fetch('/api/relasi', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ jenis: d.jenis, source: d.source, target: d.target })
+    });
+    const b = await r.json();
+    if (!r.ok) {
+      el.innerHTML = kepala +
+        `<div class="catatan-bukti">Failed: ${lolos(b.error || r.status)}</div>`;
+      return;
+    }
+    // Relasi struktural (AFILIASI, MENULIS, ...) memang ada di data sumber;
+    // katakan begitu agar panel tidak tampak gagal.
+    if (!b.jumlah_bukti) {
+      // Dua sebab yang berbeda:
+      //   relasi asli   -> tidak ada yang perlu ditelusuri
+      //   relasi hitung -> buktinya berupa skor, bukan daftar publikasi
+      const sifat = Object.entries(b.sifat || {})
+        .map(([k, v]) => `${lolos(k)}: <b>${lolos(v)}</b>`).join(' · ');
+      const pesan = b.dari_sumber
+        ? 'This relation is recorded directly in the source data, so there is no ' +
+          'derived evidence to trace.'
+        : 'This relation is COMPUTED, not from the source data. Its evidence is the ' +
+          'match score below — not a list of publications. The average topic-to-ASJC ' +
+          'mapping score is only 0.49, so read the numbers as a tendency, not a ' +
+          'certainty.';
+      el.innerHTML = kepala +
+        (sifat ? `<div style="font-size:11.5px;margin-top:6px">${sifat}</div>` : '') +
+        `<div class="catatan-bukti">` +
+        (b.catatan ? lolos(b.catatan) + '<br><br>' : '') + pesan + `</div>`;
+      lihat();
+      return;
+    }
+    const baris = b.bukti.map(x => {
+      const pen = (x.penulis || [])
+        .map(p => p.internal ? `<span class="intern">${lolos(p.nama)}</span>`
+                             : lolos(p.nama)).join(', ');
+      const meta = [x.tahun, x.doi, x.mysql_ids ? `mysql ${x.mysql_ids}` : null]
+        .filter(Boolean).map(lolos).join(' · ');
+      const angka = (x.jumlah_a != null)
+        ? `<span class="meta">used ${x.jumlah_a}x and ${x.jumlah_b}x</span>` : '';
+      return `<li><span class="judul">${lolos(x.judul)}</span>` +
+             (meta ? `<span class="meta">${meta}</span>` : '') + angka +
+             (pen ? `<span class="penulis">${pen}</span>` : '') + `</li>`;
+    }).join('');
+    el.innerHTML = kepala +
+      `<div class="catatan-bukti">${lolos(b.catatan)}</div>` +
+      `<div style="margin-top:8px;font-size:11px;color:#6b7280">` +
+      `<b>${b.jumlah_bukti}</b> ${b.jumlah_bukti === 1 ? 'piece' : 'pieces'} of evidence` +
+      (b.jumlah_bukti >= 60 ? ' (first 60)' : '') + `</div>` +
+      `<ul class="bukti">${baris}</ul>`;
+    lihat();
+  } catch (err) {
+    el.innerHTML = kepala +
+      `<div class="catatan-bukti">Could not reach the server: ${lolos(err.message)}</div>`;
+  }
+}
+
+// Keadaan kosong yang menuntun pengguna.
+const PANEL_KOSONG =
+  '<div class="petunjuk">Click a node or a line to see its details here.<br>' +
+  'Tip: search above for a researcher or a publication title, or right-click a ' +
+  'node to add it to Compare.</div>';
+
+function panelKosong() {
+  const el = document.getElementById('panel');
+  if (el) el.innerHTML = PANEL_KOSONG;
+}
+
+function status(t, salah) {
+  const el = document.getElementById('status');
+  el.textContent = t; el.className = salah ? 'err' : '';
+}
+
+function perbaruiRingkasan() {
+  const el = document.getElementById('ringkasan-graf');
+  if (!window.cy || !cy.nodes().length) { el.className = ''; el.innerHTML = ''; return; }
+  const hitung = {};
+  cy.nodes().forEach(n => {
+    const t = n.data('tipe') || '?';
+    hitung[t] = (hitung[t] || 0) + 1;
+  });
+  const urut = Object.entries(hitung).sort((a, b) => b[1] - a[1]);
+  el.innerHTML = urut.map(([t, n]) =>
+    `<div class="rg-sel" data-tipe="${lolos(t)}" title="Click to filter">` +
+    `<span class="rg-n">${n.toLocaleString('en')}</span>` +
+    `<span class="rg-t">${lolos(tampil('tipe', t))}</span></div>`).join('');
+  el.className = 'tampil';
+}
+function tandaiRingkasan() {
+  document.querySelectorAll('#ringkasan-graf .rg-sel').forEach(s =>
+    s.classList.toggle('aktif', FILTER.tipe.has(s.dataset.tipe)));
+}
+document.getElementById('ringkasan-graf').addEventListener('click', e => {
+  const sel = e.target.closest('.rg-sel');
+  if (!sel) return;
+  const t = sel.dataset.tipe;
+  if (FILTER.tipe.has(t)) FILTER.tipe.delete(t); else FILTER.tipe.add(t);
+  terapkanFilter();
+});
+
+// Selama kueri berjalan, seluruh kendali panel dikunci; aksi di tengah jalan
+// akan bekerja pada graf lama.
+function kunci(aktif) {
+  document.querySelectorAll('#sisi .sisi-isi button, #sisi select, #sisi input, #sisi textarea, ' +
+                            '#bs .bs-isi button, #bs input, #nav-kanvas button, #cari-kanvas button, ' +
+                            '#cari')
+          .forEach(el => { if (!el.hasAttribute('data-selalu-mati')) el.disabled = aktif; });
+  if (!aktif) bsSegarkanTombol();
+  const l = document.getElementById('legenda');
+  l.style.pointerEvents = aktif ? 'none' : '';
+  l.style.opacity = aktif ? .45 : '';
+}
+
+// Dipakai jalankan() dan tanyakan() agar hasil query dan chat digambar sama.
+function gambar(d) {
+    if (!d.nodes?.length) {
+      // Graf lama dikosongkan; kalau dibiarkan, gambar lama tampak seperti hasil.
+      cy.elements().remove();
+      legenda();
+      bsGrafBerganti(d);
+      status(d.peringatan || 'No nodes.', true);
+      perbaruiRingkasan();
+      return;
+    }
+
+    cy.elements().remove();
+    cy.add(d.nodes); cy.add(d.edges);
+    pasangLabelTampil();
+    tandaiPeneliti();
+    if (warnaAsjcAktif) setWarnaAsjc(true);
+    cy.edges().toggleClass('tanpa-label', !labelRelasi);
+    // Graf berganti: hasil pencarian dan fokus lama tidak berlaku.
+    cariTerakhir = ''; cariIdx = 0; cariDbTerakhir = '';
+    document.getElementById('cari-hasil').className = '';
+    // Filter lama bisa menyaring nilai yang tidak ada di graf baru.
+    FILTER.tipe.clear(); FILTER.kategori.clear(); FILTER.keluarga.clear(); FILTER.peran.clear();
+    const fi = document.getElementById('filter-info');
+    if (fi) fi.className = '';
+    document.getElementById('cari-info').textContent = '';
+    panelKosong();
+
+    // Hasil query tidak membawa koordinat Gephi, jadi tata letaknya dihitung.
+    // fitInti dipasang ke layout-nya karena fcose berjalan bertahap.
+    posisiGephi = false;
+    const lay = cy.layout(pilihTataLetak(d.nodes.length));
+    lay.one('layoutstop', () => {
+      fitInti();
+      cy.container().style.opacity = '1';
+    });
+    lay.run();
+    legenda();
+
+    // Satu panggilan status saja, agar peringatan graf besar tidak tertimpa.
+    bsGrafBerganti(d);
+    const dasar = `${d.nodes.length} nodes · ${d.edges.length} relations`;
+    const berat = d.nodes.length > AMBANG_BERAT;
+    status(berat
+      ? `${dasar} — layout will be slow. Narrow the query with LIMIT or ` +
+        `a stricter filter.`
+      : dasar + (d.peringatan ? ' — ' + d.peringatan : ''),
+      berat || !!d.peringatan);
+    perbaruiRingkasan();
+}
+
+async function jalankan() {
+  const cypher = document.getElementById('q').value.trim();
+  if (!cypher) return;
+  // Jawaban chat lama milik graf lama.
+  document.getElementById('jawaban').className = '';
+  const pv = VIEW.find(x => x.nama === document.getElementById('preset').value);
+  BS.sumberBerikut = (pv && isiContoh(pv).cypher.trim() === cypher)
+    ? { jenis: 'view', label: pv.judul_en || pv.judul, nama: pv.nama }
+    : { jenis: 'query', label: 'Cypher query' };
+  kunci(true); status('Running…');
+  try {
+    const r = await fetch('/api/query', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      // inilah yang meminta bentuk Cytoscape, bukan bentuk vis
+      body: JSON.stringify({ cypher, format: 'cytoscape' })
+    });
+    const d = await r.json();
+    if (!r.ok)            { status(pesanInggris(d.error) || 'failed', true); return; }
+    gambar(d);
+  } catch (e) {
+    status('Could not reach the server: ' + e.message, true);
+  } finally { kunci(false); }
+}
+
+async function tanyakan() {
+  const p = document.getElementById('tanya').value.trim();
+  if (!p) return;
+  const kotak = document.getElementById('jawaban');
+  BS.sumberBerikut = { jenis: 'ask', label: `Ask: “${p.slice(0, 60)}”` };
+  kunci(true); status('Asking the AI…');
+  try {
+    const r = await fetch('/api/tanya', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ pertanyaan: p })
+    });
+    const d = await r.json();
+    if (!r.ok) { status(pesanInggris(d.error) || 'failed', true); return; }
+    // Cypher SELALU ditaruh di kotak query: bisa diperiksa, diubah, dijalankan ulang.
+    document.getElementById('q').value = d.cypher || '';
+    segarkanGloss();
+    // Jawaban LLM diloloskan dulu oleh bsFormatJawaban, baru **tebal** dan butir
+    // diubah jadi tag. Teks LLM tidak pernah masuk sebagai HTML mentah.
+    kotak.innerHTML = bsFormatJawaban(d.kalimat || STATUS_TANYA[d.status] || d.pesan || '', []);
+    const sumber = document.createElement('div');
+    sumber.className = 'sumber';
+    sumber.textContent =
+      (d.lewat_judul ? 'No topic by that name — searched publication titles instead. ' : '') +
+      'The query is in the box below.';
+    // Jumlah percobaan hanya di tooltip, agar tidak terbaca "AI-nya gagal dulu".
+    if (d.riwayat && d.riwayat.length > 1) sumber.title = `Generated in ${d.riwayat.length} attempts.`;
+    kotak.appendChild(sumber);
+    kotak.className = 'tampil';
+    gambar(d);
+  } catch (e) {
+    status('Could not reach the server: ' + e.message, true);
+  } finally { kunci(false); }
+}
+
+// Keadaan label disimpan di variabel: relasi hasil kueri baru tidak membawa
+// kelas, jadi setelan dipasang ulang setiap graf berganti.
+let labelRelasi = true;
+function setLabelRelasi(nyala) {
+  labelRelasi = nyala;
+  cy.edges().toggleClass('tanpa-label', !nyala);
+  const t = document.getElementById('label-relasi');
+  t.classList.toggle('aktif', nyala);
+  t.title = nyala ? 'Relation labels are on — click to hide' : 'Relation labels are off — click to show';
+}
+// Satu tombol saklar label relasi di kanvas.
+document.getElementById('label-relasi').onclick = () => setLabelRelasi(!labelRelasi);
+
+let warnaAsjcAktif = false;
+let _petaAsjc = null;
+function _terapkanWarnaAsjc(nyala) {
+  cy.batch(() => {
+    cy.nodes().forEach(n => {
+      const d = n.data();
+      if (nyala) {
+        if (d.tipe === 'Kategori' && !d.asjc_dominan) {
+          n.data('asjc_dominan', d.kategori || d.label);
+          n.data('warna_asjc', d.warna);
+        }
+        let wa = d.warna_asjc;
+        if (!wa && _petaAsjc) {
+          const m = _petaAsjc[d.id];
+          if (m) { n.data('asjc_dominan', m.asjc_dominan);
+                    n.data('warna_asjc', m.warna_asjc);
+                    wa = m.warna_asjc; }
+        }
+        if (wa) {
+          if (!d._warna_tipe) n.data('_warna_tipe', d.warna);
+          n.data('warna', wa);
+        }
+      } else if (!nyala && d._warna_tipe) {
+        n.data('warna', d._warna_tipe);
+      }
+    });
+    cy.edges().forEach(e => {
+      const ed = e.data();
+      if (nyala) {
+        const src = e.source().data();
+        const tgt = e.target().data();
+        const wa = src.warna_asjc || tgt.warna_asjc;
+        if (wa) {
+          if (!ed._warna_relasi) e.data('_warna_relasi', ed.warna);
+          e.data('warna', wa);
+        }
+        e.addClass('asjc-edge');
+      } else {
+        if (ed._warna_relasi) e.data('warna', ed._warna_relasi);
+        e.removeClass('asjc-edge');
+      }
+    });
+  });
+  legenda();
+  _grupkanAsjc(nyala);
+}
+function _grupkanAsjc(nyala) {
+  const nodes = cy.nodes();
+  if (!nodes.length) return;
+  if (nyala) {
+    // simpan posisi asli
+    nodes.forEach(n => {
+      if (!n.data('_pos_asli')) {
+        const p = n.position();
+        n.data('_pos_asli', {x: p.x, y: p.y});
+      }
+    });
+    // kelompokkan per asjc_dominan
+    const grup = {};
+    nodes.forEach(n => {
+      const kat = n.data('asjc_dominan') || '_lain';
+      (grup[kat] = grup[kat] || []).push(n);
+    });
+    const katList = Object.keys(grup).sort((a,b) => grup[b].length - grup[a].length);
+    // hitung bounding box graf asli
+    const bb = cy.elements().boundingBox();
+    const cx = (bb.x1 + bb.x2) / 2, cy_ = (bb.y1 + bb.y2) / 2;
+    const radius = Math.max(bb.w, bb.h) * 0.45;
+    // susun kategori dalam lingkaran
+    const sektorPos = {};
+    katList.forEach((kat, i) => {
+      const sudut = (2 * Math.PI * i) / katList.length - Math.PI / 2;
+      sektorPos[kat] = {
+        x: cx + radius * Math.cos(sudut),
+        y: cy_ + radius * Math.sin(sudut)
+      };
+    });
+    // hitung centroid tiap grup (posisi asli)
+    const centroid = {};
+    for (const kat of katList) {
+      let sx = 0, sy = 0;
+      for (const n of grup[kat]) {
+        const p = n.data('_pos_asli');
+        sx += p.x; sy += p.y;
+      }
+      centroid[kat] = {x: sx / grup[kat].length, y: sy / grup[kat].length};
+    }
+    // pindahkan: sektor + offset dari centroid (dikecilkan)
+    const skala = 0.35;
+    nodes.forEach(n => {
+      const kat = n.data('asjc_dominan') || '_lain';
+      const s = sektorPos[kat];
+      const c = centroid[kat];
+      const p = n.data('_pos_asli');
+      n.animate({position: {
+        x: s.x + (p.x - c.x) * skala,
+        y: s.y + (p.y - c.y) * skala
+      }}, {duration: 600, easing: 'ease-in-out-cubic'});
+    });
+  } else {
+    // kembalikan posisi asli
+    nodes.forEach(n => {
+      const p = n.data('_pos_asli');
+      if (p) n.animate({position: {x: p.x, y: p.y}},
+        {duration: 600, easing: 'ease-in-out-cubic'});
+    });
+  }
+}
+function setWarnaAsjc(nyala) {
+  warnaAsjcAktif = nyala;
+  const t = document.getElementById('warna-asjc');
+  t.classList.toggle('aktif', nyala);
+  t.title = nyala
+    ? 'Showing ASJC category colors — click to return to type colors'
+    : 'Color nodes by ASJC category instead of type';
+  if (!window.cy) return;
+  if (nyala && !_petaAsjc) {
+    const ada = cy.nodes().some(n => n.data('warna_asjc'));
+    if (!ada) {
+      fetch('/api/asjc').then(r => r.json()).then(p => {
+        _petaAsjc = p;
+        if (warnaAsjcAktif) _terapkanWarnaAsjc(true);
+      });
+      return;
+    }
+  }
+  _terapkanWarnaAsjc(nyala);
+}
+document.getElementById('warna-asjc').onclick = () => setWarnaAsjc(!warnaAsjcAktif);
+// Menata ulang graf besar lama dan tidak bisa dibatalkan, jadi dikonfirmasi
+// dulu: membuang koordinat Gephi dan ukurannya.
+function tataUlang() {
+  const n = cy.nodes().length;
+  if (!n) { status('No graph to lay out yet.', true); return; }
+  if (posisiGephi && !confirm(
+        `This graph uses Gephi coordinates. Re-layout will DISCARD them, ` +
+        `and the only way back is reloading the page.\n\n` +
+        `Continue?`)) return;
+  if (n > AMBANG_BERAT && !confirm(
+        `${n.toLocaleString('en')} nodes. The layout can take a very long time ` +
+        `and cannot be stopped halfway.\n\n` +
+        `Continue?`)) return;
+
+  kunci(true);
+  status(`Re-laying out ${n.toLocaleString('en')} nodes…`);
+  // Ditunda sekejap agar pesan sempat tergambar. setTimeout, bukan
+  // requestAnimationFrame, karena rAF berhenti saat tab di latar.
+  setTimeout(() => {
+    const l = cy.layout(pilihTataLetak(n));
+    l.one('layoutstop', () => {
+      fitInti();
+      kunci(false);
+      status(`${n.toLocaleString('en')} nodes · ${cy.edges().length.toLocaleString('en')} relations`);
+    });
+    l.run();
+  }, 16);
+}
+document.getElementById('tata-ulang').onclick = tataUlang;
+
+document.getElementById('cari-tombol').onclick = jalankanCari;
+document.getElementById('cari').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); jalankanCari(); }
+});
+// Mengosongkan kotak cari membatalkan sorotan.
+document.getElementById('cari').addEventListener('input', e => {
+  if (!e.target.value.trim()) {
+    sorotKumpulan(null);
+    document.getElementById('cari-info').textContent = '';
+    cariTerakhir = ''; cariDbTerakhir = '';
+    document.getElementById('cari-hasil').className = '';
+  }
+});
+
+// Zoom bertahap berpusat di tengah layar, bukan di tengah graf.
+function ubahZoom(faktor) {
+  const w = cy.container();
+  cy.zoom({ level: cy.zoom() * faktor,
+            renderedPosition: { x: w.clientWidth / 2, y: w.clientHeight / 2 } });
+}
+document.getElementById('zoom-masuk').onclick  = () => ubahZoom(1.3);
+document.getElementById('zoom-keluar').onclick = () => ubahZoom(1 / 1.3);
+document.getElementById('zoom-pas').onclick = () => {
+  sorotKumpulan(null); fitInti();
+  document.getElementById('cari-info').textContent = '';
+};
+
+// ---------------------------------------------------------------------------
+// PENJELASAN CYPHER: kueri dibaca program lalu ditulis ulang sebagai rantai
+// yang bisa dibaca orang. Bukan LLM, agar selalu sesuai dan tetap jalan saat
+// kuota habis.
+// ---------------------------------------------------------------------------
+const POLA_UNSUR = /\(\s*\w*\s*:\s*(\w+)\s*(\{[^}]*\})?\s*\)|(<-|-)\s*\[\s*\w*\s*:\s*([A-Z_|]+)[^\]]*\]\s*(->|-)/g;
+const POLA_SARING = /(\w+)\s*:\s*'([^']*)'/g;
+
+function jelaskanCypher(cypher) {
+  const potong = cypher.split(/\bRETURN\b/i)[0];
+  const rantai = [];
+  let m, catatan = [];
+  POLA_UNSUR.lastIndex = 0;
+  while ((m = POLA_UNSUR.exec(potong)) !== null) {
+    if (m[1]) {                                   // node: label + penyaringnya
+      const saring = [];
+      POLA_SARING.lastIndex = 0;
+      let f;
+      // `skema` tidak ditulis di rantai; sudah dijelaskan di catatan bawah.
+      while ((f = POLA_SARING.exec(m[2] || '')) !== null) {
+        if (f[1] !== 'skema') saring.push(`${f[1]} = ${f[2]}`);
+      }
+      if ((m[2] || '').includes('is_internal')) saring.push('internal only');
+      rantai.push(`<b>${lolos(tampil('tipe', m[1]))}</b>` +
+                  (saring.length ? ` (${lolos(saring.join(', '))})` : ''));
+    } else if (m[4]) {                            // relasi: nama + arah
+      const nama = m[4].split('|').map(j => tampil('relasi', j)).join(' / ');
+      const panah = m[3] === '<-' ? '←' : (m[5] === '->' ? '→' : '—');
+      rantai.push(`${panah} ${lolos(nama)} ${panah === '—' ? '' : panah}`.trim());
+    }
+  }
+  if (/skema\s*:\s*'ASJC'/.test(potong)) {
+    catatan.push('ASJC scheme only — categories exist in two schemes (ASJC 27, ASJC-4 45), ' +
+                 'so without this filter every row would appear twice.');
+  }
+  if (/\bcount\s*\(/i.test(cypher)) catatan.push('Returns a count, so the graph may stay empty.');
+  if (!rantai.length) return '';
+  return rantai.join(' ') +
+    catatan.map(c => `<span class="catatan">${lolos(c)}</span>`).join('');
+}
+
+function segarkanGloss() {
+  const el = document.getElementById('gloss');
+  const teks = jelaskanCypher(document.getElementById('q').value || '');
+  el.innerHTML = teks;
+  el.className = teks ? 'tampil' : '';
+}
+document.getElementById('q').addEventListener('input', () => {
+  clearTimeout(window.__glossTimer);
+  window.__glossTimer = setTimeout(segarkanGloss, 250);
+});
+
+document.getElementById('jalan').onclick = jalankan;
+document.getElementById('tanya-tombol').onclick = tanyakan;
+document.getElementById('tanya').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); tanyakan(); }
+});
+document.getElementById('q').addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') jalankan();
+});
+
+// pustaka view tersimpan
+let VIEW = [];
+fetch('/api/view').then(r => r.json()).then(v => {
+  VIEW = v;
+  const sel = document.getElementById('preset');
+  // Dikelompokkan dengan <optgroup>; server mengirimkannya terurut per kelompok.
+  let grup = null, wadah = sel;
+  v.forEach(x => {
+    if (x.kelompok !== grup) {
+      grup = x.kelompok;
+      wadah = document.createElement('optgroup');
+      wadah.label = x.kelompok_en || grup;
+      sel.appendChild(wadah);
+    }
+    const o = document.createElement('option');
+    o.value = x.nama;
+    // parameter tidak ditempel di judul; sudah muncul di keterangan
+    o.textContent = x.judul_en || x.judul;
+    wadah.appendChild(o);
+  });
+  // View awal: semua_internal (~200 node, ringan). Kotak query, pilihan view,
+  // dan keterangan dibiarkan kosong agar tampilan pertama bersih.
+  if (window.cy && !_paramData) {
+    const def = v.find(x => x.nama === 'semua_internal');
+    if (def) {
+      BS.sumberBerikut = { jenis: 'view', label: def.judul_en || def.judul, nama: def.nama };
+      kunci(true);
+      const { cypher } = isiContoh(def);
+      fetch('/api/query', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ cypher, format: 'cytoscape' })
+      }).then(r => r.json()).then(d => {
+        if (d.nodes?.length) gambar(d);
+      }).catch(() => {}).finally(() => kunci(false));
+    }
+  }
+});
+// Angka ditulis apa adanya, teks diberi kutip: $min_bobot harus `2`, bukan
+// `'2'`.
+function tulisNilai(x) {
+  return typeof x === 'number' ? String(x) : `'${String(x).replace(/'/g, "\\'")}'`;
+}
+
+// Parameter diganti dengan nilai contohnya. Tebakan yang keliru gagal
+// diam-diam ($institusi = "Universitas Brawijaya" -> 0 baris; nodenya "UB").
+// \b di akhir pola mencegah $a ikut mengganti bagian dari $unit_a.
+function isiContoh(v) {
+  let c = v.cypher, terisi = [];
+  (v.params || []).forEach(p => {
+    const nilai = (v.contoh || {})[p];
+    if (nilai === undefined || nilai === null) return;
+    c = c.replace(new RegExp('\\$' + p + '\\b', 'g'), tulisNilai(nilai));
+    terisi.push(`$${p} = ${tulisNilai(nilai)}`);
+  });
+  return { cypher: c, terisi };
+}
+
+document.getElementById('muat').onclick = () => {
+  const v = VIEW.find(x => x.nama === document.getElementById('preset').value);
+  if (!v) return;
+  const { cypher, terisi } = isiContoh(v);
+  document.getElementById('q').value = cypher;
+  segarkanGloss();
+  status(terisi.length
+    ? `Ready to run. Parameters filled with examples — ${terisi.join(', ')} — change them if needed.`
+    : 'Ready to run.');
+  tampilkanKeterangan(v);
+};
+
+// Keterangan view tampil di panel saat view dipilih.
+function tampilkanKeterangan(v) {
+  const el = document.getElementById('keterangan');
+  if (!v) { el.className = ''; return; }
+  el.className = 'tampil';
+  const par = v.params.length
+    ? `<div class="par">Parameters: ${v.params.map(p =>
+         `$${p} = ${tulisNilai((v.contoh || {})[p])}`).join(', ')}</div>`
+    : '';
+  // Hanya keterangan Inggris. Catatan Indonesia (alasan dan angka) adalah
+  // catatan pengembangan; tetap ada di ekspor_visual.py dan --daftar.
+  el.innerHTML = `<div class="ket-judul">${lolos(v.judul_en || v.judul)}</div>${par}` +
+    `<div class="ket-isi">${lolos(v.keterangan_en || v.catatan || 'No description.')}</div>`;
+}
+
+// ===========================================================================
+// BRAINSTORM (panel kiri)
+// ===========================================================================
+// Cakupan ditentukan pengguna, bukan AI (arahan pembimbing). Mode:
+//   Mapping       -- graf yang sedang tampil, diringkas lewat /api/ringkas
+//   Compare       -- 2-3 peneliti, bukti dari /api/banding
+//   Publications  -- 2-3 publikasi, bukti dari /api/banding_publikasi
+//   Organizations -- 2 unit/institusi
+// Semua bukti dihitung server; panel ini hanya menampilkannya.
+// Teks dari basis data selalu lewat lolos() karena judul bisa memuat < dan &.
+const BS = {
+  peneliti: [], byId: {}, byRid: {}, byNama: {},
+  pilihan: [],              // local_id terpilih, maks 3
+  pilihanPub: [],           // {kunci, judul, tahun, rid} terpilih, maks 3
+  pilihanOrg: [],           // {kode, label, mode} terpilih, maks 2
+  orgDaftar: [],            // [{kode, label, mode}] semua unit + institusi
+  sumber: null,             // asal graf yang sedang tampil
+  sumberBerikut: null,      // diisi sebelum graf baru digambar
+  mode: 'mapping',          // 'mapping' | 'compare'
+  sibuk: false,
+};
+const BS_MAKS = 3;
+const BS_MAKS_ORG = 2;
+
+fetch('/api/peneliti').then(r => r.json()).then(daftar => {
+  if (!Array.isArray(daftar)) return;
+  BS.peneliti = daftar;
+  const dl = document.getElementById('bs-daftar');
+  daftar.forEach(p => {
+    BS.byId[p.id] = p; BS.byRid[p.rid] = p;
+    BS.byNama[p.nama.toLowerCase()] = p;
+    const o = document.createElement('option');
+    o.value = p.nama; o.label = `${p.unit || ''} · ${p.institusi || ''}`;
+    dl.appendChild(o);
+  });
+  tandaiPeneliti();
+  // Bangun daftar organisasi dari data peneliti yang sudah dimuat
+  const unitSet = new Map(), instSet = new Map();
+  daftar.forEach(p => {
+    if (p.unit && !unitSet.has(p.unit)) unitSet.set(p.unit, p.institusi || '');
+    if (p.institusi && !instSet.has(p.institusi)) instSet.set(p.institusi, null);
+  });
+  const dlOrg = document.getElementById('bs-daftar-org');
+  unitSet.forEach((inst, kode) => {
+    BS.orgDaftar.push({ kode, label: `${kode} (${inst})`, mode: 'unit' });
+    const o = document.createElement('option');
+    o.value = `${kode} (${inst})`; o.label = 'Unit';
+    dlOrg.appendChild(o);
+  });
+  instSet.forEach((_, nama) => {
+    BS.orgDaftar.push({ kode: nama, label: nama, mode: 'institusi' });
+    const o = document.createElement('option');
+    o.value = nama; o.label = 'Institution';
+    dlOrg.appendChild(o);
+  });
+  bsSegarkanTombol();          // isi alasan tombol Compare sejak awal
+  if (window.cy) legenda();
+}).catch(() => bsPesan('Could not load the researcher list.', true));
+
+function bsPesan(t, salah) {
+  const el = document.getElementById('bs-pesan');
+  el.textContent = t || '';
+  el.className = t ? (salah ? 'salah' : 'info') : '';
+}
+
+function bsSegarkanTombol() {
+  const n = BS.pilihan.length;
+  document.getElementById('bs-banding').disabled = BS.sibuk || n < 2 || n > BS_MAKS;
+  const np = BS.pilihanPub.length;
+  document.getElementById('bs-banding-pub').disabled = BS.sibuk || np < 2 || np > BS_MAKS;
+  const no = BS.pilihanOrg.length;
+  document.getElementById('bs-banding-org').disabled = BS.sibuk || no !== BS_MAKS_ORG;
+  document.getElementById('bs-tambah-org').disabled = BS.sibuk;
+  document.getElementById('bs-ringkas').disabled = BS.sibuk;
+  document.getElementById('bs-tambah').disabled = BS.sibuk;
+  const alasan = (n_, jenis) => n_ === 0 ? `Add 2–3 ${jenis} to enable Compare.`
+                : n_ === 1 ? `Add at least one more ${jenis.slice(0, -1)}.` : '';
+  const alasanOrg = no === 0 ? 'Add 2 organizations to enable Compare.'
+                  : no === 1 ? 'Add one more organization.' : '';
+  document.getElementById('bs-alasan-r').textContent = BS.sibuk ? '' : alasan(n, 'researchers');
+  document.getElementById('bs-alasan-p').textContent = BS.sibuk ? '' : alasan(np, 'publications');
+  document.getElementById('bs-alasan-o').textContent = BS.sibuk ? '' : alasanOrg;
+  const bisaObrol = !!BS.bukti && !BS.sibuk && !BS.berpikir;
+  ['bs-teks', 'bs-kirim'].forEach(id => document.getElementById(id).disabled = !bisaObrol);
+  document.getElementById('bs-sesi-baru').disabled = !BS.bukti || BS.berpikir;
+  document.querySelectorAll('#bs-pemicu button').forEach(b => b.disabled = !bisaObrol);
+}
+
+function bsTambah(p) {
+  if (!p) return false;
+  if (BS.pilihan.includes(p.id)) { bsPesan(`${p.nama} is already selected.`); return false; }
+  if (BS.pilihan.length >= BS_MAKS) {
+    bsPesan(`Maximum ${BS_MAKS} researchers — remove one first.`, true); return false;
+  }
+  BS.pilihan.push(p.id);
+  bsPesan(BS.pilihan.length < 2 ? 'Add 1–2 more researchers to compare.' : '');
+  bsRenderPilihan();
+  return true;
+}
+
+function bsTambahPub(p) {
+  if (!p || !p.kunci) return false;
+  if (BS.pilihanPub.some(x => x.kunci === p.kunci)) { bsPesan('This publication is already selected.'); return false; }
+  if (BS.pilihanPub.length >= BS_MAKS) {
+    bsPesan(`Maximum ${BS_MAKS} publications — remove one first.`, true); return false;
+  }
+  BS.pilihanPub.push({ kunci: p.kunci, judul: p.judul || p.nama || p.kunci, tahun: p.tahun, rid: p.rid });
+  bsPesan(BS.pilihanPub.length < 2 ? 'Publication added — add 1–2 more to compare.' : 'Publication added.');
+  bsRenderPilihanPub();
+  return true;
+}
+
+function bsHapusPub(kunci) {
+  BS.pilihanPub = BS.pilihanPub.filter(x => x.kunci !== kunci);
+  bsPesan('');
+  bsRenderPilihanPub();
+}
+
+function bsRenderPilihanPub() {
+  const el = document.getElementById('bs-pilihan-pub');
+  el.innerHTML = '';
+  BS.pilihanPub.forEach((p, i) => {
+    const c = document.createElement('span');
+    c.className = 'bs-chip';
+    c.title = `${p.judul} (click for details)`;
+    const j = String(p.judul || '');
+    c.innerHTML = `<span class="bs-chip-isi"><b style="color:#92400e">P${i + 1}</b> ` +
+                  `${lolos(j.length > 38 ? j.slice(0, 37) + '…' : j)} <small>${lolos(p.tahun || '')}</small></span>`;
+    c.querySelector('.bs-chip-isi').onclick = () => tampilkanDetail(p.kunci, nodeDiGraf(p.rid, p.kunci));
+    const x = document.createElement('button');
+    x.title = 'Remove'; x.innerHTML = '&times;';
+    x.onclick = () => bsHapusPub(p.kunci);
+    c.appendChild(x);
+    el.appendChild(c);
+  });
+  document.getElementById('bs-bersih-p').hidden = !BS.pilihanPub.length;
+  bsCincin();
+  bsSegarkanTombol();
+  bsRenderMode();
+  if (typeof bsSegarkanTombolCari === 'function') bsSegarkanTombolCari();
+}
+
+// Pilihan yang tidak dipakai analisis terakhir dikosongkan agar tidak membingungkan.
+function bsKosongkanPeneliti() {
+  if (!BS.pilihan.length) return;
+  BS.pilihan = [];
+  bsRenderPilihan();
+}
+function bsKosongkanPub() {
+  if (!BS.pilihanPub.length) return;
+  BS.pilihanPub = [];
+  bsRenderPilihanPub();
+}
+function bsKosongkanOrg() {
+  if (!BS.pilihanOrg.length) return;
+  BS.pilihanOrg = [];
+  bsRenderPilihanOrg();
+}
+
+function bsTambahOrg(item) {
+  if (!item) return false;
+  if (BS.pilihanOrg.some(x => x.kode === item.kode && x.mode === item.mode)) {
+    bsPesan(`${item.label} is already selected.`); return false;
+  }
+  if (BS.pilihanOrg.length >= BS_MAKS_ORG) {
+    bsPesan(`Maximum ${BS_MAKS_ORG} organizations — remove one first.`, true); return false;
+  }
+  // Kedua org harus mode yang sama (unit vs unit, atau institusi vs institusi)
+  if (BS.pilihanOrg.length === 1 && BS.pilihanOrg[0].mode !== item.mode) {
+    bsPesan('Both organizations must be the same type (both units or both institutions).', true);
+    return false;
+  }
+  BS.pilihanOrg.push(item);
+  bsPesan(BS.pilihanOrg.length < 2 ? 'Add one more organization to compare.' : '');
+  bsRenderPilihanOrg();
+  return true;
+}
+
+function bsHapusOrg(kode) {
+  BS.pilihanOrg = BS.pilihanOrg.filter(x => x.kode !== kode);
+  bsPesan('');
+  bsRenderPilihanOrg();
+}
+
+function bsRenderPilihanOrg() {
+  const el = document.getElementById('bs-pilihan-org');
+  el.innerHTML = '';
+  BS.pilihanOrg.forEach(item => {
+    const c = document.createElement('span');
+    c.className = 'bs-chip';
+    c.title = item.mode === 'unit' ? 'Unit: ' + item.kode : 'Institution: ' + item.kode;
+    c.innerHTML = `<span class="bs-chip-isi">${lolos(item.label)}</span>`;
+    const x = document.createElement('button');
+    x.title = 'Remove'; x.innerHTML = '&times;';
+    x.onclick = () => bsHapusOrg(item.kode);
+    c.appendChild(x);
+    el.appendChild(c);
+  });
+  document.getElementById('bs-bersih-o').hidden = !BS.pilihanOrg.length;
+  bsSegarkanTombol();
+}
+
+function bsDariKetikanOrg() {
+  const inp = document.getElementById('bs-org');
+  const val = inp.value.trim();
+  if (!val) return;
+  const cocok = BS.orgDaftar.find(o => o.label === val || o.kode === val);
+  if (!cocok) { bsPesan('Organization not found.', true); return; }
+  if (bsTambahOrg(cocok)) inp.value = '';
+}
+
+function bsHapus(id) {
+  BS.pilihan = BS.pilihan.filter(x => x !== id);
+  bsPesan('');
+  bsRenderPilihan();
+}
+
+function bsRenderPilihan() {
+  const el = document.getElementById('bs-pilihan');
+  el.innerHTML = '';
+  BS.pilihan.forEach(id => {
+    const p = BS.byId[id];
+    const c = document.createElement('span');
+    c.className = 'bs-chip';
+    c.title = `${p.nama} — ${p.unit || ''} ${p.institusi || ''} (click for details)`;
+    c.innerHTML = `<span class="bs-chip-isi">${lolos(p.nama)} <small>${lolos(p.unit || '')}</small></span>`;
+    c.querySelector('.bs-chip-isi').onclick = () => tampilkanDetail(p.id, nodeDiGraf(p.rid, p.id));
+    const x = document.createElement('button');
+    x.title = 'Remove'; x.innerHTML = '&times;';
+    x.onclick = () => bsHapus(id);
+    c.appendChild(x);
+    el.appendChild(c);
+  });
+  document.getElementById('bs-bersih-r').hidden = !BS.pilihan.length;
+  bsCincin();
+  bsSegarkanTombol();
+  bsRenderMode();
+}
+
+// Node peneliti ber-id @rid atau local_id (view skalar); keduanya dicoba.
+function bsCincin() {
+  if (!window.cy) return;
+  cy.nodes('.bs-dipilih').removeClass('bs-dipilih');
+  BS.pilihan.forEach(id => {
+    const p = BS.byId[id];
+    [p.rid, p.id].forEach(k => {
+      const n = cy.getElementById(k);
+      if (n && n.length) n.addClass('bs-dipilih');
+    });
+  });
+  BS.pilihanPub.forEach(p => {
+    const n = nodeDiGraf(p.rid, p.kunci);
+    if (n) n.addClass('bs-dipilih');
+  });
+}
+
+async function bsDariNode(n) {
+  const d = n.data();
+  if (d.tipe === 'Publikasi') {
+    // id node = @rid (atau dedup_key di view skalar) -> kunci lewat /api/node
+    try {
+      const r = await fetch('/api/node', { method: 'POST',
+        headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ id: d.id }) });
+      const b = await r.json();
+      if (!r.ok) { bsPesan(pesanInggris(b.error) || 'Could not read this publication.', true); return; }
+      bsTambahPub({ kunci: b.kunci, judul: b.nama, tahun: (b.sifat || {}).tahun, rid: b.rid || d.id });
+    } catch (e) { bsPesan('Could not reach the server: ' + e.message, true); }
+    return;
+  }
+  if (d.tipe !== 'Peneliti') { bsPesan('Only researchers and publications can be compared.', true); return; }
+  const p = BS.byRid[d.id] || BS.byId[d.id];
+  if (!p) {
+    bsPesan(`${d.label}: external co-author — profile data too thin to compare.`, true);
+    return;
+  }
+  if (bsTambah(p)) bsPesan(`${p.nama} added.` + (BS.pilihan.length < 2 ? ' Add 1–2 more.' : ''));
+}
+
+function bsDariKetikan() {
+  const kotak = document.getElementById('bs-nama');
+  const t = kotak.value.trim().toLowerCase();
+  if (!t) return;
+  let p = BS.byNama[t];
+  if (!p) {
+    const cocok = BS.peneliti.filter(x => x.nama.toLowerCase().includes(t));
+    if (cocok.length === 1) p = cocok[0];
+    else if (cocok.length > 1) {
+      bsPesan(`${cocok.length} names match “${kotak.value.trim()}” — pick one from the list.`, true);
+      return;
+    }
+  }
+  if (!p) { bsPesan(`No internal researcher named “${kotak.value.trim()}”.`, true); return; }
+  if (bsTambah(p)) {
+    // Dikosongkan dua kali: peramban mengisi ulang kotak dengan pilihan datalist
+    // sesudah keydown Enter.
+    kotak.value = '';
+    setTimeout(() => { kotak.value = ''; }, 0);
+  }
+}
+
+// Tooltip node: label yang terpotong 46 huruf diambil utuh dari /api/node
+// setelah kursor diam 250 ms, lalu disimpan.
+const TIP_CACHE = {};
+let tipTimer = null, tipNode = null;
+function pasangTooltip() {
+  const tip = document.getElementById('tip');
+  const tulis = (n, nama) => {
+    const p = n.renderedPosition();
+    let jenis = tampil('tipe', n.data('tipe'));
+    if (n.data('tipe') === 'Peneliti') {
+      const pi = BS.byRid[n.id()] || BS.byId[n.id()];
+      jenis = pi ? `Researcher (internal) · ${pi.unit || ''}, ${pi.institusi || ''}` : 'Co-author (external)';
+    }
+    tip.innerHTML = `<small>${lolos(jenis)}</small>${lolos(nama)}`;
+    const w = cy.container().clientWidth;
+    tip.style.left = Math.min(p.x + 12, w - 330) + 'px';
+    tip.style.top = (p.y + 14) + 'px';
+    tip.style.display = 'block';
+  };
+  cy.on('mouseover', 'node', e => {
+    const n = e.target, label = String(n.data('label') || '');
+    tipNode = n; clearTimeout(tipTimer);
+    if (label.length < 46) return tulis(n, label);
+    if (TIP_CACHE[n.id()]) return tulis(n, TIP_CACHE[n.id()]);
+    tipTimer = setTimeout(async () => {
+      try {
+        const r = await fetch('/api/node', { method: 'POST',
+          headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ id: n.id() }) });
+        const b = await r.json();
+        TIP_CACHE[n.id()] = (r.ok && b.nama) || label;
+      } catch (err) { TIP_CACHE[n.id()] = label; }
+      if (tipNode === n) tulis(n, TIP_CACHE[n.id()]);
+    }, 250);
+  });
+  const sembunyi = () => { tipNode = null; clearTimeout(tipTimer); tip.style.display = 'none'; };
+  cy.on('mouseout', 'node', sembunyi);
+  cy.on('viewport tapstart', sembunyi);
+}
+
+function pasangBrainstormGraf() {
+  // Klik kanan di kanvas tidak boleh memunculkan menu peramban.
+  cy.container().addEventListener('contextmenu', e => e.preventDefault());
+  cy.on('cxttap', 'node', e => bsDariNode(e.target));
+  cy.on('tap', 'node', e => {
+    if (e.originalEvent && e.originalEvent.shiftKey) bsDariNode(e.target);
+  });
+}
+
+// Dipanggil gambar() setiap graf berganti: bukti lama milik graf lama.
+function bsGrafBerganti(d) {
+  const baru = BS.sumberBerikut || { jenis: 'query', label: 'Cypher query' };
+  BS.sumberBerikut = null;
+  const adaBukti = document.getElementById('bs-bukti').innerHTML.trim() !== '';
+  BS.sumber = (d.nodes && d.nodes.length) ? baru : null;
+  if (baru.jenis !== 'compare') {                   // 'compare' = peneliti ATAU publikasi
+    BS.mode = 'mapping';
+    if (BS.bukti) bsAkhiriSesi('The graph changed, so the conversation ended. Compare or summarize again.');
+    if (adaBukti) {
+      document.getElementById('bs-bukti').innerHTML =
+        `<div class="bs-catatan">Scope changed — the graph now shows ${lolos(baru.label)}. ` +
+        `Compare again or summarize this new mapping.</div>`;
+    }
+  }
+  setTimeout(bsCincin, 0);
+  bsRenderMode();
+}
+
+function bsRenderMode() {
+  const el = document.getElementById('bs-mode');
+  const n = window.cy ? cy.nodes().length : 0;
+  if (BS.mode === 'compare') {
+    el.innerHTML = `<b>Compare</b> · ${BS.pilihan.map(id => lolos(BS.byId[id].nama)).join(' × ')}`;
+  } else if (BS.mode === 'organisasi' && BS.bukti && BS.bukti.mode === 'organisasi') {
+    el.innerHTML = `<b>Compare organizations</b> · ${BS.bukti.data.org_a.kode} vs ${BS.bukti.data.org_b.kode}`;
+  } else if (BS.mode === 'publikasi' && BS.bukti && BS.bukti.mode === 'publikasi') {
+    el.innerHTML = `<b>Compare publications</b> · ${BS.bukti.data.publikasi.length} selected`;
+  } else if (BS.sumber && n) {
+    el.innerHTML = `<b>Graph</b> · ${lolos(BS.sumber.label)} · ${n.toLocaleString('en')} nodes` +
+      (BS.pilihan.length >= 2 ? '<br><small>Researchers selected — press Compare to switch.</small>' : '');
+  } else {
+    el.textContent = 'Run a view or ask a question — or pick researchers below.';
+  }
+}
+
+async function bsKirim(url, body) {
+  const r = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'},
+                               body: JSON.stringify(body) });
+  const d = await r.json();
+  if (!r.ok) throw new Error(d.error || `HTTP ${r.status}`);
+  return d;
+}
+
+async function bsBanding() {
+  const ids = BS.pilihan.slice();
+  if (ids.length < 2) return;
+  BS.sibuk = true; kunci(true);
+  bsPesan('Comparing… pairs without direct evidence can take a few seconds.');
+  status('Comparing researchers…');
+  try {
+    const d = await bsKirim('/api/banding', { ids });
+    BS.sumberBerikut = { jenis: 'compare', label: 'comparison graph' };
+    gambar(d.graf);
+    BS.mode = 'compare';
+    bsPesan('');
+    bsKosongkanPub(); bsKosongkanOrg();       // yang sedang dianalisis: peneliti
+    bsRenderBanding(d.bukti);
+    bsRenderMode();
+  } catch (e) {
+    bsPesan(pesanInggris(e.message), true);
+    status('Comparison failed: ' + pesanInggris(e.message), true);
+  } finally {
+    BS.sibuk = false; kunci(false);
+  }
+}
+
+async function bsBandingPub() {
+  const daftar = BS.pilihanPub.map(p => p.kunci);
+  if (daftar.length < 2) return;
+  BS.sibuk = true; kunci(true);
+  bsPesan('Comparing publications…');
+  status('Comparing publications…');
+  try {
+    const d = await bsKirim('/api/banding_publikasi', { kunci: daftar });
+    BS.sumberBerikut = { jenis: 'compare', label: 'publication comparison graph' };
+    gambar(d.graf);
+    // rid dari server, agar cincin jingga muncul untuk pilihan dari cari/daftar.
+    BS.pilihanPub.forEach(p => { if (d.rid && d.rid[p.kunci]) p.rid = d.rid[p.kunci]; });
+    BS.mode = 'publikasi';
+    bsPesan('');
+    bsKosongkanPeneliti(); bsKosongkanOrg();  // yang sedang dianalisis: publikasi
+    bsRenderBandingPub(d.bukti);
+    bsRenderMode();
+    setTimeout(bsCincin, 0);
+  } catch (e) {
+    bsPesan(pesanInggris(e.message), true);
+    status('Comparison failed: ' + pesanInggris(e.message), true);
+  } finally {
+    BS.sibuk = false; kunci(false);
+  }
+}
+
+async function bsBandingOrg() {
+  if (BS.pilihanOrg.length !== 2) return;
+  const a = BS.pilihanOrg[0], b = BS.pilihanOrg[1];
+  BS.sibuk = true; kunci(true);
+  bsPesan('Comparing organizations…');
+  status('Comparing organizations…');
+  try {
+    const d = await bsKirim('/api/banding_organisasi', { a: a.kode, b: b.kode, mode: a.mode });
+    BS.sumberBerikut = { jenis: 'compare', label: `${a.label} vs ${b.label}` };
+    gambar(d.graf);
+    BS.mode = 'organisasi';
+    bsPesan('');
+    bsKosongkanPeneliti(); bsKosongkanPub();
+    bsRenderBandingOrg(d.bukti);
+    bsRenderMode();
+  } catch (e) {
+    bsPesan(pesanInggris(e.message), true);
+    status('Comparison failed: ' + pesanInggris(e.message), true);
+  } finally {
+    BS.sibuk = false; kunci(false);
+  }
+}
+
+function bsRenderBandingOrg(b) {
+  bsBuktiBaru('organisasi', b,
+    `Organizations · ${b.org_a.kode} vs ${b.org_b.kode}`);
+  let h = bsSummary([
+    [b.org_a.peneliti + b.org_b.peneliti, 'researchers'],
+    [(b.kolaborasi || []).length, 'cross-org collabs'],
+    [(b.topik_bersama || []).length, 'shared topics'],
+    [(b.publikasi_mirip || []).length, 'similar pubs'],
+  ]);
+  h += `<h4>Evidence</h4>` +
+    `<span class="bs-lencana ${b.tingkat}">${BS_TINGKAT[b.tingkat] || lolos(b.tingkat)}</span>` +
+    `<div class="bs-alasan">${lolos(b.alasan)}</div>`;
+
+  // organisasi A & B profil
+  [['org_a', 'topik_khas_a'], ['org_b', 'topik_khas_b']].forEach(([ok, tk]) => {
+    const org = b[ok];
+    h += `<h4>${lolos(org.kode)} (${org.peneliti} researchers)</h4>`;
+    if (org.daftar && org.daftar.length) {
+      h += `<ul class="bs-daftar">` + org.daftar.map(p =>
+        `<li><span class="bs-tautan" data-tambah="${lolos(p.id)}" title="Add to compare">${lolos(p.nama)}</span>` +
+        ` <span class="kecil">${lolos(p.unit || '')}</span></li>`).join('') + `</ul>`;
+    }
+    const kat = Object.entries(org.kategori || {}).slice(0, 5);
+    if (kat.length) {
+      h += `<div class="kecil" style="color:#6b7280">Categories: ${kat.map(([k]) => lolos(k)).join(', ')}</div>`;
+    }
+    const khas = b[tk] || [];
+    if (khas.length) {
+      h += `<div class="kecil" style="margin-top:4px">Unique topics: ` +
+        khas.map(t => lolos(t.topik)).join(', ') + `</div>`;
+    }
+  });
+
+  // kolaborasi lintas organisasi
+  if ((b.kolaborasi || []).length) {
+    h += `<h4>Cross-organization collaborations (${b.kolaborasi.length})</h4>` +
+      `<ul class="bs-daftar">` + b.kolaborasi.map(k =>
+        `<li><span class="bs-tautan" data-tambah="${lolos(k.a)}">${lolos(k.nama_a)}</span> × ` +
+        `<span class="bs-tautan" data-tambah="${lolos(k.b)}">${lolos(k.nama_b)}</span>` +
+        ` <span class="kecil">${k.jumlah} joint pub(s)</span></li>`).join('') + `</ul>`;
+  }
+
+  // topik bersama
+  if ((b.topik_bersama || []).length) {
+    h += `<h4>Shared topics (${b.topik_bersama.length})</h4><ul class="bs-daftar">` +
+      b.topik_bersama.map(t =>
+        `<li>${lolos(t.topik)}<br><span class="kecil">` +
+        `${lolos(b.org_a.kode)}: ${t.bobot_a} (${t.peneliti_a} researchers) · ` +
+        `${lolos(b.org_b.kode)}: ${t.bobot_b} (${t.peneliti_b} researchers)</span></li>`).join('') + `</ul>`;
+  }
+
+  // publikasi mirip
+  h += `<h4>Most similar publications</h4>`;
+  if (!b.vektor || !b.vektor.tersedia) {
+    h += `<div class="bs-catatan">Abstract vectors are missing on the server (data/vektor_abstrak.npy).</div>`;
+  } else if (!(b.publikasi_mirip || []).length) {
+    h += `<div class="bs-segera">No comparable publications.</div>`;
+  } else {
+    const lemah = b.publikasi_mirip.every(m => m.label === 'weak');
+    h += (lemah ? `<div class="bs-segera">No close matches — showing the nearest ones.</div>` : '') +
+      `<ul class="bs-daftar">` + b.publikasi_mirip.map(m =>
+        `<li><span class="bs-skor ${m.label}">${m.skor.toFixed(2)} ${m.label}</span><br>` +
+        `<b>${lolos(b.org_a.kode)}:</b> <span class="bs-tautan" data-kunci="${lolos(m.a.kunci)}">${lolos(m.a.judul)}</span>` +
+        ` <small>${lolos(m.a.tahun || '')}</small><br>` +
+        `<b>${lolos(b.org_b.kode)}:</b> <span class="bs-tautan" data-kunci="${lolos(m.b.kunci)}">${lolos(m.b.judul)}</span>` +
+        ` <small>${lolos(m.b.tahun || '')}</small></li>`).join('') + `</ul>`;
+  }
+
+  // publikasi bersama
+  if ((b.publikasi_bersama || []).length) {
+    h += `<h4>Joint publications (${b.publikasi_bersama.length})</h4><ul class="bs-daftar">` +
+      b.publikasi_bersama.map(p =>
+        `<li><span class="bs-tautan" data-kunci="${lolos(p.kunci)}">${lolos(p.judul)}</span>` +
+        ` <small>${lolos(p.tahun || '')}</small></li>`).join('') + `</ul>`;
+  }
+
+  // saran pasangan
+  if ((b.saran || []).length) {
+    h += `<h4>Suggested pairs (${b.saran.length})</h4><ul class="bs-daftar">` +
+      b.saran.map(s =>
+        `<li><span class="bs-tautan" data-tambah="${lolos(s.a)}">${lolos(s.nama_a)}</span> × ` +
+        `<span class="bs-tautan" data-tambah="${lolos(s.b)}">${lolos(s.nama_b)}</span><br>` +
+        `<span class="kecil">${lolos(s.alasan)}</span></li>`).join('') + `</ul>`;
+  }
+
+  h += `<div class="bs-segera" style="margin-top:10px">All evidence above comes from the graph.</div>`;
+  document.getElementById('bs-bukti').innerHTML = h;
+}
+
+const BS_TINGKAT_PUB = { direct: 'Closely related', bridge: 'Partly related', exploratory: 'Exploratory' };
+
+function bsRenderBandingPub(b) {
+  bsBuktiBaru('publikasi', b, `Publications · ${b.publikasi.length} selected`);
+  const kode = {};
+  b.publikasi.forEach((p, i) => kode[p.kunci] = `P${i + 1}`);
+  const jmlPenulis = new Set();
+  (b.peneliti || []).forEach(r => jmlPenulis.add(r.id));
+  let h = bsSummary([
+    [b.publikasi.length, 'publications'],
+    [jmlPenulis.size, 'researchers'],
+    [b.pasangan.filter(p => p.berkaitan).length + '/' + b.pasangan.length, 'related pairs'],
+    [(b.publikasi_terkait || []).length, 'related pubs'],
+  ]);
+  h += `<h4>Evidence</h4>` +
+    `<span class="bs-lencana ${b.tingkat}">${BS_TINGKAT_PUB[b.tingkat] || lolos(b.tingkat)}</span>` +
+    `<div class="bs-alasan">${lolos(b.alasan)}</div>`;
+
+  const abs = {};
+  (b.abstrak || []).forEach(a => abs[a.kunci] = a.abstrak);
+  h += `<h4>Selected publications</h4><ul class="bs-daftar">` + b.publikasi.map(p => {
+    const internal = p.penulis.filter(x => x.internal);
+    const lain = p.jumlah_penulis - internal.length;
+    const a = abs[p.kunci] || '';
+    // Abstrak di bukti dipotong 800 huruf (sama dengan yang dibaca AI).
+    const bukaAbstrak = a ? `<details class="bs-abstrak"><summary>Abstract</summary><div>${lolos(a)}` +
+      (a.length >= 800 ? `… <span class="bs-tautan" data-kunci="${lolos(p.kunci)}">full abstract</span>` : '') +
+      `</div></details>` : '';
+    return `<li><b style="color:#92400e">${kode[p.kunci]}</b> ${bsPub(p)}<br>` +
+      `<span class="kecil">${lolos(p.topik || 'no topic')}${p.venue ? ' · ' + lolos(p.venue) : ''}` +
+      ` · ${p.sitasi || 0} citations</span><br><span class="kecil">` +
+      (internal.map(x => `<span class="bs-tautan" data-tambah="${lolos(x.id)}" title="Add to compare">` +
+        `${lolos(x.nama)}</span>`).join(', ') || 'no internal author') +
+      (lain > 0 ? ` + ${lain} other` : '') + `</span>${bukaAbstrak}</li>`;
+  }).join('') + `</ul>`;
+
+  h += `<h4>Pairs</h4>` + b.pasangan.map(s =>
+    `<div class="bs-pasang"><div style="font-size:11.5px"><b>${kode[s.a]}</b> × <b>${kode[s.b]}</b> ` +
+    (s.skor != null ? `<span class="bs-skor ${s.label}">${s.skor.toFixed(2)} ${s.label}</span> ` : '') +
+    `<span class="bs-lencana ${s.berkaitan ? 'direct' : 'exploratory'}">${s.berkaitan ? 'related' : 'not related'}</span></div>` +
+    `<div class="bs-alasan">${lolos(s.alasan)}</div></div>`).join('');
+
+  h += `<h4>Related publications in the graph</h4>`;
+  if (!b.vektor || !b.vektor.tersedia) {
+    h += `<div class="bs-catatan">Abstract vectors are missing on the server (data/vektor_abstrak.npy).</div>`;
+  } else if (!(b.publikasi_terkait || []).length) {
+    h += `<div class="bs-segera">No closely related publications elsewhere in the graph.</div>`;
+  } else {
+    h += `<ul class="bs-daftar">` + b.publikasi_terkait.map(t =>
+      `<li><span class="bs-skor ${t.label}">${t.skor.toFixed(2)} ${t.label}</span> ` +
+      `<span class="kecil">similar to ${kode[t.mirip_dengan] || ''}</span><br>${bsPub(t)}<br>` +
+      `<span class="kecil">` + t.penulis_internal.map(x =>
+        `<span class="bs-tautan" data-tambah="${lolos(x.id)}" title="Add to compare">${lolos(x.nama)}</span>`).join(', ') +
+      `</span></li>`).join('') + `</ul>`;
+  }
+  h += `<div class="bs-segera" style="margin-top:10px">All evidence above comes from the graph. ` +
+       `The AI also reads the abstracts shown. Click a name to add that researcher.</div>`;
+  document.getElementById('bs-bukti').innerHTML = h;
+}
+
+async function bsRingkas() {
+  if (!window.cy || !cy.nodes().length) {
+    bsPesan('The graph is empty — run a view, a query, or Ask first.', true); return;
+  }
+  const nodes = cy.nodes().map(n => ({ id: n.id(), tipe: n.data('tipe') }));
+  const edges = cy.edges().map(e => ({ source: e.data('source'), target: e.data('target') }));
+  BS.sibuk = true; kunci(true);
+  bsPesan(`Summarizing ${nodes.length.toLocaleString('en')} nodes…`);
+  try {
+    const h = await bsKirim('/api/ringkas', { nodes, edges, sumber: BS.sumber });
+    BS.mode = 'mapping';
+    bsPesan('');
+    bsKosongkanPeneliti(); bsKosongkanPub(); bsKosongkanOrg();  // yang dianalisis: seluruh mapping
+    bsRenderRingkas(h);
+    bsRenderMode();
+  } catch (e) {
+    bsPesan(pesanInggris(e.message), true);
+  } finally {
+    BS.sibuk = false; kunci(false);
+  }
+}
+
+// "Direct evidence", bukan "Direct": tingkat ini juga diberikan pada pasangan
+// yang belum pernah menulis bersama tetapi berbagi topik.
+const BS_TINGKAT = { direct: 'Direct evidence', bridge: 'Via a bridge', exploratory: 'Exploratory' };
+
+function bsNama(id, bukti) {
+  const p = (bukti.peneliti || []).find(x => x.id === id) || BS.byId[id];
+  return p ? p.nama : id;
+}
+
+function bsPub(x) {
+  return `<span class="bs-tautan" data-kunci="${lolos(x.kunci)}">${lolos(x.judul)}</span>` +
+         ` <span class="kecil">${lolos(x.tahun || '')}</span>`;
+}
+
+function bsSummary(cells) {
+  return '<div class="bs-ringkasan">' +
+    cells.map(c => '<div class="bs-ringkasan-sel"><span class="angka">' +
+      c[0] + '</span><span class="ket">' + c[1] + '</span></div>').join('') +
+    '</div>';
+}
+
+function bsRenderBanding(b) {
+  bsBuktiBaru('compare', b,
+    `Compare · ${(b.peneliti || []).map(p => p.nama).join(' × ')}`);
+  const totalPub = (b.peneliti || []).reduce((s, p) => s + (p.publikasi || 0), 0);
+  let h = bsSummary([
+    [b.peneliti.length, 'researchers'],
+    [totalPub, 'publications'],
+    [(b.topik_bersama || []).length, 'shared topics'],
+    [(b.publikasi_mirip || []).length, 'similar pairs'],
+    [(b.publikasi_bersama || []).length, 'joint pubs'],
+    [(b.kategori_bersama || []).length, 'shared categories'],
+  ]);
+  h += `<h4>Evidence</h4>` +
+    `<span class="bs-lencana ${b.tingkat}">${BS_TINGKAT[b.tingkat] || lolos(b.tingkat)}</span>` +
+    `<div class="bs-alasan">${lolos(b.alasan)}</div>`;
+
+  // tiap pasangan
+  h += (b.pasangan || []).map(s => {
+    let t = `<div class="bs-pasang"><div style="font-size:11.5px">` +
+      `<b>${lolos(bsNama(s.a, b))}</b> × <b>${lolos(bsNama(s.b, b))}</b> ` +
+      `<span class="bs-lencana ${s.tingkat}">${BS_TINGKAT[s.tingkat] || ''}</span></div>` +
+      `<div class="bs-alasan">${lolos(s.alasan)}</div>`;
+    if (s.perantara && s.perantara.length) {
+      t += `<div class="kecil" style="font-size:10.5px;color:#6b7280">Bridge researchers: ` +
+        s.perantara.slice(0, 3).map(c => `<span class="bs-tautan" data-tambah="${lolos(c.id)}">` +
+          `${lolos(c.nama)}</span> (${lolos(c.unit || '')})`).join(', ') + `</div>`;
+    }
+    if (s.rekan_bersama && s.rekan_bersama.length) {
+      t += `<div style="font-size:10.5px;color:#6b7280">Shared co-author: ` +
+        s.rekan_bersama.map(r => lolos(r.nama)).join(', ') + `</div>`;
+    } else if (s.jalur) {
+      t += `<div style="font-size:10.5px;color:#6b7280">Introduction path: ` +
+        [bsNama(s.a, b), ...s.jalur, bsNama(s.b, b)].map(lolos).join(' → ') + `</div>`;
+    }
+    return t + `</div>`;
+  }).join('');
+
+  // publikasi mirip
+  h += `<h4>Most similar publications</h4>`;
+  if (!b.vektor || !b.vektor.tersedia) {
+    h += `<div class="bs-catatan">Abstract vectors are missing on the server ` +
+         `(data/vektor_abstrak.npy).</div>`;
+  } else if (!(b.publikasi_mirip || []).length) {
+    h += `<div class="bs-segera">No comparable publications.</div>`;
+  } else {
+    const lemah = b.publikasi_mirip.every(m => m.label === 'weak');
+    h += (lemah ? `<div class="bs-segera">No close matches — showing the nearest ones.</div>` : '') +
+      `<ul class="bs-daftar">` + b.publikasi_mirip.map(m =>
+        `<li><span class="bs-skor ${m.label}">${m.skor.toFixed(2)} ${m.label}</span><br>` +
+        `<b>${lolos(bsNama(m.a.id, b))}:</b> ${bsPub(m.a)}<br>` +
+        `<b>${lolos(bsNama(m.b.id, b))}:</b> ${bsPub(m.b)}</li>`).join('') + `</ul>`;
+  }
+
+  if ((b.publikasi_bersama || []).length) {
+    h += `<h4>Joint publications</h4><ul class="bs-daftar">` +
+      b.publikasi_bersama.map(p => `<li>${bsPub(p)}</li>`).join('') + `</ul>`;
+  }
+  if ((b.topik_bersama || []).length) {
+    h += `<h4>Shared topics (${b.topik_bersama.length})</h4><ul class="bs-daftar">` +
+      b.topik_bersama.slice(0, 5).map(t =>
+        `<li>${lolos(t.topik)}<br><span class="kecil">` +
+        Object.entries(t.jumlah).map(([id, j]) => `${lolos(bsNama(id, b).split(' ')[0])} ${j}`).join(' · ') +
+        `</span></li>`).join('') + `</ul>`;
+  }
+  h += `<div class="bs-segera" style="margin-top:10px">All evidence above comes from the graph.</div>`;
+  document.getElementById('bs-bukti').innerHTML = h;
+}
+
+function bsRenderRingkas(r) {
+  bsBuktiBaru('mapping', r,
+    `Graph · ${(r.sumber && r.sumber.label) || 'current graph'} · ${r.jumlah_node} nodes`);
+  let h = bsSummary([
+    [r.jumlah_node.toLocaleString('en'), 'nodes'],
+    [(r.jumlah_relasi || 0).toLocaleString('en'), 'relations'],
+    [r.peneliti_internal || 0, 'internal researchers'],
+    [(r.tokoh || []).length, 'key researchers'],
+  ]);
+  h += `<h4>Graph summary</h4><div class="bs-alasan">` +
+    `${r.jumlah_node.toLocaleString('en')} nodes · ` +
+    Object.entries(r.per_tipe || {}).map(([t, n]) => `${lolos(t)} ${n}`).join(' · ') + `</div>`;
+  if (r.terlalu_besar) {
+    h += `<div class="bs-catatan">Large graph — summarized from its 3,000 most connected ` +
+         `nodes. Narrow it down with the finder for sharper ideas.</div>`;
+  }
+  if ((r.tokoh || []).length) {
+    h += `<h4>Key researchers</h4><ul class="bs-daftar">` + r.tokoh.map(t =>
+      `<li><span class="bs-tautan" data-tambah="${lolos(t.id)}" title="Add to compare">` +
+      `${lolos(t.nama)}</span> <span class="kecil">${lolos(t.unit || '')}/${lolos(t.institusi || '')}` +
+      ` · ${t.koneksi_di_graf} links · ${t.publikasi} pubs</span></li>`).join('') + `</ul>`;
+  }
+  if ((r.topik || []).length) {
+    h += `<h4>Topics</h4><ul class="bs-daftar">` + r.topik.map(t =>
+      `<li>${lolos(t.nama)} <span class="kecil">${lolos(t.kategori || '')}</span></li>`).join('') + `</ul>`;
+  }
+  const org = [...Object.keys(r.unit || {}), ...Object.keys(r.institusi || {})];
+  if (org.length) h += `<div class="bs-alasan">Units & institutions: ${org.map(lolos).join(', ')}</div>`;
+  if ((r.saran_perbandingan || []).length) {
+    h += `<h4>Suggested comparisons</h4><ul class="bs-daftar">` + r.saran_perbandingan.map((s, i) =>
+      `<li><span class="bs-tautan" data-saran="${i}">${s.nama.map(lolos).join(' × ')}</span><br>` +
+      `<span class="kecil">${lolos(s.alasan)}</span></li>`).join('') + `</ul>`;
+  }
+  if ((r.abstrak || []).length) {
+    h += `<h4>Abstracts the AI will read (${r.abstrak.length})</h4><ul class="bs-daftar">` +
+      r.abstrak.map(a => `<li>${bsPub(a)}</li>`).join('') + `</ul>`;
+  }
+  const el = document.getElementById('bs-bukti');
+  el.innerHTML = h;
+  el._saran = r.saran_perbandingan || [];
+}
+
+// Klik di panel bukti: judul -> detail; nama peneliti -> ditambahkan;
+// saran -> mengganti pilihan.
+document.getElementById('bs-bukti').addEventListener('click', e => {
+  const t = e.target.closest('[data-kunci],[data-tambah],[data-saran]');
+  if (!t) return;
+  if (t.dataset.kunci) return bsDetailKunci(t.dataset.kunci);
+  if (t.dataset.tambah) {
+    const p = BS.byId[t.dataset.tambah];
+    if (p && bsTambah(p)) bsPesan(`${p.nama} added.`);
+    return;
+  }
+  if (t.dataset.saran) {
+    const s = e.currentTarget._saran[+t.dataset.saran];
+    BS.pilihan = s.ids.filter(id => BS.byId[id]);
+    bsPesan('Pair selected — press Compare.');
+    bsRenderPilihan();
+  }
+});
+
+// Detail publikasi dari Brainstorm, lewat /api/node dengan dedup_key.
+function bsDetailKunci(kunci) {
+  return tampilkanDetail(kunci, nodeDiGraf(kunci));
+}
+
+// ---------------------------------------------------------------------------
+// PERCAKAPAN BRAINSTORM
+// ---------------------------------------------------------------------------
+// Sesi terikat pada bukti yang tampil: bukti atau cakupan berubah = sesi baru.
+// Riwayat hanya di memori server. Jawaban AI diloloskan dulu, baru kode
+// [P1]/[T1]/[R1] diubah jadi penanda.
+BS.bukti = null; BS.sid = null; BS.berpikir = false; BS.giliran = 0;
+
+const BS_PEMICU = {
+  compare: ['Suggest 3 collaboration ideas', 'What could each researcher contribute?',
+            'What are the risks, and what should be checked first?'],
+  publikasi: ['How could these publications be combined into a new study?',
+              'What research gap lies between them?',
+              'Which researchers should work on this, and why?'],
+  organisasi: ['What collaboration opportunities exist between these organizations?',
+               'Which researchers from each side should meet first?',
+               'What joint research themes could they pursue?'],
+  mapping: ['What collaboration opportunities do you see here?',
+            'Which pair should collaborate first, and why?',
+            'What research gap does this graph suggest?'],
+};
+
+function bsBuktiBaru(mode, data, label, diam) {
+  const lama = !!BS.bukti && !diam;
+  BS.bukti = { mode, data, label };
+  BS.sid = null; BS.giliran = 0;
+  document.getElementById('bs-obrolan').innerHTML = '';
+  if (lama) bsPesanSistem('New evidence — the conversation starts over with your next message.');
+  document.getElementById('bs-sesi').textContent = `Session: ${label} · not started`;
+  const p = document.getElementById('bs-pemicu');
+  p.innerHTML = '';
+  BS_PEMICU[mode].forEach(t => {
+    const b = document.createElement('button');
+    b.textContent = t; b.onclick = () => bsKirimPesan(t);
+    p.appendChild(b);
+  });
+  bsSegarkanTombol();
+}
+
+function bsAkhiriSesi(alasan) {
+  BS.bukti = null; BS.sid = null; BS.giliran = 0;
+  document.getElementById('bs-pemicu').innerHTML = '';
+  document.getElementById('bs-sesi').textContent =
+    'Compare or summarize first. The AI only discusses what this panel shows.';
+  if (alasan) bsPesanSistem(alasan);
+  bsSegarkanTombol();
+}
+
+function bsPesanSistem(t, galat) {
+  const d = document.createElement('div');
+  d.className = 'bs-msg ' + (galat ? 'galat' : 'sistem');
+  d.textContent = t;
+  document.getElementById('bs-obrolan').appendChild(d);
+  bsGulirObrolan();
+  return d;
+}
+
+function bsGulirObrolan() {
+  const panel = document.getElementById('bs');
+  panel.scrollTop = panel.scrollHeight;
+}
+
+// Markdown sederhana dari LLM: **tebal**, *miring*, `kode`, butir "- ",
+// daftar bernomor "1. ", butir bertingkat, dan baris tebal sebagai judul bagian.
+// Teks diloloskan dulu; hanya pola yang dikenal yang menjadi tag.
+function bsFormatJawaban(teks, rujukan) {
+  const peta = {};
+  (rujukan || []).forEach(r => peta[r.kode] = r);
+  // Kurung siku tidak dicetak; [P1] sudah berupa chip.
+  const kode = s2 => s2.replace(/\[([^\[\]]{1,40})\]/g, (utuh, isi) => {
+    if (!/\b[PRT]\d{1,2}\b/.test(isi)) return utuh;
+    return isi.replace(/\b([PRT])(\d{1,2})\b/g, (k) => {
+      const r = peta[k];
+      if (!r) return `<span class="bs-kode asing" title="Not in the evidence">${k}</span>`;
+      const judul = r.judul ? `${r.judul} (${r.tahun || ''})` : (r.nama || '');
+      // Publikasi dibuka lewat dedup_key; peneliti dan topik lewat id-nya.
+      const kelas = r.jenis === 'publikasi' ? 'bs-kode pub'
+                  : (r.id ? 'bs-kode tautan' : 'bs-kode');
+      const data = r.kunci ? ` data-kunci="${lolos(r.kunci)}"`
+                 : (r.id ? ` data-detail="${lolos(r.id)}"` : '');
+      const kiat = r.jenis === 'publikasi' ? judul
+                 : `${judul}${r.id ? ' — click for details' : ''}`;
+      return `<span class="${kelas}"${data} title="${lolos(kiat)}">${k}</span>`;
+    });
+  });
+  const inline = t => kode(lolos(t))
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+    .replace(/(^|[^*])\*(?!\s)(.+?)\*(?!\*)/g, '$1<i>$2</i>');
+
+  const keluar = [];
+  const tumpukan = [];                     // daftar yang sedang terbuka: {tag, dalam}
+  const atas = () => tumpukan[tumpukan.length - 1];
+  const tutupSemua = () => { while (tumpukan.length) keluar.push(`</${tumpukan.pop().tag}>`); };
+  const bukaDaftar = (tag, dalam) => {
+    while (tumpukan.length && atas().dalam > dalam) keluar.push(`</${tumpukan.pop().tag}>`);
+    if (tumpukan.length && atas().dalam === dalam && atas().tag !== tag) {
+      keluar.push(`</${tumpukan.pop().tag}>`);          // butir -> bernomor di tingkat sama
+    }
+    if (!tumpukan.length || atas().dalam < dalam) {
+      keluar.push(`<${tag}>`); tumpukan.push({ tag, dalam });
+    }
+  };
+  teks.split('\n').forEach(baris => {
+    if (!baris.trim()) return;
+    const spasi = baris.match(/^\s*/)[0].replace(/\t/g, '  ').length;
+    const dalam = spasi >= 2 ? 1 : 0;      // satu tingkat bertingkat sudah cukup
+    const nomor = baris.match(/^\s*(\d{1,2})[.)]\s+(.*)$/);
+    const butir = baris.match(/^\s*[-*•]\s+(.*)$/);
+    const judul = baris.match(/^\s*\*\*(.+?)\*\*:?\s*$/);
+    if (nomor || butir) {
+      bukaDaftar(nomor ? 'ol' : 'ul', dalam);
+      keluar.push(`<li>${inline(nomor ? nomor[2] : butir[1])}</li>`);
+      return;
+    }
+    tutupSemua();
+    // Baris yang SELURUHNYA tebal = judul bagian ("Methodology", "Risks").
+    keluar.push(judul ? `<h5 class="bs-judul">${inline(judul[1])}</h5>`
+                      : `<p>${inline(baris.trim())}</p>`);
+  });
+  tutupSemua();
+  return keluar.join('');
+}
+
+// Baris di bawah jawaban: giliran ke berapa dan berapa abstrak dibaca.
+// Rincian teknis (token, detik) ada di tooltip.
+function bsMeta(d) {
+  const n = (BS.bukti && BS.bukti.data && BS.bukti.data.abstrak || []).length;
+  const baca = d.abstrak_huruf && n ? `read ${n} abstract${n > 1 ? 's' : ''}` : 'without abstracts';
+  const rinci = `~${d.perkiraan_token_masukan} tokens in · ` +
+    `${d.abstrak_huruf ? 'abstracts cut at ' + d.abstrak_huruf + ' chars' : 'no abstracts'} · ${d.detik}s`;
+  return `<div class="bs-meta" title="${lolos(rinci)}">Turn ${d.giliran} · ${baca}</div>`;
+}
+
+async function bsKirimPesan(teksPaksa) {
+  const kotak = document.getElementById('bs-teks');
+  const teks = (teksPaksa || kotak.value).trim();
+  if (!teks || !BS.bukti || BS.berpikir) return;
+  const u = document.createElement('div');
+  u.className = 'bs-msg user'; u.textContent = teks;
+  document.getElementById('bs-obrolan').appendChild(u);
+  kotak.value = '';
+  const tunggu = bsPesanSistem('Thinking');
+  tunggu.classList.add('berpikir');
+  BS.berpikir = true; bsSegarkanTombol(); bsGulirObrolan();
+
+  const body = { pesan: teks, abstrak: document.getElementById('bs-abstrak').checked };
+  if (BS.sid) body.sid = BS.sid;
+  else Object.assign(body, { mode: BS.bukti.mode, bukti: BS.bukti.data });
+  const buktiSaatKirim = BS.bukti;
+  try {
+    const r = await fetch('/api/brainstorm', { method: 'POST',
+      headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) });
+    const d = await r.json();
+    tunggu.remove();
+    if (BS.bukti !== buktiSaatKirim) return;         // scope berganti selagi menunggu
+    if (d.sid) BS.sid = d.sid;
+    if (!r.ok) {
+      if (r.status === 410) BS.sid = null;
+      const saran = r.status === 429 ? ' Wait about 30 seconds, then send again.'
+                  : r.status === 410 ? ' Send again to start a new session.' : '';
+      bsPesanSistem((r.status === 429 ? 'LLM quota reached (free tier: 8,000 tokens per minute).' : pesanInggris(d.error) || `HTTP ${r.status}`) + saran, true);
+      return;
+    }
+    BS.giliran = d.giliran;
+    const a = document.createElement('div');
+    a.className = 'bs-msg ai';
+    a.innerHTML = bsFormatJawaban(d.jawaban, d.rujukan) +
+      (d.peringatan || []).map(w => `<div class="bs-peringatan">${lolos(w)}</div>`).join('') +
+      bsMeta(d);
+    document.getElementById('bs-obrolan').appendChild(a);
+    document.getElementById('bs-sesi').textContent =
+      `Session: ${BS.bukti.label} · ${d.giliran} turn${d.giliran > 1 ? 's' : ''}`;
+    bsGulirObrolan();
+  } catch (e) {
+    tunggu.remove();
+    bsPesanSistem('Could not reach the server: ' + e.message, true);
+  } finally {
+    BS.berpikir = false; bsSegarkanTombol();
+  }
+}
+
+// Klik kode publikasi di jawaban -> detail + abstrak di panel kanan.
+document.getElementById('bs-obrolan').addEventListener('click', e => {
+  const k = e.target.closest('.bs-kode.pub,.bs-kode.tautan');
+  if (!k) return;
+  const id = k.dataset.kunci || k.dataset.detail;
+  if (id) tampilkanDetail(id, nodeDiGraf(id));
+});
+document.getElementById('bs-kirim').onclick = () => bsKirimPesan();
+document.getElementById('bs-teks').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); bsKirimPesan(); }
+});
+document.getElementById('bs-sesi-baru').onclick = () => {
+  if (!BS.bukti) return;
+  const b = BS.bukti;
+  bsBuktiBaru(b.mode, b.data, b.label, true);     // satu pesan saja, bukan dua
+  bsPesanSistem('Conversation restarted — same evidence, fresh start.');
+};
+
+document.getElementById('bs-tambah').onclick = bsDariKetikan;
+document.getElementById('bs-nama').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); bsDariKetikan(); }
+});
+document.getElementById('bs-banding').onclick = bsBanding;
+document.getElementById('bs-banding-pub').onclick = bsBandingPub;
+document.getElementById('bs-banding-org').onclick = bsBandingOrg;
+document.getElementById('bs-tambah-org').onclick = bsDariKetikanOrg;
+document.getElementById('bs-org').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); bsDariKetikanOrg(); }
+});
+document.getElementById('bs-bersih-o').onclick = () => { bsKosongkanOrg(); bsPesan(''); };
+// Reset: kembali ke keadaan awal tanpa memuat ulang halaman. Graf tidak
+// disentuh.
+document.getElementById('bs-reset').onclick = () => {
+  // Konfirmasi juga saat ada hasil Compare, karena hasilnya mahal dihitung.
+  const adaIsi = BS.giliran > 0 || BS.bukti || BS.pilihan.length || BS.pilihanPub.length || BS.pilihanOrg.length;
+  if (adaIsi && !confirm('Clear the current selection, evidence and conversation?')) return;
+  bsKosongkanPeneliti(); bsKosongkanPub(); bsKosongkanOrg();
+  document.getElementById('bs-bukti').innerHTML = '';
+  document.getElementById('bs-obrolan').innerHTML = '';
+  bsAkhiriSesi(null);
+  BS.mode = 'mapping';
+  bsPesan('');
+  bsRenderMode();
+};
+document.getElementById('bs-bersih-r').onclick = () => { bsKosongkanPeneliti(); bsPesan(''); };
+document.getElementById('bs-bersih-p').onclick = () => { bsKosongkanPub(); bsPesan(''); };
+document.getElementById('bs-ringkas').onclick = bsRingkas;
+// ---------------------------------------------------------------------------
+// KARTU BANTUAN: cara memilih, mode, jalan pintas, dan skema graf (arah
+// relasi perlu diketahui untuk membaca Cypher).
+// ---------------------------------------------------------------------------
+function bukaBantuan(buka) {
+  document.getElementById('bantuan').hidden = !buka;
+}
+document.getElementById('bantuan-tombol').onclick = () => bukaBantuan(true);
+document.getElementById('bantuan-tutup').onclick = () => bukaBantuan(false);
+document.getElementById('bantuan').addEventListener('click', e => {
+  if (e.target.id === 'bantuan') bukaBantuan(false);      // klik di luar kartu
+});
+
+document.getElementById('sisi-lipat').onclick = () => {
+  const lipat = document.body.classList.toggle('sisi-lipat');
+  document.getElementById('sisi-lipat').innerHTML = lipat ? '&laquo;' : '&raquo;';
+  if (window.cy) setTimeout(() => { cy.resize(); fitInti(); }, 0);
+};
+document.getElementById('bs-lipat').onclick = () => {
+  const lipat = document.body.classList.toggle('bs-lipat');
+  document.getElementById('bs-lipat').innerHTML = lipat ? '&raquo;' : '&laquo;';
+  if (window.cy) setTimeout(() => { cy.resize(); fitInti(); }, 0);
+};
+</script>
+</body></html>

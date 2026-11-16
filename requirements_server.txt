@@ -1,0 +1,5 @@
+# Cukup untuk menjalankan visual/server.py (halaman, chat, Compare, Brainstorm).
+# Pipeline pembangun graf (BERTopic, sentence-transformers) TIDAK dibutuhkan.
+requests>=2.31
+numpy>=1.26
+python-dotenv>=1.0

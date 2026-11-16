@@ -1,0 +1,45 @@
+# Repo ini hanya memuat berkas untuk MENJALANKAN SRE (daftar putih).
+# Semua yang lain -- pipeline, data mentah, cadangan, catatan internal,
+# .env -- tetap di komputer pengembang.
+
+/*
+!/.gitignore
+!/README.md
+!/DEPLOY.md
+!/.env.example
+!/requirements_server.txt
+
+!/visual/
+/visual/*
+!/visual/server.py
+!/visual/sre.html
+!/visual/index.html
+!/visual/data_cy.json
+
+!/scripts/
+/scripts/*
+!/scripts/ekspor_visual.py
+!/scripts/tanya_ai.py
+!/scripts/prompt_graf.py
+!/scripts/banding.py
+!/scripts/banding_publikasi.py
+!/scripts/banding_organisasi.py
+!/scripts/ringkas_mapping.py
+!/scripts/brainstorm.py
+!/scripts/uji_paket_ab.py
+!/scripts/uji_endpoint_brainstorm.py
+!/scripts/lib/
+/scripts/lib/*
+!/scripts/lib/__init__.py
+!/scripts/lib/arcadedb.py
+!/scripts/lib/tanya_graf.py
+!/scripts/lib/llm.py
+
+!/data/
+/data/*
+!/data/vektor_abstrak.npy
+!/data/vektor_abstrak.json
+
+__pycache__/
+*.pyc
+.DS_Store

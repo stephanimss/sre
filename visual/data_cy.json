@@ -1,0 +1,7389 @@
+{
+ "nodes": [
+  {
+   "data": {
+    "id": "SIUB011",
+    "label": "Nanang Yudi Setiawan",
+    "tipe": "Peneliti",
+    "warna": "#0F6E7B",
+    "ukuran": 16
+   }
+  },
+  {
+   "data": {
+    "id": "bt_24",
+    "label": "kualitas website, quality website",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 123,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 123
+   }
+  },
+  {
+   "data": {
+    "id": "Computer Science",
+    "label": "Computer Science",
+    "tipe": "Kategori",
+    "warna": "#4B45D3",
+    "ukuran": 26,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences"
+   }
+  },
+  {
+   "data": {
+    "id": "bt_23",
+    "label": "land cover, google earth",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 74,
+    "kategori": "Earth and Planetary Sciences",
+    "supergroup": "Physical Sciences",
+    "bobot": 74
+   }
+  },
+  {
+   "data": {
+    "id": "Earth and Planetary Sciences",
+    "label": "Earth and Planetary Sciences",
+    "tipe": "Kategori",
+    "warna": "#26A575",
+    "ukuran": 26,
+    "kategori": "Earth and Planetary Sciences",
+    "supergroup": "Physical Sciences"
+   }
+  },
+  {
+   "data": {
+    "id": "bt_15",
+    "label": "mobile banking, aplikasi mobile",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 105,
+    "kategori": "Business, Management and Accounting",
+    "supergroup": "Social Sciences",
+    "bobot": 105
+   }
+  },
+  {
+   "data": {
+    "id": "Business, Management and Accounting",
+    "label": "Business, Management and Accounting",
+    "tipe": "Kategori",
+    "warna": "#39C3DE",
+    "ukuran": 26,
+    "kategori": "Business, Management and Accounting",
+    "supergroup": "Social Sciences"
+   }
+  },
+  {
+   "data": {
+    "id": "bt_28",
+    "label": "berbasis web, sistem informasi",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 140,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 140
+   }
+  },
+  {
+   "data": {
+    "id": "bt_63",
+    "label": "sekolah berbasis, tenaga pendidik",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 153,
+    "kategori": "Social Sciences",
+    "supergroup": "Social Sciences",
+    "bobot": 153
+   }
+  },
+  {
+   "data": {
+    "id": "Social Sciences",
+    "label": "Social Sciences",
+    "tipe": "Kategori",
+    "warna": "#C27ADF",
+    "ukuran": 26,
+    "kategori": "Social Sciences",
+    "supergroup": "Social Sciences"
+   }
+  },
+  {
+   "data": {
+    "id": "bt_42",
+    "label": "informasi pembelajaran, learning management",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 50,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 50
+   }
+  },
+  {
+   "data": {
+    "id": "bt_27",
+    "label": "diabetes, disease",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 80,
+    "kategori": "Medicine",
+    "supergroup": "Health Sciences",
+    "bobot": 80
+   }
+  },
+  {
+   "data": {
+    "id": "Medicine",
+    "label": "Medicine",
+    "tipe": "Kategori",
+    "warna": "#7ADFDC",
+    "ukuran": 26,
+    "kategori": "Medicine",
+    "supergroup": "Health Sciences"
+   }
+  },
+  {
+   "data": {
+    "id": "bt_19",
+    "label": "kualitas website, aplikasi e-commerce",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 135,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 135
+   }
+  },
+  {
+   "data": {
+    "id": "bt_54",
+    "label": "evaluasi bisnis, business process",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 53,
+    "kategori": "Business, Management and Accounting",
+    "supergroup": "Social Sciences",
+    "bobot": 53
+   }
+  },
+  {
+   "data": {
+    "id": "bt_58",
+    "label": "k-means clustering, algoritma k-means",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 70,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 70
+   }
+  },
+  {
+   "data": {
+    "id": "bt_48",
+    "label": "text classification, feature extraction",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 61,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 61
+   }
+  },
+  {
+   "data": {
+    "id": "bt_72",
+    "label": "dinas pendidikan, pendidik",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 58,
+    "kategori": "Social Sciences",
+    "supergroup": "Social Sciences",
+    "bobot": 58
+   }
+  },
+  {
+   "data": {
+    "id": "bt_46",
+    "label": "web server, web service",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 59,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 59
+   }
+  },
+  {
+   "data": {
+    "id": "bt_21",
+    "label": "data mahasiswa, algoritma naive",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 109,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 109
+   }
+  },
+  {
+   "data": {
+    "id": "bt_39",
+    "label": "kinerja karyawan, kinerja pegawai",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 61,
+    "kategori": "Business, Management and Accounting",
+    "supergroup": "Social Sciences",
+    "bobot": 61
+   }
+  },
+  {
+   "data": {
+    "id": "bt_20",
+    "label": "software, perangkat lunak",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 84,
+    "kategori": "Engineering",
+    "supergroup": "Physical Sciences",
+    "bobot": 84
+   }
+  },
+  {
+   "data": {
+    "id": "Engineering",
+    "label": "Engineering",
+    "tipe": "Kategori",
+    "warna": "#1C65AF",
+    "ukuran": 26,
+    "kategori": "Engineering",
+    "supergroup": "Physical Sciences"
+   }
+  },
+  {
+   "data": {
+    "id": "bt_12",
+    "label": "pariwisata, wisatawan",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 137,
+    "kategori": "Business, Management and Accounting",
+    "supergroup": "Social Sciences",
+    "bobot": 137
+   }
+  },
+  {
+   "data": {
+    "id": "bt_4",
+    "label": "biodiversity, twitter data",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 149,
+    "kategori": "Social Sciences",
+    "supergroup": "Social Sciences",
+    "bobot": 149
+   }
+  },
+  {
+   "data": {
+    "id": "bt_65",
+    "label": "coffee, minuman",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 22,
+    "kategori": "Agricultural and Biological Sciences",
+    "supergroup": "Life Sciences",
+    "bobot": 22
+   }
+  },
+  {
+   "data": {
+    "id": "Agricultural and Biological Sciences",
+    "label": "Agricultural and Biological Sciences",
+    "tipe": "Kategori",
+    "warna": "#45D36E",
+    "ukuran": 26,
+    "kategori": "Agricultural and Biological Sciences",
+    "supergroup": "Life Sciences"
+   }
+  },
+  {
+   "data": {
+    "id": "bt_43",
+    "label": "customer reviews, pelanggan",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 57,
+    "kategori": "Business, Management and Accounting",
+    "supergroup": "Social Sciences",
+    "bobot": 57
+   }
+  },
+  {
+   "data": {
+    "id": "SIUB007",
+    "label": "Intan Sartika Eris Maghfiroh M.B.A",
+    "tipe": "Peneliti",
+    "warna": "#0F6E7B",
+    "ukuran": 16
+   }
+  },
+  {
+   "data": {
+    "id": "bt_55",
+    "label": "prestasi belajar, motivasi belajar",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 95,
+    "kategori": "Social Sciences",
+    "supergroup": "Social Sciences",
+    "bobot": 95
+   }
+  },
+  {
+   "data": {
+    "id": "bt_52",
+    "label": "pelaksanaan pembelajaran, learning environment",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 65,
+    "kategori": "Social Sciences",
+    "supergroup": "Social Sciences",
+    "bobot": 65
+   }
+  },
+  {
+   "data": {
+    "id": "bt_60",
+    "label": "pengguna mahasiswa, informasi mahasiswa",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 53,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 53
+   }
+  },
+  {
+   "data": {
+    "id": "bt_73",
+    "label": "prestasi siswa, learning vocational",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 52,
+    "kategori": "Social Sciences",
+    "supergroup": "Social Sciences",
+    "bobot": 52
+   }
+  },
+  {
+   "data": {
+    "id": "bt_79",
+    "label": "pengguna merancang, pengguna situs",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 33,
+    "kategori": "Business, Management and Accounting",
+    "supergroup": "Social Sciences",
+    "bobot": 33
+   }
+  },
+  {
+   "data": {
+    "id": "bt_70",
+    "label": "perkembangan anak, anak usia",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 38,
+    "kategori": "Medicine",
+    "supergroup": "Health Sciences",
+    "bobot": 38
+   }
+  },
+  {
+   "data": {
+    "id": "bt_37",
+    "label": "evaluasi usability, pengguna aplikasi",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 157,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 157
+   }
+  },
+  {
+   "data": {
+    "id": "bt_25",
+    "label": "daerah, land",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 148,
+    "kategori": "Social Sciences",
+    "supergroup": "Social Sciences",
+    "bobot": 148
+   }
+  },
+  {
+   "data": {
+    "id": "bt_17",
+    "label": "perusahaan manufaktur, evaluasi bisnis",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 100,
+    "kategori": "Business, Management and Accounting",
+    "supergroup": "Social Sciences",
+    "bobot": 100
+   }
+  },
+  {
+   "data": {
+    "id": "bt_33",
+    "label": "intelligence technology, teknologi kecerdasan",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 67,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 67
+   }
+  },
+  {
+   "data": {
+    "id": "bt_71",
+    "label": "fakultas ilmu, fakultas teknologi",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 56,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 56
+   }
+  },
+  {
+   "data": {
+    "id": "bt_66",
+    "label": "task technology, sistem manajemen",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 139,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 139
+   }
+  },
+  {
+   "data": {
+    "id": "bt_38",
+    "label": "digital marketing, media sosial",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 84,
+    "kategori": "Social Sciences",
+    "supergroup": "Social Sciences",
+    "bobot": 84
+   }
+  },
+  {
+   "data": {
+    "id": "bt_62",
+    "label": "smart city, aplikasi mobile",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 60,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 60
+   }
+  },
+  {
+   "data": {
+    "id": "bt_6",
+    "label": "informatika kabupaten, teknologi informasi",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 142,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 142
+   }
+  },
+  {
+   "data": {
+    "id": "bt_0",
+    "label": "agriculture, pertanian",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 254,
+    "kategori": "Agricultural and Biological Sciences",
+    "supergroup": "Life Sciences",
+    "bobot": 254
+   }
+  },
+  {
+   "data": {
+    "id": "bt_47",
+    "label": "waste, sampah",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 33,
+    "kategori": "Environmental Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 33
+   }
+  },
+  {
+   "data": {
+    "id": "Environmental Science",
+    "label": "Environmental Science",
+    "tipe": "Kategori",
+    "warna": "#D34562",
+    "ukuran": 26,
+    "kategori": "Environmental Science",
+    "supergroup": "Physical Sciences"
+   }
+  },
+  {
+   "data": {
+    "id": "bt_22",
+    "label": "pengguna perancangan, perancangan user",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 152,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 152
+   }
+  },
+  {
+   "data": {
+    "id": "bt_11",
+    "label": "covid- pandemic, pandemic covid-",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 99,
+    "kategori": "Medicine",
+    "supergroup": "Health Sciences",
+    "bobot": 99
+   }
+  },
+  {
+   "data": {
+    "id": "bt_80",
+    "label": "pengalaman pengguna, pengguna smartphone",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 124,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 124
+   }
+  },
+  {
+   "data": {
+    "id": "SIUB012",
+    "label": "Niken Hendrakusuma Wardani",
+    "tipe": "Peneliti",
+    "warna": "#0F6E7B",
+    "ukuran": 16
+   }
+  },
+  {
+   "data": {
+    "id": "bt_26",
+    "label": "health center, layanan kesehatan",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 89,
+    "kategori": "Medicine",
+    "supergroup": "Health Sciences",
+    "bobot": 89
+   }
+  },
+  {
+   "data": {
+    "id": "bt_74",
+    "label": "olahraga, sport",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 25,
+    "kategori": "Decision Sciences",
+    "supergroup": "Social Sciences",
+    "bobot": 25
+   }
+  },
+  {
+   "data": {
+    "id": "Decision Sciences",
+    "label": "Decision Sciences",
+    "tipe": "Kategori",
+    "warna": "#E89972",
+    "ukuran": 26,
+    "kategori": "Decision Sciences",
+    "supergroup": "Social Sciences"
+   }
+  },
+  {
+   "data": {
+    "id": "bt_2",
+    "label": "pengembangan game, video game",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 122,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 122
+   }
+  },
+  {
+   "data": {
+    "id": "bt_30",
+    "label": "librarians, library services",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 93,
+    "kategori": "Social Sciences",
+    "supergroup": "Social Sciences",
+    "bobot": 93
+   }
+  },
+  {
+   "data": {
+    "id": "bt_5",
+    "label": "normative legal, kejahatan",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 114,
+    "kategori": "Social Sciences",
+    "supergroup": "Social Sciences",
+    "bobot": 114
+   }
+  },
+  {
+   "data": {
+    "id": "bt_16",
+    "label": "sapi, animal",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 69,
+    "kategori": "Agricultural and Biological Sciences",
+    "supergroup": "Life Sciences",
+    "bobot": 69
+   }
+  },
+  {
+   "data": {
+    "id": "bt_59",
+    "label": "kanker, data penyakit",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 30,
+    "kategori": "Medicine",
+    "supergroup": "Health Sciences",
+    "bobot": 30
+   }
+  },
+  {
+   "data": {
+    "id": "bt_36",
+    "label": "e-learning berbasis, e-learning",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 122,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 122
+   }
+  },
+  {
+   "data": {
+    "id": "bt_7",
+    "label": "road, transportasi",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 120,
+    "kategori": "Engineering",
+    "supergroup": "Physical Sciences",
+    "bobot": 120
+   }
+  },
+  {
+   "data": {
+    "id": "bt_68",
+    "label": "layanan e-government, e-government",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 59,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 59
+   }
+  },
+  {
+   "data": {
+    "id": "bt_10",
+    "label": "perikanan, fisheries",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 119,
+    "kategori": "Agricultural and Biological Sciences",
+    "supergroup": "Life Sciences",
+    "bobot": 119
+   }
+  },
+  {
+   "data": {
+    "id": "SIUB003",
+    "label": "Andi Reza Perdanakusuma",
+    "tipe": "Peneliti",
+    "warna": "#0F6E7B",
+    "ukuran": 16
+   }
+  },
+  {
+   "data": {
+    "id": "bt_8",
+    "label": "penerapan pembelajaran, problem learning",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 195,
+    "kategori": "Social Sciences",
+    "supergroup": "Social Sciences",
+    "bobot": 195
+   }
+  },
+  {
+   "data": {
+    "id": "bt_29",
+    "label": "convolutional neural, neural network",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 86,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 86
+   }
+  },
+  {
+   "data": {
+    "id": "bt_13",
+    "label": "gempa bumi, gempa",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 118,
+    "kategori": "Earth and Planetary Sciences",
+    "supergroup": "Physical Sciences",
+    "bobot": 118
+   }
+  },
+  {
+   "data": {
+    "id": "bt_9",
+    "label": "language processing, bahasa",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 112,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 112
+   }
+  },
+  {
+   "data": {
+    "id": "bt_18",
+    "label": "media pembelajaran, pembelajaran berbasis",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 171,
+    "kategori": "Social Sciences",
+    "supergroup": "Social Sciences",
+    "bobot": 171
+   }
+  },
+  {
+   "data": {
+    "id": "bt_45",
+    "label": "scientific journals, scientific publications",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 56,
+    "kategori": "Social Sciences",
+    "supergroup": "Social Sciences",
+    "bobot": 56
+   }
+  },
+  {
+   "data": {
+    "id": "bt_51",
+    "label": "sistem informasi, keamanan sistem",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 65,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 65
+   }
+  },
+  {
+   "data": {
+    "id": "bt_57",
+    "label": "proyek sistem, perusahaan evaluasi",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 27,
+    "kategori": "Engineering",
+    "supergroup": "Physical Sciences",
+    "bobot": 27
+   }
+  },
+  {
+   "data": {
+    "id": "SIUB014",
+    "label": "Suprapto",
+    "tipe": "Peneliti",
+    "warna": "#0F6E7B",
+    "ukuran": 16
+   }
+  },
+  {
+   "data": {
+    "id": "SIUB015",
+    "label": "Yusi Tyroni Mursityo",
+    "tipe": "Peneliti",
+    "warna": "#0F6E7B",
+    "ukuran": 16
+   }
+  },
+  {
+   "data": {
+    "id": "bt_3",
+    "label": "pendidikan agama, agama islam",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 128,
+    "kategori": "Arts and Humanities",
+    "supergroup": "Social Sciences",
+    "bobot": 128
+   }
+  },
+  {
+   "data": {
+    "id": "Arts and Humanities",
+    "label": "Arts and Humanities",
+    "tipe": "Kategori",
+    "warna": "#B45309",
+    "ukuran": 26,
+    "kategori": "Arts and Humanities",
+    "supergroup": "Social Sciences"
+   }
+  },
+  {
+   "data": {
+    "id": "bt_32",
+    "label": "rainfall, forecasting",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 67,
+    "kategori": "Earth and Planetary Sciences",
+    "supergroup": "Physical Sciences",
+    "bobot": 67
+   }
+  },
+  {
+   "data": {
+    "id": "bt_50",
+    "label": "pendistribusian, distribusi",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 39,
+    "kategori": "Decision Sciences",
+    "supergroup": "Social Sciences",
+    "bobot": 39
+   }
+  },
+  {
+   "data": {
+    "id": "bt_44",
+    "label": "neural network, regression svr",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 58,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 58
+   }
+  },
+  {
+   "data": {
+    "id": "bt_75",
+    "label": "experience e-learning, e-learning berbasis",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 28,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 28
+   }
+  },
+  {
+   "data": {
+    "id": "bt_49",
+    "label": "kebudayaan, batik",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 49,
+    "kategori": "Arts and Humanities",
+    "supergroup": "Social Sciences",
+    "bobot": 49
+   }
+  },
+  {
+   "data": {
+    "id": "SIUB008",
+    "label": "Mahrus Ali",
+    "tipe": "Peneliti",
+    "warna": "#0F6E7B",
+    "ukuran": 16
+   }
+  },
+  {
+   "data": {
+    "id": "SIUB013",
+    "label": "Prima Zulvarina",
+    "tipe": "Peneliti",
+    "warna": "#0F6E7B",
+    "ukuran": 16
+   }
+  },
+  {
+   "data": {
+    "id": "bt_69",
+    "label": "stres, stress",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 26,
+    "kategori": "Psychology",
+    "supergroup": "Social Sciences",
+    "bobot": 26
+   }
+  },
+  {
+   "data": {
+    "id": "Psychology",
+    "label": "Psychology",
+    "tipe": "Kategori",
+    "warna": "#39DE7E",
+    "ukuran": 26,
+    "kategori": "Psychology",
+    "supergroup": "Social Sciences"
+   }
+  },
+  {
+   "data": {
+    "id": "SIUB001",
+    "label": "Alfi Nur Rusydi",
+    "tipe": "Peneliti",
+    "warna": "#0F6E7B",
+    "ukuran": 16
+   }
+  },
+  {
+   "data": {
+    "id": "bt_14",
+    "label": "hydrological, perairan",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 98,
+    "kategori": "Earth and Planetary Sciences",
+    "supergroup": "Physical Sciences",
+    "bobot": 98
+   }
+  },
+  {
+   "data": {
+    "id": "SIUB002",
+    "label": "Almira Syawli",
+    "tipe": "Peneliti",
+    "warna": "#0F6E7B",
+    "ukuran": 16
+   }
+  },
+  {
+   "data": {
+    "id": "bt_53",
+    "label": "networking, sensor network",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 50,
+    "kategori": "Computer Science",
+    "supergroup": "Physical Sciences",
+    "bobot": 50
+   }
+  },
+  {
+   "data": {
+    "id": "SIUB004",
+    "label": "Bondan Sapta Prakoso",
+    "tipe": "Peneliti",
+    "warna": "#0F6E7B",
+    "ukuran": 16
+   }
+  },
+  {
+   "data": {
+    "id": "SIUB010",
+    "label": "Muhammad Aminul Akbar",
+    "tipe": "Peneliti",
+    "warna": "#0F6E7B",
+    "ukuran": 16
+   }
+  },
+  {
+   "data": {
+    "id": "bt_64",
+    "label": "sensor, sensors",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 33,
+    "kategori": "Engineering",
+    "supergroup": "Physical Sciences",
+    "bobot": 33
+   }
+  },
+  {
+   "data": {
+    "id": "SIUB005",
+    "label": "Djoko Pramono",
+    "tipe": "Peneliti",
+    "warna": "#0F6E7B",
+    "ukuran": 16
+   }
+  },
+  {
+   "data": {
+    "id": "SIUB006",
+    "label": "Fajar Pradana",
+    "tipe": "Peneliti",
+    "warna": "#0F6E7B",
+    "ukuran": 16
+   }
+  },
+  {
+   "data": {
+    "id": "bt_31",
+    "label": "perawat, pelayanan kesehatan",
+    "tipe": "Topik",
+    "warna": "#94A3B8",
+    "ukuran": 51,
+    "kategori": "Health Professions",
+    "supergroup": "Health Sciences",
+    "bobot": 51
+   }
+  },
+  {
+   "data": {
+    "id": "Health Professions",
+    "label": "Health Professions",
+    "tipe": "Kategori",
+    "warna": "#E872A3",
+    "ukuran": 26,
+    "kategori": "Health Professions",
+    "supergroup": "Health Sciences"
+   }
+  },
+  {
+   "data": {
+    "id": "SIUB009",
+    "label": "Mochamad Chandra Saputra",
+    "tipe": "Peneliti",
+    "warna": "#0F6E7B",
+    "ukuran": 16
+   }
+  }
+ ],
+ "edges": [
+  {
+   "data": {
+    "id": "e0",
+    "source": "SIUB011",
+    "target": "bt_24",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e1",
+    "source": "bt_24",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e2",
+    "source": "SIUB011",
+    "target": "bt_23",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e3",
+    "source": "bt_23",
+    "target": "Earth and Planetary Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e4",
+    "source": "SIUB011",
+    "target": "bt_15",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e5",
+    "source": "bt_15",
+    "target": "Business, Management and Accounting",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e6",
+    "source": "SIUB011",
+    "target": "bt_28",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e7",
+    "source": "bt_28",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e8",
+    "source": "SIUB011",
+    "target": "bt_63",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e9",
+    "source": "bt_63",
+    "target": "Social Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e10",
+    "source": "SIUB011",
+    "target": "bt_42",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e11",
+    "source": "bt_42",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e12",
+    "source": "SIUB011",
+    "target": "bt_27",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e13",
+    "source": "bt_27",
+    "target": "Medicine",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e14",
+    "source": "SIUB011",
+    "target": "bt_19",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e15",
+    "source": "bt_19",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e16",
+    "source": "SIUB011",
+    "target": "bt_54",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e17",
+    "source": "bt_54",
+    "target": "Business, Management and Accounting",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e18",
+    "source": "SIUB011",
+    "target": "bt_58",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e19",
+    "source": "bt_58",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e20",
+    "source": "SIUB011",
+    "target": "bt_48",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e21",
+    "source": "bt_48",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e22",
+    "source": "SIUB011",
+    "target": "bt_72",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e23",
+    "source": "bt_72",
+    "target": "Social Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e24",
+    "source": "SIUB011",
+    "target": "bt_46",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e25",
+    "source": "bt_46",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e26",
+    "source": "SIUB011",
+    "target": "bt_21",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e27",
+    "source": "bt_21",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e28",
+    "source": "SIUB011",
+    "target": "bt_39",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e29",
+    "source": "bt_39",
+    "target": "Business, Management and Accounting",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e30",
+    "source": "SIUB011",
+    "target": "bt_20",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e31",
+    "source": "bt_20",
+    "target": "Engineering",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e32",
+    "source": "SIUB011",
+    "target": "bt_12",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e33",
+    "source": "bt_12",
+    "target": "Business, Management and Accounting",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e34",
+    "source": "SIUB011",
+    "target": "bt_4",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e35",
+    "source": "bt_4",
+    "target": "Social Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e36",
+    "source": "SIUB011",
+    "target": "bt_65",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e37",
+    "source": "bt_65",
+    "target": "Agricultural and Biological Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e38",
+    "source": "SIUB011",
+    "target": "bt_43",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e39",
+    "source": "bt_43",
+    "target": "Business, Management and Accounting",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e40",
+    "source": "SIUB007",
+    "target": "bt_39",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e41",
+    "source": "SIUB007",
+    "target": "bt_55",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e42",
+    "source": "bt_55",
+    "target": "Social Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e43",
+    "source": "SIUB007",
+    "target": "bt_52",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e44",
+    "source": "bt_52",
+    "target": "Social Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e45",
+    "source": "SIUB007",
+    "target": "bt_60",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e46",
+    "source": "bt_60",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e47",
+    "source": "SIUB007",
+    "target": "bt_73",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e48",
+    "source": "bt_73",
+    "target": "Social Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e49",
+    "source": "SIUB007",
+    "target": "bt_54",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e50",
+    "source": "SIUB007",
+    "target": "bt_79",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e51",
+    "source": "bt_79",
+    "target": "Business, Management and Accounting",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e52",
+    "source": "SIUB007",
+    "target": "bt_70",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e53",
+    "source": "bt_70",
+    "target": "Medicine",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e54",
+    "source": "SIUB007",
+    "target": "bt_37",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e55",
+    "source": "bt_37",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e56",
+    "source": "SIUB007",
+    "target": "bt_25",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e57",
+    "source": "bt_25",
+    "target": "Social Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e58",
+    "source": "SIUB007",
+    "target": "bt_17",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e59",
+    "source": "bt_17",
+    "target": "Business, Management and Accounting",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e60",
+    "source": "SIUB007",
+    "target": "bt_12",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e61",
+    "source": "SIUB007",
+    "target": "bt_33",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e62",
+    "source": "bt_33",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e63",
+    "source": "SIUB007",
+    "target": "bt_71",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e64",
+    "source": "bt_71",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e65",
+    "source": "SIUB007",
+    "target": "bt_19",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e66",
+    "source": "SIUB007",
+    "target": "bt_66",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e67",
+    "source": "bt_66",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e68",
+    "source": "SIUB007",
+    "target": "bt_38",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e69",
+    "source": "bt_38",
+    "target": "Social Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e70",
+    "source": "SIUB007",
+    "target": "bt_62",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e71",
+    "source": "bt_62",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e72",
+    "source": "SIUB007",
+    "target": "bt_72",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e73",
+    "source": "SIUB007",
+    "target": "bt_6",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e74",
+    "source": "bt_6",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e75",
+    "source": "SIUB007",
+    "target": "bt_63",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e76",
+    "source": "SIUB007",
+    "target": "bt_23",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e77",
+    "source": "SIUB007",
+    "target": "bt_15",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e78",
+    "source": "SIUB007",
+    "target": "bt_0",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e79",
+    "source": "bt_0",
+    "target": "Agricultural and Biological Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e80",
+    "source": "SIUB007",
+    "target": "bt_24",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e81",
+    "source": "SIUB007",
+    "target": "bt_47",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e82",
+    "source": "bt_47",
+    "target": "Environmental Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e83",
+    "source": "SIUB007",
+    "target": "bt_22",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e84",
+    "source": "bt_22",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e85",
+    "source": "SIUB007",
+    "target": "bt_28",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e86",
+    "source": "SIUB007",
+    "target": "bt_11",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e87",
+    "source": "bt_11",
+    "target": "Medicine",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e88",
+    "source": "SIUB007",
+    "target": "bt_80",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e89",
+    "source": "bt_80",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e90",
+    "source": "SIUB007",
+    "target": "bt_42",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e91",
+    "source": "SIUB012",
+    "target": "bt_26",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e92",
+    "source": "bt_26",
+    "target": "Medicine",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e93",
+    "source": "SIUB012",
+    "target": "bt_62",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e94",
+    "source": "SIUB012",
+    "target": "bt_74",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e95",
+    "source": "bt_74",
+    "target": "Decision Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e96",
+    "source": "SIUB012",
+    "target": "bt_2",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e97",
+    "source": "bt_2",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e98",
+    "source": "SIUB012",
+    "target": "bt_30",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e99",
+    "source": "bt_30",
+    "target": "Social Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e100",
+    "source": "SIUB012",
+    "target": "bt_63",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e101",
+    "source": "SIUB012",
+    "target": "bt_5",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e102",
+    "source": "bt_5",
+    "target": "Social Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e103",
+    "source": "SIUB012",
+    "target": "bt_16",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e104",
+    "source": "bt_16",
+    "target": "Agricultural and Biological Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e105",
+    "source": "SIUB012",
+    "target": "bt_6",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e106",
+    "source": "SIUB012",
+    "target": "bt_4",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e107",
+    "source": "SIUB012",
+    "target": "bt_72",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e108",
+    "source": "SIUB012",
+    "target": "bt_80",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e109",
+    "source": "SIUB012",
+    "target": "bt_59",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e110",
+    "source": "bt_59",
+    "target": "Medicine",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e111",
+    "source": "SIUB012",
+    "target": "bt_36",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e112",
+    "source": "bt_36",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e113",
+    "source": "SIUB012",
+    "target": "bt_43",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e114",
+    "source": "SIUB012",
+    "target": "bt_7",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e115",
+    "source": "bt_7",
+    "target": "Engineering",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e116",
+    "source": "SIUB012",
+    "target": "bt_68",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e117",
+    "source": "bt_68",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e118",
+    "source": "SIUB012",
+    "target": "bt_11",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e119",
+    "source": "SIUB012",
+    "target": "bt_12",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e120",
+    "source": "SIUB012",
+    "target": "bt_21",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e121",
+    "source": "SIUB012",
+    "target": "bt_54",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e122",
+    "source": "SIUB012",
+    "target": "bt_22",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e123",
+    "source": "SIUB012",
+    "target": "bt_79",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e124",
+    "source": "SIUB012",
+    "target": "bt_71",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e125",
+    "source": "SIUB012",
+    "target": "bt_24",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 14,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e126",
+    "source": "SIUB012",
+    "target": "bt_19",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 8,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e127",
+    "source": "SIUB012",
+    "target": "bt_10",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e128",
+    "source": "bt_10",
+    "target": "Agricultural and Biological Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e129",
+    "source": "SIUB012",
+    "target": "bt_39",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e130",
+    "source": "SIUB012",
+    "target": "bt_38",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e131",
+    "source": "SIUB012",
+    "target": "bt_0",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e132",
+    "source": "SIUB012",
+    "target": "bt_15",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 8,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e133",
+    "source": "SIUB012",
+    "target": "bt_66",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e134",
+    "source": "SIUB012",
+    "target": "bt_17",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e135",
+    "source": "SIUB012",
+    "target": "bt_60",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e136",
+    "source": "SIUB012",
+    "target": "bt_28",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e137",
+    "source": "SIUB012",
+    "target": "bt_37",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e138",
+    "source": "SIUB003",
+    "target": "bt_36",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e139",
+    "source": "SIUB003",
+    "target": "bt_20",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e140",
+    "source": "SIUB003",
+    "target": "bt_68",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e141",
+    "source": "SIUB003",
+    "target": "bt_8",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e142",
+    "source": "bt_8",
+    "target": "Social Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e143",
+    "source": "SIUB003",
+    "target": "bt_26",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e144",
+    "source": "SIUB003",
+    "target": "bt_60",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e145",
+    "source": "SIUB003",
+    "target": "bt_29",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e146",
+    "source": "bt_29",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e147",
+    "source": "SIUB003",
+    "target": "bt_39",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e148",
+    "source": "SIUB003",
+    "target": "bt_42",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e149",
+    "source": "SIUB003",
+    "target": "bt_21",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e150",
+    "source": "SIUB003",
+    "target": "bt_16",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e151",
+    "source": "SIUB003",
+    "target": "bt_63",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e152",
+    "source": "SIUB003",
+    "target": "bt_17",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 9,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e153",
+    "source": "SIUB003",
+    "target": "bt_79",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e154",
+    "source": "SIUB003",
+    "target": "bt_72",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e155",
+    "source": "SIUB003",
+    "target": "bt_65",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e156",
+    "source": "SIUB003",
+    "target": "bt_52",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e157",
+    "source": "SIUB003",
+    "target": "bt_13",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e158",
+    "source": "bt_13",
+    "target": "Earth and Planetary Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e159",
+    "source": "SIUB003",
+    "target": "bt_2",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e160",
+    "source": "SIUB003",
+    "target": "bt_9",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e161",
+    "source": "bt_9",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e162",
+    "source": "SIUB003",
+    "target": "bt_11",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e163",
+    "source": "SIUB003",
+    "target": "bt_80",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 8,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e164",
+    "source": "SIUB003",
+    "target": "bt_18",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e165",
+    "source": "bt_18",
+    "target": "Social Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e166",
+    "source": "SIUB003",
+    "target": "bt_15",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e167",
+    "source": "SIUB003",
+    "target": "bt_12",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e168",
+    "source": "SIUB003",
+    "target": "bt_71",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e169",
+    "source": "SIUB003",
+    "target": "bt_24",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e170",
+    "source": "SIUB003",
+    "target": "bt_33",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e171",
+    "source": "SIUB003",
+    "target": "bt_62",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e172",
+    "source": "SIUB003",
+    "target": "bt_45",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e173",
+    "source": "bt_45",
+    "target": "Social Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e174",
+    "source": "SIUB003",
+    "target": "bt_43",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e175",
+    "source": "SIUB003",
+    "target": "bt_54",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 10,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e176",
+    "source": "SIUB003",
+    "target": "bt_30",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e177",
+    "source": "SIUB003",
+    "target": "bt_66",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e178",
+    "source": "SIUB003",
+    "target": "bt_22",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 9,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e179",
+    "source": "SIUB003",
+    "target": "bt_28",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e180",
+    "source": "SIUB003",
+    "target": "bt_4",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e181",
+    "source": "SIUB003",
+    "target": "bt_51",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 8,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e182",
+    "source": "bt_51",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e183",
+    "source": "SIUB003",
+    "target": "bt_19",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e184",
+    "source": "SIUB003",
+    "target": "bt_37",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 12,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e185",
+    "source": "SIUB003",
+    "target": "bt_38",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e186",
+    "source": "SIUB003",
+    "target": "bt_0",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e187",
+    "source": "SIUB003",
+    "target": "bt_57",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 9,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e188",
+    "source": "bt_57",
+    "target": "Engineering",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e189",
+    "source": "SIUB003",
+    "target": "bt_6",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 33,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e190",
+    "source": "SIUB014",
+    "target": "bt_62",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e191",
+    "source": "SIUB014",
+    "target": "bt_2",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e192",
+    "source": "SIUB014",
+    "target": "bt_51",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e193",
+    "source": "SIUB014",
+    "target": "bt_22",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e194",
+    "source": "SIUB014",
+    "target": "bt_28",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e195",
+    "source": "SIUB014",
+    "target": "bt_21",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e196",
+    "source": "SIUB014",
+    "target": "bt_19",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e197",
+    "source": "SIUB014",
+    "target": "bt_0",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e198",
+    "source": "SIUB014",
+    "target": "bt_26",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e199",
+    "source": "SIUB014",
+    "target": "bt_6",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 57,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e200",
+    "source": "SIUB014",
+    "target": "bt_37",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e201",
+    "source": "SIUB014",
+    "target": "bt_36",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e202",
+    "source": "SIUB014",
+    "target": "bt_68",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e203",
+    "source": "SIUB014",
+    "target": "bt_17",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e204",
+    "source": "SIUB014",
+    "target": "bt_60",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e205",
+    "source": "SIUB014",
+    "target": "bt_7",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e206",
+    "source": "SIUB014",
+    "target": "bt_24",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e207",
+    "source": "SIUB014",
+    "target": "bt_25",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e208",
+    "source": "SIUB014",
+    "target": "bt_57",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e209",
+    "source": "SIUB015",
+    "target": "bt_58",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e210",
+    "source": "SIUB015",
+    "target": "bt_25",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e211",
+    "source": "SIUB015",
+    "target": "bt_55",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e212",
+    "source": "SIUB015",
+    "target": "bt_3",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e213",
+    "source": "bt_3",
+    "target": "Arts and Humanities",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e214",
+    "source": "SIUB015",
+    "target": "bt_62",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e215",
+    "source": "SIUB015",
+    "target": "bt_32",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e216",
+    "source": "bt_32",
+    "target": "Earth and Planetary Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e217",
+    "source": "SIUB015",
+    "target": "bt_50",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e218",
+    "source": "bt_50",
+    "target": "Decision Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e219",
+    "source": "SIUB015",
+    "target": "bt_46",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e220",
+    "source": "SIUB015",
+    "target": "bt_72",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e221",
+    "source": "SIUB015",
+    "target": "bt_21",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e222",
+    "source": "SIUB015",
+    "target": "bt_44",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e223",
+    "source": "bt_44",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e224",
+    "source": "SIUB015",
+    "target": "bt_59",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e225",
+    "source": "SIUB015",
+    "target": "bt_27",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e226",
+    "source": "SIUB015",
+    "target": "bt_30",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e227",
+    "source": "SIUB015",
+    "target": "bt_10",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e228",
+    "source": "SIUB015",
+    "target": "bt_0",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e229",
+    "source": "SIUB015",
+    "target": "bt_8",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e230",
+    "source": "SIUB015",
+    "target": "bt_68",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e231",
+    "source": "SIUB015",
+    "target": "bt_18",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e232",
+    "source": "SIUB015",
+    "target": "bt_36",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e233",
+    "source": "SIUB015",
+    "target": "bt_54",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e234",
+    "source": "SIUB015",
+    "target": "bt_24",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e235",
+    "source": "SIUB015",
+    "target": "bt_12",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e236",
+    "source": "SIUB015",
+    "target": "bt_28",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 8,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e237",
+    "source": "SIUB015",
+    "target": "bt_66",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 13,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e238",
+    "source": "SIUB015",
+    "target": "bt_4",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e239",
+    "source": "SIUB015",
+    "target": "bt_79",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e240",
+    "source": "SIUB015",
+    "target": "bt_33",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e241",
+    "source": "SIUB015",
+    "target": "bt_73",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e242",
+    "source": "SIUB015",
+    "target": "bt_42",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e243",
+    "source": "SIUB015",
+    "target": "bt_57",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e244",
+    "source": "SIUB015",
+    "target": "bt_17",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 18,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e245",
+    "source": "SIUB015",
+    "target": "bt_75",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e246",
+    "source": "bt_75",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e247",
+    "source": "SIUB015",
+    "target": "bt_39",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e248",
+    "source": "SIUB015",
+    "target": "bt_71",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e249",
+    "source": "SIUB015",
+    "target": "bt_22",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 9,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e250",
+    "source": "SIUB015",
+    "target": "bt_7",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e251",
+    "source": "SIUB015",
+    "target": "bt_26",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 9,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e252",
+    "source": "SIUB015",
+    "target": "bt_52",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e253",
+    "source": "SIUB015",
+    "target": "bt_37",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 11,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e254",
+    "source": "SIUB015",
+    "target": "bt_11",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e255",
+    "source": "SIUB015",
+    "target": "bt_15",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 8,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e256",
+    "source": "SIUB015",
+    "target": "bt_60",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e257",
+    "source": "SIUB015",
+    "target": "bt_63",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e258",
+    "source": "SIUB015",
+    "target": "bt_6",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 27,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e259",
+    "source": "SIUB015",
+    "target": "bt_51",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e260",
+    "source": "SIUB015",
+    "target": "bt_49",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e261",
+    "source": "bt_49",
+    "target": "Arts and Humanities",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e262",
+    "source": "SIUB015",
+    "target": "bt_80",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e263",
+    "source": "SIUB015",
+    "target": "bt_19",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 13,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e264",
+    "source": "SIUB015",
+    "target": "bt_38",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e265",
+    "source": "SIUB008",
+    "target": "bt_3",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e266",
+    "source": "SIUB008",
+    "target": "bt_15",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e267",
+    "source": "SIUB008",
+    "target": "bt_5",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e268",
+    "source": "SIUB008",
+    "target": "bt_4",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e269",
+    "source": "SIUB008",
+    "target": "bt_21",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e270",
+    "source": "SIUB008",
+    "target": "bt_25",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e271",
+    "source": "SIUB008",
+    "target": "bt_13",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e272",
+    "source": "SIUB008",
+    "target": "bt_8",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e273",
+    "source": "SIUB008",
+    "target": "bt_73",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e274",
+    "source": "SIUB008",
+    "target": "bt_68",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e275",
+    "source": "SIUB008",
+    "target": "bt_57",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e276",
+    "source": "SIUB008",
+    "target": "bt_38",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e277",
+    "source": "SIUB013",
+    "target": "bt_63",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e278",
+    "source": "SIUB013",
+    "target": "bt_37",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e279",
+    "source": "SIUB013",
+    "target": "bt_38",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e280",
+    "source": "SIUB013",
+    "target": "bt_24",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e281",
+    "source": "SIUB013",
+    "target": "bt_5",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e282",
+    "source": "SIUB013",
+    "target": "bt_15",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e283",
+    "source": "SIUB013",
+    "target": "bt_12",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e284",
+    "source": "SIUB013",
+    "target": "bt_3",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e285",
+    "source": "SIUB013",
+    "target": "bt_33",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e286",
+    "source": "SIUB013",
+    "target": "bt_69",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e287",
+    "source": "bt_69",
+    "target": "Psychology",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e288",
+    "source": "SIUB013",
+    "target": "bt_49",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e289",
+    "source": "SIUB013",
+    "target": "bt_19",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e290",
+    "source": "SIUB013",
+    "target": "bt_4",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e291",
+    "source": "SIUB013",
+    "target": "bt_9",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e292",
+    "source": "SIUB013",
+    "target": "bt_55",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e293",
+    "source": "SIUB013",
+    "target": "bt_73",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e294",
+    "source": "SIUB013",
+    "target": "bt_8",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 15,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e295",
+    "source": "SIUB013",
+    "target": "bt_72",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e296",
+    "source": "SIUB013",
+    "target": "bt_18",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e297",
+    "source": "SIUB013",
+    "target": "bt_79",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e298",
+    "source": "SIUB013",
+    "target": "bt_22",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e299",
+    "source": "SIUB001",
+    "target": "bt_44",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e300",
+    "source": "SIUB001",
+    "target": "bt_80",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e301",
+    "source": "SIUB001",
+    "target": "bt_6",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e302",
+    "source": "SIUB001",
+    "target": "bt_79",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e303",
+    "source": "SIUB001",
+    "target": "bt_62",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e304",
+    "source": "SIUB001",
+    "target": "bt_47",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e305",
+    "source": "SIUB001",
+    "target": "bt_22",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e306",
+    "source": "SIUB001",
+    "target": "bt_32",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e307",
+    "source": "SIUB001",
+    "target": "bt_16",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e308",
+    "source": "SIUB001",
+    "target": "bt_4",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e309",
+    "source": "SIUB001",
+    "target": "bt_43",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e310",
+    "source": "SIUB001",
+    "target": "bt_72",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e311",
+    "source": "SIUB001",
+    "target": "bt_19",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e312",
+    "source": "SIUB001",
+    "target": "bt_66",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e313",
+    "source": "SIUB001",
+    "target": "bt_17",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e314",
+    "source": "SIUB001",
+    "target": "bt_23",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e315",
+    "source": "SIUB001",
+    "target": "bt_24",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e316",
+    "source": "SIUB001",
+    "target": "bt_10",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e317",
+    "source": "SIUB001",
+    "target": "bt_7",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e318",
+    "source": "SIUB001",
+    "target": "bt_12",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e319",
+    "source": "SIUB001",
+    "target": "bt_37",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e320",
+    "source": "SIUB001",
+    "target": "bt_15",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e321",
+    "source": "SIUB001",
+    "target": "bt_14",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 15,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e322",
+    "source": "bt_14",
+    "target": "Earth and Planetary Sciences",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e323",
+    "source": "SIUB001",
+    "target": "bt_25",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e324",
+    "source": "SIUB001",
+    "target": "bt_63",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e325",
+    "source": "SIUB001",
+    "target": "bt_13",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 9,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e326",
+    "source": "SIUB002",
+    "target": "bt_4",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e327",
+    "source": "SIUB002",
+    "target": "bt_21",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e328",
+    "source": "SIUB002",
+    "target": "bt_63",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e329",
+    "source": "SIUB002",
+    "target": "bt_0",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e330",
+    "source": "SIUB002",
+    "target": "bt_53",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e331",
+    "source": "bt_53",
+    "target": "Computer Science",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e332",
+    "source": "SIUB002",
+    "target": "bt_23",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e333",
+    "source": "SIUB002",
+    "target": "bt_80",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e334",
+    "source": "SIUB002",
+    "target": "bt_47",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e335",
+    "source": "SIUB002",
+    "target": "bt_19",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e336",
+    "source": "SIUB002",
+    "target": "bt_71",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e337",
+    "source": "SIUB002",
+    "target": "bt_68",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e338",
+    "source": "SIUB002",
+    "target": "bt_3",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e339",
+    "source": "SIUB002",
+    "target": "bt_37",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e340",
+    "source": "SIUB002",
+    "target": "bt_11",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e341",
+    "source": "SIUB002",
+    "target": "bt_42",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e342",
+    "source": "SIUB002",
+    "target": "bt_79",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e343",
+    "source": "SIUB002",
+    "target": "bt_15",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e344",
+    "source": "SIUB002",
+    "target": "bt_72",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e345",
+    "source": "SIUB002",
+    "target": "bt_24",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e346",
+    "source": "SIUB002",
+    "target": "bt_10",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e347",
+    "source": "SIUB002",
+    "target": "bt_17",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e348",
+    "source": "SIUB002",
+    "target": "bt_22",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e349",
+    "source": "SIUB004",
+    "target": "bt_37",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e350",
+    "source": "SIUB004",
+    "target": "bt_42",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e351",
+    "source": "SIUB004",
+    "target": "bt_51",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e352",
+    "source": "SIUB004",
+    "target": "bt_68",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e353",
+    "source": "SIUB004",
+    "target": "bt_63",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e354",
+    "source": "SIUB004",
+    "target": "bt_28",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e355",
+    "source": "SIUB004",
+    "target": "bt_12",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e356",
+    "source": "SIUB004",
+    "target": "bt_80",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e357",
+    "source": "SIUB004",
+    "target": "bt_22",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e358",
+    "source": "SIUB004",
+    "target": "bt_24",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e359",
+    "source": "SIUB004",
+    "target": "bt_17",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e360",
+    "source": "SIUB004",
+    "target": "bt_2",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e361",
+    "source": "SIUB010",
+    "target": "bt_58",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e362",
+    "source": "SIUB010",
+    "target": "bt_62",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e363",
+    "source": "SIUB010",
+    "target": "bt_30",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e364",
+    "source": "SIUB010",
+    "target": "bt_52",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e365",
+    "source": "SIUB010",
+    "target": "bt_38",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e366",
+    "source": "SIUB010",
+    "target": "bt_70",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e367",
+    "source": "SIUB010",
+    "target": "bt_63",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e368",
+    "source": "SIUB010",
+    "target": "bt_42",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e369",
+    "source": "SIUB010",
+    "target": "bt_24",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e370",
+    "source": "SIUB010",
+    "target": "bt_3",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e371",
+    "source": "SIUB010",
+    "target": "bt_28",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e372",
+    "source": "SIUB010",
+    "target": "bt_19",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e373",
+    "source": "SIUB010",
+    "target": "bt_55",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e374",
+    "source": "SIUB010",
+    "target": "bt_22",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e375",
+    "source": "SIUB010",
+    "target": "bt_69",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e376",
+    "source": "SIUB010",
+    "target": "bt_47",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e377",
+    "source": "SIUB010",
+    "target": "bt_80",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e378",
+    "source": "SIUB010",
+    "target": "bt_37",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e379",
+    "source": "SIUB010",
+    "target": "bt_44",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e380",
+    "source": "SIUB010",
+    "target": "bt_8",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e381",
+    "source": "SIUB010",
+    "target": "bt_7",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e382",
+    "source": "SIUB010",
+    "target": "bt_46",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 9,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e383",
+    "source": "SIUB010",
+    "target": "bt_0",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e384",
+    "source": "SIUB010",
+    "target": "bt_71",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e385",
+    "source": "SIUB010",
+    "target": "bt_15",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e386",
+    "source": "SIUB010",
+    "target": "bt_27",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e387",
+    "source": "SIUB010",
+    "target": "bt_64",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e388",
+    "source": "bt_64",
+    "target": "Engineering",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e389",
+    "source": "SIUB010",
+    "target": "bt_16",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e390",
+    "source": "SIUB010",
+    "target": "bt_23",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e391",
+    "source": "SIUB010",
+    "target": "bt_20",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e392",
+    "source": "SIUB010",
+    "target": "bt_12",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 8,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e393",
+    "source": "SIUB010",
+    "target": "bt_66",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e394",
+    "source": "SIUB010",
+    "target": "bt_25",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e395",
+    "source": "SIUB010",
+    "target": "bt_13",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e396",
+    "source": "SIUB010",
+    "target": "bt_49",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e397",
+    "source": "SIUB010",
+    "target": "bt_9",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e398",
+    "source": "SIUB010",
+    "target": "bt_2",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 44,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e399",
+    "source": "SIUB010",
+    "target": "bt_18",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 10,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e400",
+    "source": "SIUB010",
+    "target": "bt_74",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e401",
+    "source": "SIUB005",
+    "target": "bt_66",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e402",
+    "source": "SIUB005",
+    "target": "bt_22",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e403",
+    "source": "SIUB005",
+    "target": "bt_63",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e404",
+    "source": "SIUB005",
+    "target": "bt_26",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e405",
+    "source": "SIUB005",
+    "target": "bt_51",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e406",
+    "source": "SIUB005",
+    "target": "bt_27",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e407",
+    "source": "SIUB005",
+    "target": "bt_71",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e408",
+    "source": "SIUB005",
+    "target": "bt_17",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e409",
+    "source": "SIUB005",
+    "target": "bt_12",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e410",
+    "source": "SIUB005",
+    "target": "bt_28",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e411",
+    "source": "SIUB005",
+    "target": "bt_20",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e412",
+    "source": "SIUB005",
+    "target": "bt_0",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e413",
+    "source": "SIUB005",
+    "target": "bt_24",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e414",
+    "source": "SIUB006",
+    "target": "bt_6",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e415",
+    "source": "SIUB006",
+    "target": "bt_31",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e416",
+    "source": "bt_31",
+    "target": "Health Professions",
+    "jenis": "TERMASUK_DALAM",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e417",
+    "source": "SIUB006",
+    "target": "bt_79",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e418",
+    "source": "SIUB006",
+    "target": "bt_60",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e419",
+    "source": "SIUB006",
+    "target": "bt_51",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e420",
+    "source": "SIUB006",
+    "target": "bt_10",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e421",
+    "source": "SIUB006",
+    "target": "bt_65",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e422",
+    "source": "SIUB006",
+    "target": "bt_57",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e423",
+    "source": "SIUB006",
+    "target": "bt_30",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e424",
+    "source": "SIUB006",
+    "target": "bt_3",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e425",
+    "source": "SIUB006",
+    "target": "bt_50",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e426",
+    "source": "SIUB006",
+    "target": "bt_5",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e427",
+    "source": "SIUB006",
+    "target": "bt_13",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e428",
+    "source": "SIUB006",
+    "target": "bt_39",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e429",
+    "source": "SIUB006",
+    "target": "bt_38",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e430",
+    "source": "SIUB006",
+    "target": "bt_74",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e431",
+    "source": "SIUB006",
+    "target": "bt_24",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e432",
+    "source": "SIUB006",
+    "target": "bt_29",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e433",
+    "source": "SIUB006",
+    "target": "bt_9",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e434",
+    "source": "SIUB006",
+    "target": "bt_46",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e435",
+    "source": "SIUB006",
+    "target": "bt_68",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e436",
+    "source": "SIUB006",
+    "target": "bt_21",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e437",
+    "source": "SIUB006",
+    "target": "bt_12",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e438",
+    "source": "SIUB006",
+    "target": "bt_26",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e439",
+    "source": "SIUB006",
+    "target": "bt_49",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e440",
+    "source": "SIUB006",
+    "target": "bt_63",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 9,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e441",
+    "source": "SIUB006",
+    "target": "bt_42",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e442",
+    "source": "SIUB006",
+    "target": "bt_22",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e443",
+    "source": "SIUB006",
+    "target": "bt_69",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e444",
+    "source": "SIUB006",
+    "target": "bt_43",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e445",
+    "source": "SIUB006",
+    "target": "bt_72",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e446",
+    "source": "SIUB006",
+    "target": "bt_7",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e447",
+    "source": "SIUB006",
+    "target": "bt_32",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e448",
+    "source": "SIUB006",
+    "target": "bt_73",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e449",
+    "source": "SIUB006",
+    "target": "bt_25",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e450",
+    "source": "SIUB006",
+    "target": "bt_75",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e451",
+    "source": "SIUB006",
+    "target": "bt_15",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e452",
+    "source": "SIUB006",
+    "target": "bt_58",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e453",
+    "source": "SIUB006",
+    "target": "bt_11",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e454",
+    "source": "SIUB006",
+    "target": "bt_47",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e455",
+    "source": "SIUB006",
+    "target": "bt_55",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e456",
+    "source": "SIUB006",
+    "target": "bt_2",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e457",
+    "source": "SIUB006",
+    "target": "bt_37",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e458",
+    "source": "SIUB006",
+    "target": "bt_20",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 25,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e459",
+    "source": "SIUB006",
+    "target": "bt_62",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e460",
+    "source": "SIUB006",
+    "target": "bt_19",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e461",
+    "source": "SIUB006",
+    "target": "bt_8",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e462",
+    "source": "SIUB006",
+    "target": "bt_36",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 21,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e463",
+    "source": "SIUB006",
+    "target": "bt_33",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e464",
+    "source": "SIUB006",
+    "target": "bt_66",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 17,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e465",
+    "source": "SIUB006",
+    "target": "bt_70",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e466",
+    "source": "SIUB006",
+    "target": "bt_71",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 12,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e467",
+    "source": "SIUB006",
+    "target": "bt_17",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e468",
+    "source": "SIUB006",
+    "target": "bt_80",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e469",
+    "source": "SIUB006",
+    "target": "bt_28",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 12,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e470",
+    "source": "SIUB006",
+    "target": "bt_0",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e471",
+    "source": "SIUB006",
+    "target": "bt_52",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e472",
+    "source": "SIUB006",
+    "target": "bt_18",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e473",
+    "source": "SIUB009",
+    "target": "bt_27",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e474",
+    "source": "SIUB009",
+    "target": "bt_44",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e475",
+    "source": "SIUB009",
+    "target": "bt_13",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e476",
+    "source": "SIUB009",
+    "target": "bt_79",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e477",
+    "source": "SIUB009",
+    "target": "bt_43",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e478",
+    "source": "SIUB009",
+    "target": "bt_25",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e479",
+    "source": "SIUB009",
+    "target": "bt_14",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e480",
+    "source": "SIUB009",
+    "target": "bt_4",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e481",
+    "source": "SIUB009",
+    "target": "bt_47",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e482",
+    "source": "SIUB009",
+    "target": "bt_6",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e483",
+    "source": "SIUB009",
+    "target": "bt_52",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e484",
+    "source": "SIUB009",
+    "target": "bt_70",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e485",
+    "source": "SIUB009",
+    "target": "bt_71",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e486",
+    "source": "SIUB009",
+    "target": "bt_38",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e487",
+    "source": "SIUB009",
+    "target": "bt_54",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e488",
+    "source": "SIUB009",
+    "target": "bt_12",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e489",
+    "source": "SIUB009",
+    "target": "bt_33",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e490",
+    "source": "SIUB009",
+    "target": "bt_62",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e491",
+    "source": "SIUB009",
+    "target": "bt_39",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e492",
+    "source": "SIUB009",
+    "target": "bt_18",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e493",
+    "source": "SIUB009",
+    "target": "bt_42",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e494",
+    "source": "SIUB009",
+    "target": "bt_19",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 8,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e495",
+    "source": "SIUB009",
+    "target": "bt_0",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e496",
+    "source": "SIUB009",
+    "target": "bt_11",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e497",
+    "source": "SIUB009",
+    "target": "bt_64",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e498",
+    "source": "SIUB009",
+    "target": "bt_28",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e499",
+    "source": "SIUB009",
+    "target": "bt_46",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 3,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e500",
+    "source": "SIUB009",
+    "target": "bt_53",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e501",
+    "source": "SIUB009",
+    "target": "bt_30",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e502",
+    "source": "SIUB009",
+    "target": "bt_60",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e503",
+    "source": "SIUB009",
+    "target": "bt_57",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 8,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e504",
+    "source": "SIUB009",
+    "target": "bt_80",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e505",
+    "source": "SIUB009",
+    "target": "bt_68",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e506",
+    "source": "SIUB009",
+    "target": "bt_51",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e507",
+    "source": "SIUB009",
+    "target": "bt_3",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 2,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e508",
+    "source": "SIUB009",
+    "target": "bt_36",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e509",
+    "source": "SIUB009",
+    "target": "bt_21",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e510",
+    "source": "SIUB009",
+    "target": "bt_15",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e511",
+    "source": "SIUB009",
+    "target": "bt_23",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 4,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e512",
+    "source": "SIUB009",
+    "target": "bt_17",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e513",
+    "source": "SIUB009",
+    "target": "bt_8",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e514",
+    "source": "SIUB009",
+    "target": "bt_9",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 1,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e515",
+    "source": "SIUB009",
+    "target": "bt_22",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 6,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e516",
+    "source": "SIUB009",
+    "target": "bt_7",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 7,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e517",
+    "source": "SIUB009",
+    "target": "bt_24",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 10,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e518",
+    "source": "SIUB009",
+    "target": "bt_20",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 16,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e519",
+    "source": "SIUB009",
+    "target": "bt_63",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e520",
+    "source": "SIUB009",
+    "target": "bt_26",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 5,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e521",
+    "source": "SIUB009",
+    "target": "bt_37",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 15,
+    "berarah": true
+   }
+  },
+  {
+   "data": {
+    "id": "e522",
+    "source": "SIUB009",
+    "target": "bt_66",
+    "jenis": "BIDANG_KEAHLIAN",
+    "keluarga": "semantik",
+    "warna": "#0F766E",
+    "bobot": 14,
+    "berarah": true
+   }
+  }
+ ]
+}
