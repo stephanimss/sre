@@ -73,7 +73,7 @@ for body, lab, kode in (({"nodes": []}, "graf kosong", 400), ({"nodes": "x"}, "n
     s, d, _ = post("/api/ringkas", body)
     cek(f"tolak ringkas: {lab}", s == kode, f"{s} {d.get('error')}")
 
-# /api/brainstorm -- hanya kasus yang DITOLAK sebelum memanggil LLM (tidak memakan kuota)
+# /api/brainstorm: hanya kasus yang ditolak sebelum memanggil LLM
 for body, lab, kode in (({"pesan": "ideas?"}, "tanpa sid & tanpa bukti", 400),
                         ({"pesan": "ideas?", "mode": "lain", "bukti": {}}, "mode tak dikenal", 400),
                         ({"sid": "tidak-ada", "pesan": "ideas?"}, "sid tak dikenal", 410),

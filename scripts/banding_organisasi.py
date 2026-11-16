@@ -122,7 +122,7 @@ def banding_organisasi(kode_a, kode_b, mode="unit"):
     if kode_a == kode_b:
         raise ValueError("Pilih dua organisasi yang berbeda.")
 
-    # --- peneliti di masing-masing ---
+    # Peneliti di masing-masing
     orang_a = _peneliti_org(kode_a, mode)
     orang_b = _peneliti_org(kode_b, mode)
     if not orang_a:
@@ -134,7 +134,7 @@ def banding_organisasi(kode_a, kode_b, mode="unit"):
     ids_b = [p["id"] for p in orang_b]
     semua_ids = ids_a + ids_b
 
-    # --- kolaborasi lintas organisasi ---
+    # Kolaborasi lintas organisasi
     kolab = _q("""
 MATCH (a:Peneliti)-[r:KOLABORASI]-(b:Peneliti)
 WHERE a.local_id IN $a AND b.local_id IN $b
@@ -155,7 +155,7 @@ ORDER BY r.jumlah DESC""", {"a": ids_a, "b": ids_b})
             })
     kolab_pasangan = kolab_pasangan[:MAKS_KOLABORASI]
 
-    # --- profil topik ---
+    # Profil topik
     profil_a = _profil_topik(ids_a)
     profil_b = _profil_topik(ids_b)
 
@@ -200,7 +200,7 @@ ORDER BY r.jumlah DESC""", {"a": ids_a, "b": ids_b})
     khas_a = topik_khas(topik_a, topik_b)
     khas_b = topik_khas(topik_b, topik_a)
 
-    # --- publikasi ---
+    # Publikasi
     def muat_karya(ids):
         karya = {}
         for r in _q("""
@@ -223,7 +223,7 @@ RETURN k.dedup_key AS kunci, k.judul AS judul, k.tahun AS tahun, p.local_id AS p
          for k in bersama_kunci],
         key=lambda x: -(x["tahun"] or 0))[:10]
 
-    # --- publikasi mirip lintas organisasi ---
+    # Publikasi mirip lintas organisasi
     vek = muat_vektor()
     mirip = []
     if vek:
@@ -231,7 +231,7 @@ RETURN k.dedup_key AS kunci, k.judul AS judul, k.tahun AS tahun, p.local_id AS p
         kb_excl = {k: v for k, v in karya_b.items() if k not in bersama_kunci}
         mirip = _pub_mirip_lintas(ka_excl, kb_excl, vek)
 
-    # --- saran pasangan peneliti ---
+    # Saran pasangan peneliti
     saran = []
     ids_a_sudah_kolab = {r["a"] for r in kolab_pasangan}
     ids_b_sudah_kolab = {r["b"] for r in kolab_pasangan}
@@ -261,7 +261,7 @@ RETURN k.dedup_key AS kunci, k.judul AS judul, k.tahun AS tahun, p.local_id AS p
     saran.sort(key=lambda x: -x["topik_bersama"])
     saran = saran[:MAKS_SARAN]
 
-    # --- tingkat keseluruhan ---
+    # Tingkat keseluruhan
     if kolab_pasangan:
         tingkat = "direct"
         alasan = (f"{len(kolab_pasangan)} cross-organization collaboration(s), "
@@ -280,7 +280,7 @@ RETURN k.dedup_key AS kunci, k.judul AS judul, k.tahun AS tahun, p.local_id AS p
         tingkat = "exploratory"
         alasan = "no shared topics or similar publications between these organizations"
 
-    # --- abstrak ---
+    # Abstrak
     pilih_kunci = []
     for m in mirip:
         for sisi in ("a", "b"):
@@ -296,7 +296,7 @@ RETURN k.dedup_key AS kunci, k.judul AS judul, k.tahun AS tahun, p.local_id AS p
                 "abstrak": (teks.get(k) or "")[:POTONG_ABSTRAK]}
                for k in pilih_kunci]
 
-    # --- kategori ASJC ---
+    # Kategori ASJC
     def kategori_org(topik_org):
         kat = Counter()
         for tid, v in topik_org.items():

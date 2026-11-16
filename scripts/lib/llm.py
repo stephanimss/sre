@@ -101,7 +101,7 @@ def _panggil(pesan, suhu=0.0, maks=400, timeout=60, usaha=None):
                            "menjawab (habis untuk berpikir). Naikkan `maks`.")
     return isi
 
-# ------------------------------------------------------ menulis Cypher
+# Menulis Cypher
 
 POLA_PAGAR = re.compile(r"```(?:cypher|sql)?\s*(.*?)```", re.S | re.I)
 
@@ -126,7 +126,7 @@ def bersihkan_cypher(teks):
     return "\n".join(baris).strip().rstrip(";")
 
 
-# ----------------------------------------------------- menyusun kalimat
+# Menyusun kalimat
 
 def buang_teks_panjang(baris):
     """Bersihkan baris hasil SEBELUM dikirim ke LLM.
@@ -272,7 +272,7 @@ def ringkasan_hitungan(baris, berurut=False):
     return "RINGKASAN HITUNGAN (dihitung program):\n" + "\n".join(r)
 
 
-# Nama tipe utk kalimat cadangan berbahasa Inggris. Kunci = label basis data.
+# Nama tipe untuk kalimat cadangan berbahasa Inggris. Kunci = label basis data.
 TIPE_EN = {"Peneliti": "researchers", "Publikasi": "publications", "Topik": "topics",
            "Kategori": "categories", "UnitKerja": "work units", "Institusi": "institutions",
            "Venue": "venues"}
@@ -296,9 +296,8 @@ def kalimat_cadangan(baris, bahasa="id"):
     return " ".join(bagian)
 
 
-# Dengan masukan sama, LLM pernah menjawab "Tidak ada hasil." padahal ada
-# 8 baris. Kode yang menegakkan: ada baris = tidak boleh disebut kosong.
-# Penyangkalan dalam dua bahasa ditangkap.
+# Bila ada baris hasil, kalimat yang menyatakan "tidak ada hasil" (bahasa
+# Indonesia atau Inggris) diganti kalimat dari program.
 POLA_MENYANGKAL = re.compile(
     r"\btidak ada (hasil|data)\b|\btidak ditemukan\b"
     r"|\bno (results?|data|matches|matching)\b|\bnot found\b|\bnothing (was )?found\b", re.I)
@@ -371,7 +370,7 @@ def susun_kalimat(pertanyaan, baris, catatan="", cypher=""):
                         {"role": "user", "content": isi}], suhu=0.2, maks=600, usaha="low")
     kalimat = jaga_kalimat(kalimat, baris, bahasa)
     if len(baris) >= BATAS_QUERY and not berurut:
-        # Catatan batas buatan LLM sendiri (dlm kurung, menyebut 300) dibuang.
+        # Catatan batas buatan LLM (dalam kurung, menyebut 300) dibuang.
         kalimat = POLA_CATATAN_BATAS.sub("", kalimat).rstrip()
         kalimat += (f" (Only the first {BATAS_QUERY} results were retrieved; the full list may be longer.)"
                     if bahasa == "en" else

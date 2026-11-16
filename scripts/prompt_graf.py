@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from lib.tanya_graf import skema  # noqa: E402
 
-# Makna yang TIDAK bisa dibaca dari skema. Ini inti nilai berkas ini.
+# Makna relasi yang tidak bisa dibaca dari skema.
 ARTI_RELASI = {
     "MENULIS":         "(Peneliti)->(Publikasi) — peneliti menulis publikasi. DARI DATA SUMBER.",
     "TERBIT_DI":       "(Publikasi)->(Venue) — terbit di jurnal/konferensi. DARI DATA SUMBER.",
@@ -46,7 +46,7 @@ ARTI_RELASI = {
                        "WHERE NOT (a)-[:KOLABORASI]-(b).",
 }
 
-# View yang dipakai sebagai contoh few-shot. Dipilih supaya tiap contoh
+# View yang dipakai sebagai contoh few-shot. Tiap contoh
 # mengajarkan hal berbeda: penelusuran dasar, penyaringan negatif, pencarian
 # teks, penyaringan tahun, dan agregasi.
 CONTOH_VIEW = ["individu", "kolaborasi_potensial", "pakar_topik",

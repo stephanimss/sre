@@ -7,7 +7,7 @@
 <script src="https://unpkg.com/cytoscape-fcose@2.2.0/cytoscape-fcose.js"></script>
 <style>
   html,body{margin:0;height:100%;font:13px sans-serif}
-  /* ---- sistem kendali ----
+  /* Sistem kendali
      Satu gaya tombol: tinggi 28px, sudut 6px, huruf 12px. Ditaruh paling atas
      supaya aturan khusus di bawahnya tetap menang. */
   :root{--aksen:#0f6e7b;--aksen-2:#0b525b;--garis:#d6dde0;--teks:#1f2937;
@@ -34,7 +34,7 @@
                 letter-spacing:.12em;text-transform:uppercase;color:var(--redup)}
   .judul-bagian:first-child{margin-top:2px}
   .petunjuk{font-size:11px;color:var(--redup);line-height:1.45;margin:4px 0}
-  /* Wajib tinggi eksplisit; tanpa ini Cytoscape menggambar di kotak setinggi 0. */
+  /* Cytoscape membutuhkan tinggi eksplisit. */
   /* #kanvas membungkus #cy dan kendali yang melayang di atasnya. Kendali tidak
      ditaruh di dalam #cy karena wadah itu milik Cytoscape. */
   #kanvas{position:absolute;inset:0 300px 0 320px}
@@ -105,7 +105,7 @@
              margin-right:6px;vertical-align:-1px;border:1px solid rgba(0,0,0,.12)}
     #status.err{color:#b91c1c}
     #panel{margin-top:14px;padding-top:10px;border-top:1px solid #ddd;font-size:13px}
-  /* ---- kendali di kanvas ---- */
+  /* Kendali di kanvas */
   #cari-kanvas{position:absolute;top:10px;left:10px;width:min(320px,calc(100% - 70px));
                background:rgba(255,255,255,.97);border:1px solid #e5e7eb;border-radius:8px;
                box-shadow:0 2px 10px rgba(15,23,42,.08);padding:6px;z-index:5;box-sizing:border-box}
@@ -143,7 +143,7 @@
   #nav-kanvas #label-relasi.aktif{background:#e0f2f1;color:#0f5e66;border-color:#99d5da}
   #nav-kanvas #warna-asjc{font-size:9px;letter-spacing:.02em}
   #nav-kanvas #warna-asjc.aktif{background:#e0f2f1;color:#0f5e66;border-color:#99d5da}
-  /* ---- daftar semua publikasi peneliti ---- */
+  /* Daftar semua publikasi peneliti */
   .dp-alat{display:flex;gap:4px;margin:6px 0 4px}
   .dp-alat input{flex:1;min-width:0;font:11.5px sans-serif;padding:4px 6px;
                  border:1px solid #d1d5db;border-radius:4px}
@@ -151,7 +151,7 @@
   .dp-info{font-size:10.5px;color:#9ca3af;margin-bottom:3px}
   .dp-daftar{max-height:320px;overflow:auto;border-top:1px solid #e5e7eb}
   .kunci-db{font:10px ui-monospace,Menlo,monospace;color:#9ca3af;margin-left:5px}
-  /* ---- chip dan abstrak di panel Brainstorm ---- */
+  /* Chip dan abstrak di panel Brainstorm */
   .bs-bersih{float:right;border:0;background:none;padding:0;height:auto;cursor:pointer;
              color:var(--aksen);font:500 10.5px/1 sans-serif;letter-spacing:0;text-transform:none}
   .bs-bersih:hover{text-decoration:underline}
@@ -162,7 +162,7 @@
   details.bs-abstrak div{font-size:11px;line-height:1.55;color:#374151;background:#f8fafc;
                          border-left:3px solid #cbd5e1;padding:5px 7px;margin-top:3px;
                          max-height:220px;overflow:auto;border-radius:0 4px 4px 0}
-  /* ---- kartu bantuan (F3): cara memilih, mode, jalan pintas, skema ---- */
+  /* Kartu bantuan */
   #bantuan{position:absolute;inset:0;z-index:9;background:rgba(15,23,42,.35);
            display:flex;align-items:center;justify-content:center;padding:20px}
   #bantuan[hidden]{display:none}
@@ -230,7 +230,7 @@
   #jawaban.tampil{display:block}
   #jawaban .sumber{margin-top:6px;font-size:11px;color:#6b7280}
 
-  /* ---------------- Brainstorm (panel kiri) ---------------- */
+  /* Brainstorm (panel kiri) */
   #bs{position:absolute;inset:0 auto 0 0;width:320px;border-right:1px solid #ddd;
       background:#fafafa;overflow:auto;box-sizing:border-box}
   body.bs-lipat #bs{width:34px;overflow:hidden}
@@ -301,7 +301,7 @@
   .bs-kirim input{flex:1;min-width:0;font:12px sans-serif;padding:5px 6px}
   .bs-kaki{display:flex;justify-content:space-between;align-items:center;
            margin-top:6px;font-size:11px;color:#6b7280}
-  /* ---- percakapan (J1) ---- */
+  /* Percakapan */
   #bs-sesi{font-size:11px;color:#6b7280;margin-bottom:6px;line-height:1.4}
   #bs-obrolan{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
   .bs-msg{font-size:12px;line-height:1.55;padding:7px 9px;border-radius:6px;
@@ -550,9 +550,7 @@ const TATA_RENGGANG = {
   gravity: 0.1, numIter: 2500, animate: false, fit: false,
 };
 
-// ---------------------------------------------------------------------------
-// NAMA TAMPIL (Inggris) -- dibaca dari /api/tampilan (NAMA_TAMPIL di ekspor_visual.py)
-// ---------------------------------------------------------------------------
+// Nama tampil berbahasa Inggris, dibaca dari /api/tampilan.
 // Hanya tulisannya yang diterjemahkan. Kunci data ('Peneliti', 'KOLABORASI')
 // tetap, karena filter, selector gaya, dan Cypher bergantung padanya.
 let NAMA = { tipe: {}, keluarga: {}, relasi: {}, kelompok: {} };
@@ -579,8 +577,7 @@ fetch('/api/tampilan').then(r => r.json()).then(t => {
   if (window.cy) { legenda(); perbaruiRingkasan(); }
 }).catch(() => {});
 
-// Pesan dari modul Python masih berbahasa Indonesia; diterjemahkan di sini
-// agar uji yang memeriksa pesan aslinya tidak perlu diubah.
+// Pesan dari modul Python (berbahasa Indonesia) diterjemahkan di sini.
 const PETA_PESAN = [
   [/Kuota Groq per menit habis/i, () => 'LLM quota reached (free tier: 8,000 tokens per minute). Wait about 30 seconds and try again.'],
   [/Pilih 2 sampai 3 peneliti \(sekarang (\d+)\)/, m => `Select 2 to 3 researchers (currently ${m[1]}).`],
@@ -617,7 +614,7 @@ const STATUS_TANYA = {
 };
 
 const GAYA = [
-  // --- semua node: warna dari kamus gaya Python
+  // Semua node: warna dari kamus gaya Python
   { selector: 'node', style: {
       'background-color': 'data(warna)',
       'shape': 'ellipse',            // 'dot' istilah vis, di sini 'ellipse'
@@ -639,7 +636,7 @@ const GAYA = [
       'height': 'mapData(ukuran, 7, 254, 12, 46)',
   }},
 
-  // --- Kategori: satu-satunya pembawa warna ASJC, dibesarkan & ditebalkan
+  // Kategori: pembawa warna ASJC, digambar lebih besar
   { selector: 'node[tipe = "Kategori"]', style: {
       'font-size': 12,
       'font-weight': 'bold',
@@ -660,7 +657,7 @@ const GAYA = [
       'border-color': 'data(warna_tepi)',
   }},
 
-  // --- relasi
+  // Relasi
   { selector: 'edge', style: {
       'line-color': 'data(warna)',
       'width': 'mapData(bobot, 1, 40, 1, 7)',
@@ -668,7 +665,7 @@ const GAYA = [
       'opacity': .65,
   }},
 
-  // Label relasi bisa dinyalakan dan dimatikan (di vis-network tidak bisa).
+  // Label relasi bisa dinyalakan dan dimatikan.
   { selector: 'edge', style: {
       'label': 'data(label_tampil)',
       'font-size': 7,
@@ -684,13 +681,13 @@ const GAYA = [
   // aturan baru setiap dipanggil, sedangkan kelas tidak menumpuk.
   { selector: 'edge.tanpa-label', style: { 'label': '' } },
 
-  // --- arah panah: '?' artinya "kalau bernilai benar"
+  // Arah panah: '?' artinya "kalau bernilai benar"
   { selector: 'edge[?berarah]', style: {
       'target-arrow-color': 'data(warna)',
       'target-arrow-shape': 'triangle',
       'arrow-scale': .8,
   }},
-  // '!' artinya "kalau bernilai salah" -- KOLABORASI & SEBIDANG
+  // '!' artinya "kalau bernilai salah" (KOLABORASI, SEBIDANG)
   { selector: 'edge[!berarah]', style: {
       'line-style': 'dashed',
   }},
@@ -706,13 +703,12 @@ const GAYA = [
       'text-opacity': .2, 'border-color': '#E2E8F0',
   }},
 
-  // --- peneliti terpilih untuk Brainstorm: cincin jingga, sengaja beda dari
-  //     ':selected' agar klik biasa tidak terbaca sebagai "dipilih" 
+  // Peneliti terpilih untuk Brainstorm: cincin jingga, berbeda dari ':selected'.
   { selector: 'node.bs-dipilih', style: {
       'border-width': 5, 'border-color': '#d97706',
   }},
 
-  // --- keadaan terpilih
+  // Keadaan terpilih
   { selector: ':selected', style: {
       'border-color': '#111827',
       'border-width': 3,
@@ -841,7 +837,7 @@ function legenda() {
     }
     nama.forEach(k => {
       if (medan === 'tipe' && k === 'Peneliti' && adaEksternal) {
-        // Dua baris, masing-masing bisa diklik utk menyaring.
+        // Dua baris, masing-masing bisa diklik untuk menyaring.
         [['internal', `<i style="background:${isi[k]}"></i>`],
          ['eksternal', `<i class="cincin" style="border-color:${isi[k]}"></i>`]].forEach(([peran, ikon]) => {
           const d = document.createElement('div');
@@ -931,9 +927,7 @@ function legenda() {
   }
 }
 
-// ---------------------------------------------------------------------------
-// FILTER BANYAK-PILIH -- setiap baris legenda adalah saklar, pilihannya menumpuk
-// ---------------------------------------------------------------------------
+// Filter banyak-pilih: setiap baris legenda adalah saklar.
 // Aturan gabungan:
 //   1. Node aktif bila tidak ada filter tipe/kategori, atau tipenya dipilih.
 //   2. Garis aktif bila (tidak ada filter keluarga atau keluarganya dipilih)
@@ -977,7 +971,7 @@ function terapkanFilter() {
     nodeAktif(e.source()) && nodeAktif(e.target());
 
   const gAktif = cy.edges().filter(garisAktif);
-  // Aturan 3: kalau cuma keluarga yang disaring, node ikut mengikuti garisnya.
+  // Aturan 3.
   const nAktif = adaNodeFilter
     ? cy.nodes().filter(nodeAktif)
     : gAktif.connectedNodes();
@@ -1006,8 +1000,7 @@ function tandaiLegenda() {
 }
 
 function sorotKumpulan(eles) {
-  // Pencarian/fokus dan filter legenda saling meniadakan: keadaan gabungannya
-  // sulit dijelaskan. Centang legenda ikut dibersihkan.
+  // Pencarian/fokus dan filter legenda saling meniadakan.
   if (adaFilter()) {
     FILTER.tipe.clear(); FILTER.kategori.clear(); FILTER.keluarga.clear(); FILTER.peran.clear();
     tandaiLegenda();
@@ -1057,11 +1050,9 @@ function jalankanCari() {
     : `On this graph: ${cariIdx + 1} of ${cocok.length} — ${n.data('label')} (Enter for next)`;
 }
 
-// ---------------------------------------------------------------------------
-// CARI DI BASIS DATA: judul publikasi dan nama peneliti internal di seluruh
+// Pencarian di basis data: judul publikasi dan nama peneliti internal di seluruh
 // basis data, bukan hanya yang tampil. Hasil bisa dibuka, disorot, atau
 // ditambahkan ke Compare.
-// ---------------------------------------------------------------------------
 let cariDbTerakhir = '', cariDbHasil = { peneliti: [], publikasi: [] };
 
 async function cariDb(teks) {
@@ -1108,7 +1099,7 @@ function renderCariDb(d) {
   }).join('') + `</ul>`;
 }
 
-// Tombol "+" yang sudah terpilih dimatikan -- terlihat mana yang sudah masuk.
+// Tombol "+" untuk item yang sudah terpilih dinonaktifkan.
 function bsSegarkanTombolCari() {
   document.querySelectorAll('#cari-hasil [data-tambah-p]').forEach(b => {
     const p = cariDbHasil.publikasi[+b.dataset.tambahP];
@@ -1310,7 +1301,7 @@ async function tampilkanDetail(id, n, cara = 'graf') {
     } else if (b.tipe === 'Publikasi') {
       isi += `<div class="catatan-bukti">This publication has no abstract.</div>`;
     }
-    // b.nama = judul LENGKAP dari server; d.label dipotong 46 huruf utk kanvas.
+    // b.nama = judul lengkap dari server; d.label dipotong 46 huruf untuk kanvas.
     el.innerHTML = kepala(b.nama || (d && d.label), b.tipe, node) + isi;
     pasangAksi(node, b); lihat();
   } catch (err) {
@@ -1379,9 +1370,7 @@ document.getElementById('panel').addEventListener('click', e => {
   if (p && bsTambahPub(p)) t.disabled = true;
 });
 
-// ---------------------------------------------------------------------------
-// BUKTI RELASI -- menjawab "kenapa dua node ini tersambung?"
-// ---------------------------------------------------------------------------
+// Bukti relasi: alasan dua node tersambung.
 // KOLABORASI, SEBIDANG, dan BIDANG_KEAHLIAN dihitung dari MENULIS dan MEMBAHAS.
 // Panel ini menelusuri balik ke publikasi yang melahirkan garisnya.
 function lolos(t) {
@@ -1423,8 +1412,7 @@ async function tampilkanRelasi(edge) {
         `<div class="catatan-bukti">Failed: ${lolos(b.error || r.status)}</div>`;
       return;
     }
-    // Relasi struktural (AFILIASI, MENULIS, ...) memang ada di data sumber;
-    // katakan begitu agar panel tidak tampak gagal.
+    // Relasi struktural (AFILIASI, MENULIS, ...) berasal langsung dari data sumber.
     if (!b.jumlah_bukti) {
       // Dua sebab yang berbeda:
       //   relasi asli   -> tidak ada yang perlu ditelusuri
@@ -1470,7 +1458,7 @@ async function tampilkanRelasi(edge) {
   }
 }
 
-// Keadaan kosong yang menuntun pengguna.
+// Petunjuk saat panel detail kosong.
 const PANEL_KOSONG =
   '<div class="petunjuk">Click a node or a line to see its details here.<br>' +
   'Tip: search above for a researcher or a publication title, or right-click a ' +
@@ -1529,7 +1517,7 @@ function kunci(aktif) {
 // Dipakai jalankan() dan tanyakan() agar hasil query dan chat digambar sama.
 function gambar(d) {
     if (!d.nodes?.length) {
-      // Graf lama dikosongkan; kalau dibiarkan, gambar lama tampak seperti hasil.
+      // Graf lama dikosongkan agar tidak terbaca sebagai hasil.
       cy.elements().remove();
       legenda();
       bsGrafBerganti(d);
@@ -1590,7 +1578,7 @@ async function jalankan() {
   try {
     const r = await fetch('/api/query', {
       method: 'POST', headers: {'Content-Type':'application/json'},
-      // inilah yang meminta bentuk Cytoscape, bukan bentuk vis
+      // meminta format Cytoscape
       body: JSON.stringify({ cypher, format: 'cytoscape' })
     });
     const d = await r.json();
@@ -1614,7 +1602,7 @@ async function tanyakan() {
     });
     const d = await r.json();
     if (!r.ok) { status(pesanInggris(d.error) || 'failed', true); return; }
-    // Cypher SELALU ditaruh di kotak query: bisa diperiksa, diubah, dijalankan ulang.
+    // Cypher ditaruh di kotak query agar bisa diperiksa dan dijalankan ulang.
     document.getElementById('q').value = d.cypher || '';
     segarkanGloss();
     // Jawaban LLM diloloskan dulu oleh bsFormatJawaban, baru **tebal** dan butir
@@ -1625,7 +1613,7 @@ async function tanyakan() {
     sumber.textContent =
       (d.lewat_judul ? 'No topic by that name — searched publication titles instead. ' : '') +
       'The query is in the box below.';
-    // Jumlah percobaan hanya di tooltip, agar tidak terbaca "AI-nya gagal dulu".
+    // Jumlah percobaan hanya ditampilkan di tooltip.
     if (d.riwayat && d.riwayat.length > 1) sumber.title = `Generated in ${d.riwayat.length} attempts.`;
     kotak.appendChild(sumber);
     kotak.className = 'tampil';
@@ -1834,11 +1822,8 @@ document.getElementById('zoom-pas').onclick = () => {
   document.getElementById('cari-info').textContent = '';
 };
 
-// ---------------------------------------------------------------------------
-// PENJELASAN CYPHER: kueri dibaca program lalu ditulis ulang sebagai rantai
-// yang bisa dibaca orang. Bukan LLM, agar selalu sesuai dan tetap jalan saat
-// kuota habis.
-// ---------------------------------------------------------------------------
+// Penjelasan Cypher: kueri diurai program menjadi rantai yang mudah dibaca
+// (tanpa LLM).
 const POLA_UNSUR = /\(\s*\w*\s*:\s*(\w+)\s*(\{[^}]*\})?\s*\)|(<-|-)\s*\[\s*\w*\s*:\s*([A-Z_|]+)[^\]]*\]\s*(->|-)/g;
 const POLA_SARING = /(\w+)\s*:\s*'([^']*)'/g;
 
@@ -1895,7 +1880,7 @@ document.getElementById('q').addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') jalankan();
 });
 
-// pustaka view tersimpan
+// Pustaka view tersimpan
 let VIEW = [];
 fetch('/api/view').then(r => r.json()).then(v => {
   VIEW = v;
@@ -1973,16 +1958,12 @@ function tampilkanKeterangan(v) {
     ? `<div class="par">Parameters: ${v.params.map(p =>
          `$${p} = ${tulisNilai((v.contoh || {})[p])}`).join(', ')}</div>`
     : '';
-  // Hanya keterangan Inggris. Catatan Indonesia (alasan dan angka) adalah
-  // catatan pengembangan; tetap ada di ekspor_visual.py dan --daftar.
+  // Hanya keterangan Inggris yang ditampilkan.
   el.innerHTML = `<div class="ket-judul">${lolos(v.judul_en || v.judul)}</div>${par}` +
     `<div class="ket-isi">${lolos(v.keterangan_en || v.catatan || 'No description.')}</div>`;
 }
 
-// ===========================================================================
-// BRAINSTORM (panel kiri)
-// ===========================================================================
-// Cakupan ditentukan pengguna, bukan AI (arahan pembimbing). Mode:
+// Brainstorm (panel kiri). Cakupan ditentukan pengguna. Mode:
 //   Mapping       -- graf yang sedang tampil, diringkas lewat /api/ringkas
 //   Compare       -- 2-3 peneliti, bukti dari /api/banding
 //   Publications  -- 2-3 publikasi, bukti dari /api/banding_publikasi
@@ -2146,7 +2127,7 @@ function bsTambahOrg(item) {
   if (BS.pilihanOrg.length >= BS_MAKS_ORG) {
     bsPesan(`Maximum ${BS_MAKS_ORG} organizations — remove one first.`, true); return false;
   }
-  // Kedua org harus mode yang sama (unit vs unit, atau institusi vs institusi)
+  // Kedua organisasi harus setipe (unit dengan unit, institusi dengan institusi)
   if (BS.pilihanOrg.length === 1 && BS.pilihanOrg[0].mode !== item.mode) {
     bsPesan('Both organizations must be the same type (both units or both institutions).', true);
     return false;
@@ -2769,9 +2750,7 @@ function bsDetailKunci(kunci) {
   return tampilkanDetail(kunci, nodeDiGraf(kunci));
 }
 
-// ---------------------------------------------------------------------------
-// PERCAKAPAN BRAINSTORM
-// ---------------------------------------------------------------------------
+// Percakapan Brainstorm.
 // Sesi terikat pada bukti yang tampil: bukti atau cakupan berubah = sesi baru.
 // Riwayat hanya di memori server. Jawaban AI diloloskan dulu, baru kode
 // [P1]/[T1]/[R1] diubah jadi penanda.
@@ -2885,7 +2864,7 @@ function bsFormatJawaban(teks, rujukan) {
       return;
     }
     tutupSemua();
-    // Baris yang SELURUHNYA tebal = judul bagian ("Methodology", "Risks").
+    // Baris yang seluruhnya tebal = judul bagian ("Methodology", "Risks").
     keluar.push(judul ? `<h5 class="bs-judul">${inline(judul[1])}</h5>`
                       : `<p>${inline(baris.trim())}</p>`);
   });
@@ -2998,10 +2977,7 @@ document.getElementById('bs-reset').onclick = () => {
 document.getElementById('bs-bersih-r').onclick = () => { bsKosongkanPeneliti(); bsPesan(''); };
 document.getElementById('bs-bersih-p').onclick = () => { bsKosongkanPub(); bsPesan(''); };
 document.getElementById('bs-ringkas').onclick = bsRingkas;
-// ---------------------------------------------------------------------------
-// KARTU BANTUAN: cara memilih, mode, jalan pintas, dan skema graf (arah
-// relasi perlu diketahui untuk membaca Cypher).
-// ---------------------------------------------------------------------------
+// Kartu bantuan: cara memilih, mode, jalan pintas, dan skema graf.
 function bukaBantuan(buka) {
   document.getElementById('bantuan').hidden = !buka;
 }

@@ -119,7 +119,7 @@ def cari_id(nama_list):
     return [peta[k] for k in kecil if k in peta], hilang
 
 
-# ------------------------------------------------------------ bagian-bagian
+# Komponen bukti
 def _publikasi_mirip(ids, karya, bersama_kunci, vek):
     V, idx = vek
     kandidat = []
@@ -232,7 +232,7 @@ RETURN c.nama AS c, c.is_internal AS ci, d.nama AS d, d.is_internal AS di LIMIT 
     return {"rekan_bersama": [], "jalur": [j["c"], j["d"]]}
 
 
-# ------------------------------------------------------------------- utama
+# Utama
 def banding(ids):
     ids = list(dict.fromkeys(ids))
     if not 2 <= len(ids) <= MAKS_PENELITI:
@@ -252,7 +252,7 @@ RETURN p.local_id AS id, p.nama AS nama, u.kode AS unit, i.nama AS institusi,
         raise ValueError(f"{', '.join(luar)}: rekan penulis eksternal -- data profilnya "
                          "terlalu tipis untuk dibandingkan.")
 
-    # --- publikasi tiap orang (sekaligus hitungan per tahun) ---
+    # Publikasi tiap orang (sekaligus hitungan per tahun)
     karya = defaultdict(dict)
     for b in _q("""
 MATCH (p:Peneliti)-[:MENULIS]->(k:Publikasi) WHERE p.local_id IN $ids
@@ -260,7 +260,7 @@ RETURN p.local_id AS id, k.dedup_key AS kunci, k.judul AS judul, k.tahun AS tahu
                 {"ids": ids}):
         karya[b["id"]][b["kunci"]] = {"judul": b["judul"], "tahun": b["tahun"]}
 
-    # --- profil topik SEMUA peneliti internal (utk topik bersama & perantara) ---
+    # Profil topik semua peneliti internal (untuk topik bersama dan perantara)
     profil, topik, info_topik = {}, defaultdict(dict), {}
     for b in _q("""
 MATCH (p:Peneliti {is_internal: true})-[r:BIDANG_KEAHLIAN]->(t:Topik)
@@ -293,7 +293,7 @@ RETURN p.local_id AS id, p.nama AS nama, u.kode AS unit, t.topik_id AS tid,
                                for k, c in kat.items() if len(c) >= 2),
                               key=lambda x: -min(x["bobot"].values()))
 
-    # --- publikasi bersama & publikasi mirip ---
+    # Publikasi bersama dan publikasi mirip
     bersama_kunci = set()
     publikasi_bersama = []
     for a, b in combinations(ids, 2):
@@ -306,7 +306,7 @@ RETURN p.local_id AS id, p.nama AS nama, u.kode AS unit, t.topik_id AS tid,
     mirip = _publikasi_mirip(ids, karya, bersama_kunci, vek) if vek else []
     tanpa_vektor = sum(1 for i in ids for k in karya[i] if vek and k not in vek[1])
 
-    # --- tiap pasangan: hubungan, tingkat, jembatan ---
+    # Tiap pasangan: hubungan, tingkat, jembatan
     sebidang = {(r["a"], r["b"]): r for r in _q("""
 MATCH (a:Peneliti)-[r:SEBIDANG]-(b:Peneliti)
 WHERE a.local_id IN $ids AND b.local_id IN $ids
@@ -345,7 +345,7 @@ RETURN a.local_id AS a, b.local_id AS b, r.skor AS skor, r.jumlah_topik_sama AS 
             s["alasan"] = "; ".join(bukti) or "no shared topics, similar publications or bridges in the graph"
         pasangan.append(s)
 
-    # --- tingkat keseluruhan ---
+    # Tingkat keseluruhan
     nama = {i: orang[i]["nama"] for i in ids}
     tk = [p["tingkat"] for p in pasangan]
     if all(t == "direct" for t in tk):
@@ -362,7 +362,7 @@ RETURN a.local_id AS a, b.local_id AS b, r.skor AS skor, r.jumlah_topik_sama AS 
         else:
             tingkat, alasan = "exploratory", "weak evidence in the graph; ideas must be labelled exploratory"
 
-    # --- abstrak untuk LLM = publikasi yang DITAMPILKAN sebagai mirip ---
+    # Abstrak untuk LLM: publikasi yang ditampilkan sebagai mirip
     pilih = []
     for m in mirip:
         for sisi in ("a", "b"):
@@ -370,7 +370,7 @@ RETURN a.local_id AS a, b.local_id AS b, r.skor AS skor, r.jumlah_topik_sama AS 
                 pilih.append(m[sisi])
     sumber_abstrak = "similar_publications"
     if pilih and len(pilih) < MAKS_ABSTRAK and not any(m["label"] != "weak" for m in mirip):
-        # Bukti lemah: sisa jatah diisi publikasi TERBARU tiap orang, bergiliran,
+        # Bukti lemah: sisa jatah diisi publikasi terbaru tiap orang, bergiliran,
         # supaya brainstorming exploratory tetap membaca isi riset keduanya.
         sumber_abstrak = "similar_publications+recent"
         antre = {i: sorted(({"id": i, "kunci": k, **v} for k, v in karya[i].items()),
@@ -421,7 +421,7 @@ RETURN p.local_id AS id, k.dedup_key AS kunci, k.judul AS judul, k.tahun AS tahu
     }
 
 
-# -------------------------------------------------------------------- CLI
+# CLI
 def kalibrasi(n=200_000):
     vek = muat_vektor()
     if not vek:

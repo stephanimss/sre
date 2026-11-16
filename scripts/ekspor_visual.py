@@ -88,9 +88,7 @@ WARNA = dict(zip(KATEGORI_ASJC, _palet(len(KATEGORI_ASJC))))
 # sudah diperiksa tidak menimbulkan bentrokan baru.
 WARNA["Arts and Humanities"] = "#B45309"
 
-# ---------------------------------------------------------------------------
-# KAMUS GAYA -- satu-satunya tempat warna, ukuran, dan bentuk ditentukan
-# ---------------------------------------------------------------------------
+# Kamus gaya: satu-satunya tempat warna, ukuran, dan bentuk ditentukan.
 # Berupa aturan "tipe X -> gaya Y" karena node baru lahir saat kueri
 # dijalankan; aturan ini berlaku untuk kueri apa pun.
 #
@@ -105,8 +103,7 @@ WARNA_NETRAL = {
     "UnitKerja":  "#4B5563",
     "Peneliti":   "#0F6E7B",   # satu-satunya warna beraksen: tokoh utama
     "Topik":      "#94A3B8",
-    # Bukan #9CA3AF: terlalu mirip Topik. Empat tingkat abu kini merata
-    # (kecerahan 17%, 33%, 45%, 84%).
+    # Empat tingkat abu: kecerahan 17%, 33%, 45%, 84%.
     "Venue":      "#6B7280",
     "Publikasi":  "#D1D5DB",
 }
@@ -126,7 +123,7 @@ LABEL_DARI = {
     "Topik":     ("nama", "topik_id"),
 }
 
-# 11 tipe relasi -> 4 keluarga. Sebelas warna garis tidak terbedakan mata.
+# 11 tipe relasi dikelompokkan menjadi 4 keluarga warna.
 KELUARGA_RELASI = {
     "struktur":     ("#94A3B8", {"AFILIASI", "MEMILIKI", "BERAFILIASI"}),
     "kepengarangan":("#CBD5E1", {"MENULIS", "TERBIT_DI"}),
@@ -244,9 +241,7 @@ def jalankan(command, params=None, timeout=300):
     return hasil["result"]
 
 
-# ---------------------------------------------------------------------------
 # Pembantu pembentuk node/edge
-# ---------------------------------------------------------------------------
 def node_topik(n, tid, nama, dok, kategori, supergroup=None):
     """Node Topik untuk view gaya lama (yang mengembalikan skalar).
 
@@ -310,10 +305,8 @@ def edge(dari, ke, label, bobot=None, judul=None):
     return e
 
 
-# ---------------------------------------------------------------------------
-# PEMBENTUK GENERIK -- untuk view yang mengembalikan node dan relasi langsung
-# (RETURN p, r, t). Dipakai kotak query di server.py dan pipeline ekspor.
-# ---------------------------------------------------------------------------
+# Pembentuk generik untuk kueri yang mengembalikan node dan relasi
+# (RETURN p, r, t). Dipakai server.py dan ekspor.
 MAKS_LABEL = 46
 
 # Nama properti bobot berbeda per relasi. Tanpa bobot = garis tipis seragam.
@@ -408,7 +401,7 @@ def bentuk_dari_hasil(rows):
                     ids.append(r)
             elif o.get("@cat") == "e":
                 ada_relasi = True
-        # relasi diproses SETELAH node, supaya ujung-ujungnya sudah ada
+        # relasi diproses setelah node, supaya ujung-ujungnya sudah ada
         for o in kandidat:
             if o.get("@cat") == "e":
                 tambah_edge(o)
@@ -449,7 +442,7 @@ def bangun_author_network(rows):
         return nodes, edges
 
     daftar = ",".join("'" + str(i).replace("'", "\\'") + "'" for i in sorted(ids))
-    # kategori DOMINAN = kategori dgn bobot keahlian terbesar milik orang itu
+    # kategori dominan = kategori dengan bobot keahlian terbesar
     dominan = {}
     for x in jalankan(
             f"MATCH (p:Peneliti)-[bk:BIDANG_KEAHLIAN]->(:Topik)"
@@ -499,9 +492,7 @@ def bangun_author_network(rows):
     return nodes, edges
 
 
-# ---------------------------------------------------------------------------
-# PUSTAKA VIEW -- tambahkan entri baru di sini, bukan menulis skrip baru
-# ---------------------------------------------------------------------------
+# Pustaka view. View baru ditambahkan di sini.
 def _tanpa_ganda(nodes, edges):
     """Buang relasi kembar. Satu topik muncul di banyak baris (digarap banyak
     peneliti), jadi TERMASUK_DALAM-nya ikut terbentuk berulang kali."""
@@ -626,9 +617,7 @@ KELOMPOK = [
                                "peneliti_lintas_disiplin"]),
 ]
 
-# ---------------------------------------------------------------------------
-# NAMA TAMPIL BERBAHASA INGGRIS (untuk konferensi)
-# ---------------------------------------------------------------------------
+# Nama tampil berbahasa Inggris.
 # Hanya untuk tampilan. Kunci (label, relasi, nama view, kelompok) tetap
 # Indonesia: prompt chat, penjaga, dan Cypher bergantung padanya.
 NAMA_TAMPIL = {
@@ -652,8 +641,8 @@ NAMA_TAMPIL = {
 }
 
 # Judul dan keterangan view dalam bahasa Inggris, termasuk angka dan
-# peringatannya. View yang belum ada di sini tampil berbahasa Indonesia, dan
-# --periksa-view memperingatkannya.
+# peringatannya. View yang belum ada di sini tampil berbahasa Indonesia
+# (--periksa-view memperingatkannya).
 VIEW_EN = {
     "individu": ("One researcher: publications and topics",
                  "Personal view: one researcher -> publications -> topics."),
@@ -726,7 +715,7 @@ def urutan_view(nama):
     return (len(KELOMPOK), 0)
 
 
-# Nilai contoh per NAMA parameter (`kode` selalu kode unit, `local_id` selalu
+# Nilai contoh per nama parameter (`kode` selalu kode unit, `local_id` selalu
 # peneliti). Tebakan yang wajar pun bisa gagal diam-diam: $institusi =
 # "Universitas Brawijaya" mengembalikan 0 baris karena nodenya bernama "UB".
 # Nilainya diambil dari basis data; periksa dengan --periksa-contoh.
@@ -835,9 +824,7 @@ RETURN a.local_id AS a_id, a.nama AS a, a.institusi AS a_inst,
         "bangun": bangun_kolaborasi,
     },
 
-    # -----------------------------------------------------------------------
-    # VIEW YANG MENGEMBALIKAN NODE DAN RELASI (RETURN p, r, t)
-    # -----------------------------------------------------------------------
+    # View yang mengembalikan node dan relasi (RETURN p, r, t).
     # Lima view di atas mengembalikan nilai skalar dan punya pembangun
     # sendiri. View di bawah ini memakai bangun_dari_node(), sehingga tipe dan
     # bobot garis dibaca langsung dari relasinya.
@@ -1023,9 +1010,7 @@ RETURN a.local_id AS a_id, a.nama AS a, a.ambigu AS a_ambigu,
         "bangun": bangun_author_network,
     },
 
-    # -----------------------------------------------------------------------
-    # ANALISIS JARINGAN AKADEMIK -- menjawab dua contoh referensi pembimbing
-    # -----------------------------------------------------------------------
+    # Analisis jaringan akademik.
 
     "cna_uji": {
         "judul": "UJI Citation Network — membuktikan datanya tidak ada",
@@ -1137,7 +1122,7 @@ RETURN t, a, k27, b, k4 LIMIT 200
         "bangun": bangun_dari_node,
     },
 
-    # ---- dimensi WAKTU & MUTU -------------------------------------------
+    # Dimensi waktu dan mutu.
     # `tahun` terisi pada 98,9% publikasi (6.537 dari 6.607).
     "kolaborasi_terkini": {
         "judul": "Kolaborasi lewat publikasi terbaru",
@@ -1202,7 +1187,7 @@ RETURN p, m, pub, tb, v, mb, t, td, k LIMIT 400
         "bangun": bangun_dari_node,
     },
 
-    # ---- MATCH PROFILING (fungsi inti kedua SRE) -------------------------
+    # Match profiling.
     # kolaborasi_potensial bekerja per unit dan kolaborasi_2 per pasangan.
     # mirip_dengan menjawab "siapa yang mirip dengan orang ini".
     "mirip_dengan": {
@@ -1258,7 +1243,6 @@ RETURN p, bk, t, td, k2 LIMIT 900
 }
 
 
-# ---------------------------------------------------------------------------
 def ke_vis(nodes, edges):
     return {"nodes": list(nodes.values()), "edges": edges}
 

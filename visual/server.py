@@ -38,8 +38,7 @@ from banding_organisasi import banding_organisasi
 from ringkas_mapping import ringkas_mapping
 from brainstorm import balas as brainstorm_balas, buat_sesi as brainstorm_sesi
 
-# Batas graf yang boleh dikirim halaman untuk diringkas Brainstorm.
-# Seluruh basis data ~14.850 node; di atas itu pasti bukan graf dari halaman.
+# Batas ukuran graf yang boleh dikirim halaman untuk diringkas Brainstorm.
 MAKS_NODE_RINGKAS = 20000
 MAKS_RELASI_RINGKAS = 100000
 MAKS_TOPIK_GRAF_BANDING = 8
@@ -540,7 +539,7 @@ class Handler(SimpleHTTPRequestHandler):
                     "baris": len(h["baris"])})
         return self._kirim(200, out)
 
-    # ------------------------------------------------------------ Brainstorm
+    # Brainstorm
     def _baca_json(self):
         n = int(self.headers.get("Content-Length", 0))
         return json.loads(self.rfile.read(n) or b"{}")

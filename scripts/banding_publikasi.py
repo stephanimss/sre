@@ -175,7 +175,7 @@ RETURN k.dedup_key AS kunci, p.local_id AS id, p.nama AS nama,
             orang.setdefault(x["id"], {"id": x["id"], "nama": x["nama"], "unit": None,
                                        "pilihan": [], "terkait": []})["terkait"].append(t["kunci"])
 
-    # Abstrak utk LLM: SEMUA pilihan (maks 3), lalu yang terkait (maks 5).
+    # Abstrak untuk LLM: semua pilihan (maks 3), lalu yang terkait (maks 5).
     teks = {b["kunci"]: b["abstrak"] for b in _q(
         "MATCH (k:Publikasi) WHERE k.dedup_key IN $k RETURN k.dedup_key AS kunci, k.abstrak AS abstrak",
         {"k": [t["kunci"] for t in terkait]})} if terkait else {}

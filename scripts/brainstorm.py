@@ -62,7 +62,7 @@ RULES
 7. The user can see the evidence panel; do not repeat the whole evidence back."""
 
 
-# ------------------------------------------------------------------ sesi
+# Sesi
 def _bersihkan_sesi():
     kini = time.time()
     for sid in [s for s, v in _SESI.items() if kini - v["terakhir"] > UMUR_SESI]:
@@ -88,7 +88,7 @@ def buat_sesi(mode, bukti):
     return sid
 
 
-# ----------------------------------------------------- bukti -> teks berkode
+# Bukti -> teks berkode
 def _pendek(t, n=110):
     t = " ".join(str(t or "").split())
     return t if len(t) <= n else t[:n - 1] + "…"
@@ -342,7 +342,7 @@ def _abstrak(bukti, kode):
             for a in bukti.get("abstrak", []) if a.get("kunci") in per_kunci and a.get("abstrak")]
 
 
-# ------------------------------------------------------------ satu giliran
+# Satu giliran
 def _perkiraan_token(pesan):
     return int(sum(len(m["content"]) for m in pesan) / 3.3)
 

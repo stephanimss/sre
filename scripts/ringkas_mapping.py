@@ -100,7 +100,7 @@ def ringkas_mapping(nodes, edges=None, sumber=None):
     for nid, (tipe, kunci) in peta.items():
         per_tipe[tipe][kunci] = per_tipe[tipe].get(kunci, 0) + derajat[nid]
 
-    # --- peneliti ---
+    # Peneliti
     pen = per_tipe.get("Peneliti", {})
     info = {r["id"]: r for r in _q("""
 MATCH (p:Peneliti) WHERE p.local_id IN $ids
@@ -124,7 +124,7 @@ RETURN p.local_id AS id, count(k) AS n""", {"ids": internal})} if internal else 
     for k in per_tipe.get("Institusi", {}):
         inst.setdefault(k, 0)
 
-    # --- topik & kategori ---
+    # Topik dan kategori
     top = per_tipe.get("Topik", {})
     topik, kategori = [], Counter()
     if top:
@@ -141,7 +141,7 @@ RETURN t.topik_id AS id, t.nama AS nama, t.jumlah_dok AS dok, k.nama AS kat""",
     for k in per_tipe.get("Kategori", {}):
         kategori[k] += 0
 
-    # --- saran perbandingan: SEBIDANG yang BELUM pernah menulis bersama ---
+    # Saran perbandingan: SEBIDANG yang belum pernah menulis bersama
     saran = []
     kandidat = urut_internal[:MAKS_KANDIDAT_SARAN]
     if len(kandidat) >= 2:
@@ -180,7 +180,7 @@ RETURN a.local_id AS a, b.local_id AS b""", {"ids": kandidat})}
             saran.append({"ids": [a, b], "nama": [info[a]["nama"], info[b]["nama"]],
                           "alasan": ", ".join(alasan)})
 
-    # --- abstrak: publikasi paling sentral di graf ---
+    # Abstrak: publikasi paling sentral di graf
     pubs = per_tipe.get("Publikasi", {})
     pilih, sumber_abstrak = [], None
     if pubs:
@@ -246,7 +246,7 @@ RETURN t.topik_id AS t, k.dedup_key AS kunci, k.judul AS judul, k.tahun AS tahun
     }
 
 
-# -------------------------------------------------------------------- CLI
+# CLI
 def graf_dari(view=None, cypher=None):
     """Bentuk graf lewat jalur YANG SAMA dgn halaman (visual/server.py)."""
     sys.path.insert(0, str(AKAR / "visual"))

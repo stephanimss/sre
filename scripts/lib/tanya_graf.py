@@ -44,7 +44,7 @@ class Terjaga(Exception):
     """Query ditolak sebelum dijalankan."""
 
 
-# ---------------------------------------------------------------- skema
+# Skema
 
 _skema_tersimpan = None
 
@@ -95,7 +95,7 @@ def _kirim(cypher, timeout=120):
     return r.json()
 
 
-# ------------------------------------------------- penjaga 1: nama asing
+# Penjaga 1: nama asing
 
 # Nama sesudah ':' di dalam [...] adalah jenis relasi; di luar adalah label.
 # Teks dalam kutip dan isi {...} dibuang dulu, agar `{is_internal: true}`
@@ -191,7 +191,7 @@ def _dekat(nama, kandidat):
     return f" -- maksudnya `{'` atau `'.join(m)}`?" if m else ""
 
 
-# --------------------------------------------------------------- tanya
+# Tanya
 # Relasi disimpan satu arah. Panah terbalik tidak menimbulkan galat, hanya 0
 # baris: (Peneliti)-[:MEMILIKI]->(UnitKerja) kosong, tanpa arah 10 baris.
 def _tanpa_arah(cypher):
