@@ -177,8 +177,10 @@ Variabel di `.env`:
 | `ARCADEDB_HOST` | `http://localhost:2480` | alamat server ArcadeDB |
 | `ARCADEDB_DB` | `sre_test` | nama basis data |
 | `ARCADEDB_USER`, `ARCADEDB_PASSWORD` | `root`, — | akun ArcadeDB (cukup hak baca) |
-| `GROQ_API_KEY` | — | kunci model bahasa; tanpa ini tanya-graf dan Brainstorm nonaktif |
-| `LLM_PENYEDIA`, `LLM_MODEL` | `groq`, bawaan penyedia | penyedia: `groq`, `openai`, `xai`, `openrouter`, `cerebras` |
+| `LLM_PENYEDIA` | `groq` | `groq`, `openai`, `xai`, `openrouter`, atau `cerebras` |
+| `LLM_API_KEY` | — | kunci API penyedia; tanpa ini tanya-graf dan Brainstorm nonaktif |
+| `LLM_MODEL` | bawaan penyedia | nama model, misalnya `gpt-4o-mini` |
+| `LLM_URL` | — | opsional, alamat API lain yang berformat OpenAI |
 | `SRE_HOST` | `127.0.0.1` | `0.0.0.0` agar server dapat diakses dari jaringan |
 | `SRE_PORT` | `8000` | port server |
 

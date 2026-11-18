@@ -1,7 +1,8 @@
 """lib/llm.py — Pemanggil model bahasa.
 
 Memakai format /chat/completions yang didukung Groq, OpenAI, xAI, OpenRouter,
-dan Cerebras. Penyedia dan model diatur lewat .env (LLM_PENYEDIA, LLM_MODEL).
+Cerebras, dan layanan lain yang kompatibel. Diatur lewat .env:
+LLM_PENYEDIA, LLM_API_KEY, LLM_MODEL, dan LLM_URL (opsional).
 Baris hasil kueri dibersihkan oleh buang_teks_panjang() sebelum dikirim.
 """
 import json
@@ -36,16 +37,32 @@ class LLMBelumDisetel(Exception):
     """Kunci API belum ada di .env."""
 
 
+def _env(nama):
+    return (os.getenv(nama) or "").strip()
+
+
 def setelan():
-    """Baca penyedia & model dari .env. Ganti penyedia = ganti satu baris."""
-    nama = ((os.getenv("LLM_PENYEDIA") or "").strip() or "groq").lower()
-    if nama not in PENYEDIA:
+    """Baca penyedia, kunci, dan model dari .env.
+
+    LLM_API_KEY berlaku untuk penyedia apa pun; bila kosong, kunci khusus
+    penyedia (mis. GROQ_API_KEY) yang dibaca. LLM_URL mengganti alamat API,
+    sehingga layanan lain yang berformat OpenAI juga dapat dipakai.
+    """
+    nama = (_env("LLM_PENYEDIA") or "groq").lower()
+    url_lain = _env("LLM_URL").rstrip("/")
+    if nama in PENYEDIA:
+        url, nama_kunci, model_bawaan = PENYEDIA[nama]
+    elif url_lain:
+        url, nama_kunci, model_bawaan = url_lain, "LLM_API_KEY", ""
+    else:
         raise LLMBelumDisetel(
-            f"LLM_PENYEDIA='{nama}' tidak dikenal. Pilih: {', '.join(PENYEDIA)}")
-    url, nama_kunci, model_bawaan = PENYEDIA[nama]
-    return {"penyedia": nama, "url": url, "nama_kunci": nama_kunci,
-            "kunci": os.getenv(nama_kunci, "").strip(),
-            "model": (os.getenv("LLM_MODEL") or "").strip() or model_bawaan}  # kosong = bawaan
+            f"LLM_PENYEDIA='{nama}' tidak dikenal. Pilih: {', '.join(PENYEDIA)}, "
+            "atau isi LLM_URL.")
+    model = _env("LLM_MODEL") or model_bawaan
+    if not model:
+        raise LLMBelumDisetel("LLM_MODEL wajib diisi untuk penyedia di luar daftar.")
+    return {"penyedia": nama, "url": url_lain or url, "nama_kunci": "LLM_API_KEY",
+            "kunci": _env("LLM_API_KEY") or _env(nama_kunci), "model": model}
 
 
 def siap():
